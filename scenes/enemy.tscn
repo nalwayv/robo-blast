@@ -1,0 +1,75 @@
+[gd_scene load_steps=9 format=4 uid="uid://c0fv2li0eheot"]
+
+[ext_resource type="Script" uid="uid://ttuvrqc8yxcl" path="res://scripts/enemy.gd" id="1_7p1mj"]
+[ext_resource type="Script" uid="uid://dg1x0sec8c7v5" path="res://scripts/enemy_debug.gd" id="2_md0e3"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_8tegq"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7p1mj"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_md0e3"]
+albedo_color = Color(0.94227564, 0.28308344, 0.28011715, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_7p1mj"]
+_surfaces = [{
+"aabb": AABB(-0.25, -0.1, -0.3, 0.5, 0.2, 0.6),
+"attribute_data": PackedByteArray("AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/"),
+"format": 34359738391,
+"material": SubResource("StandardMaterial3D_md0e3"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 36,
+"vertex_data": PackedByteArray("AACAvs3MzL2amZk+AACAvs3MzL2amZm+AACAvs3MzD2amZm+AACAPs3MzL2amZm+AACAvs3MzL2amZm+AACAvs3MzL2amZk+AACAvs3MzD2amZm+AACAvs3MzL2amZm+AACAPs3MzL2amZm+AACAvs3MzD2amZm+AACAvs3MzD2amZk+AACAvs3MzL2amZk+AACAvs3MzL2amZk+AACAvs3MzD2amZk+AACAPs3MzD2amZk+AACAPs3MzD2amZk+AACAvs3MzD2amZk+AACAvs3MzD2amZm+AACAvs3MzL2amZk+AACAPs3MzL2amZk+AACAPs3MzL2amZm+AACAPs3MzD2amZk+AACAPs3MzL2amZk+AACAvs3MzL2amZk+AACAPs3MzL2amZm+AACAPs3MzL2amZk+AACAPs3MzD2amZk+AACAPs3MzL2amZm+AACAPs3MzD2amZm+AACAvs3MzD2amZm+AACAvs3MzD2amZm+AACAPs3MzD2amZm+AACAPs3MzD2amZk+AACAPs3MzD2amZk+AACAPs3MzD2amZm+AACAPs3MzL2amZm+AAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
+}]
+
+[sub_resource type="Animation" id="Animation_7p1mj"]
+resource_name = "attack"
+length = 0.5
+step = 0.025
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.25),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"attack"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_md0e3"]
+_data = {
+&"attack": SubResource("Animation_7p1mj")
+}
+
+[node name="Enemy" type="CharacterBody3D"]
+script = ExtResource("1_7p1mj")
+fov = 170.0
+aggro_range = 5.5
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_8tegq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_7p1mj")
+
+[node name="Visor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.367)
+mesh = SubResource("ArrayMesh_7p1mj")
+
+[node name="Debug" type="Node3D" parent="."]
+editor_description = "view field of range"
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+script = ExtResource("2_md0e3")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+debug_enabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_md0e3")
+}

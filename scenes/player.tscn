@@ -1,0 +1,210 @@
+[gd_scene load_steps=19 format=3 uid="uid://dpw0ap4168r3r"]
+
+[ext_resource type="Script" uid="uid://c5wany3avu60x" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://c1h5eg3tqwqm" path="res://scripts/smooth_camera.gd" id="2_y4r1p"]
+[ext_resource type="Script" uid="uid://c0q7tkqr7sls6" path="res://scripts/weapon_handler.gd" id="3_fjrip"]
+[ext_resource type="Script" uid="uid://caxydu7plo1s6" path="res://scripts/crosshair.gd" id="3_qhqgy"]
+[ext_resource type="PackedScene" uid="uid://djaa8dy6wdkse" path="res://scenes/rifle.tscn" id="3_tuyoq"]
+[ext_resource type="Script" uid="uid://b57i01rnvv3ap" path="res://scripts/ammo_handler.gd" id="4_smehm"]
+[ext_resource type="Script" uid="uid://bcxfbd7msjs2k" path="res://scripts/ammo_presenter.gd" id="4_smehm_presenter"]
+[ext_resource type="PackedScene" uid="uid://dffqg0px71had" path="res://scenes/submachine_gun.tscn" id="5_fjrip"]
+[ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
+[ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_u8vuu"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
+
+[sub_resource type="Gradient" id="Gradient_fjrip"]
+offsets = PackedFloat32Array(0, 0.6631016, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.59607846, 0, 0.078431375, 0, 0.74509805, 0, 0.09411765, 0.6156863)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_smehm"]
+gradient = SubResource("Gradient_fjrip")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="Animation" id="Animation_qlg0r"]
+length = 0.4
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DamageTexture:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DamageTexture:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_dqkch"]
+resource_name = "take_damage"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("DamageTexture:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.5, 1.5)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("DamageTexture:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tuyoq"]
+_data = {
+&"RESET": SubResource("Animation_qlg0r"),
+&"take_damage": SubResource("Animation_dqkch")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_y4r1p"]
+font = ExtResource("8_ur7pv")
+font_size = 64
+
+[node name="Player" type="CharacterBody3D" groups=["player"]]
+script = ExtResource("1_3vyb7")
+jump_type = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_u8vuu")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_3vyb7")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+script = ExtResource("2_y4r1p")
+
+[node name="Camera" type="Camera3D" parent="CameraPivot"]
+top_level = true
+cull_mask = 1048573
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraPivot/Camera"]
+remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
+
+[node name="CoyoteTimer" type="Timer" parent="."]
+editor_description = "buffer time to forgive player pressing jump to late"
+one_shot = true
+
+[node name="JumpBufferTimer" type="Timer" parent="."]
+editor_description = "buffer time to forgive player pressing jump to early"
+one_shot = true
+
+[node name="AmmoPresenter" type="Node" parent="." node_paths=PackedStringArray("ammo_handler", "weapon_handler", "ammo_label")]
+script = ExtResource("4_smehm_presenter")
+ammo_handler = NodePath("../AmmoHandler")
+weapon_handler = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler")
+ammo_label = NodePath("../AmmoUI/Label")
+
+[node name="AmmoHandler" type="Node" parent="."]
+script = ExtResource("4_smehm")
+
+[node name="WeaponSubViewport" type="SubViewportContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="WeaponSubViewport"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="WeaponCamera" type="Camera3D" parent="WeaponSubViewport/SubViewport"]
+cull_mask = 2
+fov = 45.0
+
+[node name="WeaponHandler" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera"]
+script = ExtResource("3_fjrip")
+
+[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" node_paths=PackedStringArray("ammo_handler") instance=ExtResource("5_fjrip")]
+ammo_handler = NodePath("../../../../../AmmoHandler")
+ammo_type = 1
+
+[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" node_paths=PackedStringArray("ammo_handler") instance=ExtResource("3_tuyoq")]
+ammo_handler = NodePath("../../../../../AmmoHandler")
+
+[node name="CrosshairContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Crosshair" type="Control" parent="CrosshairContainer"]
+layout_mode = 2
+script = ExtResource("3_qhqgy")
+
+[node name="DamageTexture" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(576, 324)
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_smehm")
+
+[node name="DamageAnimation" type="AnimationPlayer" parent="DamageTexture"]
+unique_name_in_owner = true
+root_node = NodePath("../..")
+libraries = {
+&"": SubResource("AnimationLibrary_tuyoq")
+}
+
+[node name="AmmoUI" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="AmmoUI"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "99"
+label_settings = SubResource("LabelSettings_y4r1p")
+
+[node name="GameOverMenu" parent="." instance=ExtResource("5_qlg0r")]
+visible = false

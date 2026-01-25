@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3 uid="uid://bnd3cdytkfh0n"]
+
+[ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="1_cwb3k"]
+[ext_resource type="Script" uid="uid://wnm82o26q5hs" path="res://scripts/game_over_menu.gd" id="2_ccgoi"]
+[ext_resource type="Shader" uid="uid://ctg462a28iljk" path="res://assets/background_blur.gdshader" id="5_7u104"]
+
+[sub_resource type="Theme" id="Theme_wqhvx"]
+default_font = ExtResource("1_cwb3k")
+default_font_size = 64
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_81acl"]
+shader = ExtResource("5_7u104")
+shader_parameter/blur_strengh = 2.0
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_7u104"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_cwb3k"]
+font_size = 96
+
+[node name="GameOverMenu" type="Control"]
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_wqhvx")
+script = ExtResource("2_ccgoi")
+
+[node name="BackgroundBlur" type="TextureRect" parent="."]
+editor_description = "shader blur background"
+material = SubResource("ShaderMaterial_81acl")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_7u104")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(512, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "game over"
+label_settings = SubResource("LabelSettings_cwb3k")
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "restart"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "quit"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -1,0 +1,92 @@
+[gd_scene load_steps=9 format=3 uid="uid://dgqvuvf6lya44"]
+
+[sub_resource type="Curve" id="Curve_b7w7n"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.1567927), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_xxqkp"]
+curve = SubResource("Curve_b7w7n")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8buta"]
+spread = 180.0
+initial_velocity_min = 3.0
+initial_velocity_max = 6.0
+scale_min = 0.5
+scale_max = 2.5
+scale_curve = SubResource("CurveTexture_xxqkp")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hgm5m"]
+emission_enabled = true
+emission = Color(1, 1, 0, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_r8idj"]
+material = SubResource("StandardMaterial3D_hgm5m")
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="Animation" id="Animation_b7w7n"]
+resource_name = "sparks"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"queue_free"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_xxqkp"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8buta"]
+_data = {
+&"RESET": SubResource("Animation_xxqkp"),
+&"sparks": SubResource("Animation_b7w7n")
+}
+
+[node name="Sparks" type="GPUParticles3D"]
+editor_description = "create  sparks that auto queue_free after the animation has finished playing."
+top_level = true
+cast_shadow = 0
+emitting = false
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_8buta")
+draw_pass_1 = SubResource("BoxMesh_r8idj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_8buta")
+}
+autoplay = "sparks"

@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://d2ht6tw7yma6l"]
+
+[ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/ammo_pickup.gd" id="1_ieo5p"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_jrhku"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ieo5p"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_c710o"]
+radius = 1.0
+
+[node name="AmmoPickup" type="Area3D"]
+script = ExtResource("1_ieo5p")
+
+[node name="AmmoMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_jrhku")
+
+[node name="EffectMesh" type="MeshInstance3D" parent="."]
+editor_description = "Base scene for an ammo pickup."
+mesh = SubResource("SphereMesh_ieo5p")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_c710o")

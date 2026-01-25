@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://djaa8dy6wdkse"]
+
+[ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_l7v2r"]
+[ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_wqliw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l7v2r"]
+z_clip_scale = 0.7
+fov_override = 45.0
+
+[sub_resource type="Curve" id="Curve_x77fm"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_og67c"]
+curve = SubResource("Curve_x77fm")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x77fm"]
+direction = Vector3(0, 0, -1)
+spread = 5.0
+initial_velocity_min = 6.0
+initial_velocity_max = 8.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_og67c")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wqliw"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 3.0
+z_clip_scale = 0.7
+fov_override = 45.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_og67c"]
+material = SubResource("StandardMaterial3D_wqliw")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="Rifle" node_paths=PackedStringArray("weapon_node", "muzzel_flash") instance=ExtResource("1_l7v2r")]
+fire_rate = 5.0
+recoil = 0.5
+weapon_damage = 25
+is_automatic = false
+weapon_node = NodePath("Model")
+muzzel_flash = NodePath("MuzzelFlash")
+sparks = ExtResource("2_wqliw")
+
+[node name="Model" type="CSGBox3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.3, -1.2485067)
+layers = 2
+material_override = SubResource("StandardMaterial3D_l7v2r")
+size = Vector3(0.15, 0.35, 1.6027832)
+
+[node name="MuzzelFlash" type="GPUParticles3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.20996496, -2.0464354)
+layers = 2
+emitting = false
+lifetime = 0.06999999999999999
+one_shot = true
+explosiveness = 1.0
+use_fixed_seed = true
+seed = 2222584304
+fixed_fps = 60
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_x77fm")
+draw_pass_1 = SubResource("BoxMesh_og67c")
