@@ -9,6 +9,7 @@ extends Area3D
 var time: float
 
 @onready var original_position: Vector3 = position
+@onready var ammo_mesh: MeshInstance3D = $AmmoMesh
 
 
 func _ready() -> void:
@@ -18,7 +19,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	time += delta
 	position.y = amplitude * absf(sin(time * frequency)) + original_position.y
-	rotate_y(rotation_speed * delta)
+	ammo_mesh.rotate_y(rotation_speed * delta)
 
 
 func on_body_entered(body: Node3D) -> void:

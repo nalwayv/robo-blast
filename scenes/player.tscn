@@ -1,6 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://dpw0ap4168r3r"]
+[gd_scene format=3 uid="uid://dpw0ap4168r3r"]
 
 [ext_resource type="Script" uid="uid://c5wany3avu60x" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/health.gd" id="2_d2wvv"]
 [ext_resource type="Script" uid="uid://c1h5eg3tqwqm" path="res://scripts/smooth_camera.gd" id="2_y4r1p"]
 [ext_resource type="Script" uid="uid://c0q7tkqr7sls6" path="res://scripts/weapon_handler.gd" id="3_fjrip"]
 [ext_resource type="Script" uid="uid://caxydu7plo1s6" path="res://scripts/crosshair.gd" id="3_qhqgy"]
@@ -10,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://dffqg0px71had" path="res://scenes/submachine_gun.tscn" id="5_fjrip"]
 [ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
+[ext_resource type="Script" uid="uid://d1eqlvyudk65u" path="res://scripts/interval_timer.gd" id="12_3v2ag"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_u8vuu"]
 
@@ -91,45 +93,58 @@ _data = {
 font = ExtResource("8_ur7pv")
 font_size = 64
 
-[node name="Player" type="CharacterBody3D" groups=["player"]]
+[node name="Player" type="CharacterBody3D" unique_id=944678354 groups=["player"]]
 script = ExtResource("1_3vyb7")
 jump_type = 1
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Health" type="Node" parent="." unique_id=189041108]
+editor_description = "Health component"
+script = ExtResource("2_d2wvv")
+max_hitpoints = 100
+
+[node name="IntervalTimer" type="Node" parent="." unique_id=1941752826]
+script = ExtResource("12_3v2ag")
+interval = 1.0
+
+[node name="Timer" type="Timer" parent="IntervalTimer" unique_id=104537549]
+wait_time = 3.0
+one_shot = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=166658476]
 mesh = SubResource("CapsuleMesh_u8vuu")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1816839160]
 shape = SubResource("CapsuleShape3D_3vyb7")
 
-[node name="CameraPivot" type="Node3D" parent="."]
+[node name="CameraPivot" type="Node3D" parent="." unique_id=663478485]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 script = ExtResource("2_y4r1p")
 
-[node name="Camera" type="Camera3D" parent="CameraPivot"]
+[node name="Camera" type="Camera3D" parent="CameraPivot" unique_id=1926266097]
 top_level = true
 cull_mask = 1048573
 
-[node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraPivot/Camera"]
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraPivot/Camera" unique_id=838088627]
 remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
 
-[node name="CoyoteTimer" type="Timer" parent="."]
+[node name="CoyoteTimer" type="Timer" parent="." unique_id=485077830]
 editor_description = "buffer time to forgive player pressing jump to late"
 one_shot = true
 
-[node name="JumpBufferTimer" type="Timer" parent="."]
+[node name="JumpBufferTimer" type="Timer" parent="." unique_id=1786767595]
 editor_description = "buffer time to forgive player pressing jump to early"
 one_shot = true
 
-[node name="AmmoPresenter" type="Node" parent="." node_paths=PackedStringArray("ammo_handler", "weapon_handler", "ammo_label")]
+[node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889 node_paths=PackedStringArray("ammo_handler", "weapon_handler", "ammo_label")]
 script = ExtResource("4_smehm_presenter")
 ammo_handler = NodePath("../AmmoHandler")
 weapon_handler = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler")
 ammo_label = NodePath("../AmmoUI/Label")
 
-[node name="AmmoHandler" type="Node" parent="."]
+[node name="AmmoHandler" type="Node" parent="." unique_id=1605748613]
 script = ExtResource("4_smehm")
 
-[node name="WeaponSubViewport" type="SubViewportContainer" parent="."]
+[node name="WeaponSubViewport" type="SubViewportContainer" parent="." unique_id=1157993895]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -137,27 +152,27 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="WeaponSubViewport"]
+[node name="SubViewport" type="SubViewport" parent="WeaponSubViewport" unique_id=425033940]
 transparent_bg = true
 handle_input_locally = false
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
-[node name="WeaponCamera" type="Camera3D" parent="WeaponSubViewport/SubViewport"]
+[node name="WeaponCamera" type="Camera3D" parent="WeaponSubViewport/SubViewport" unique_id=983178200]
 cull_mask = 2
 fov = 45.0
 
-[node name="WeaponHandler" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera"]
+[node name="WeaponHandler" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378]
 script = ExtResource("3_fjrip")
 
-[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" node_paths=PackedStringArray("ammo_handler") instance=ExtResource("5_fjrip")]
+[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler") instance=ExtResource("5_fjrip")]
 ammo_handler = NodePath("../../../../../AmmoHandler")
 ammo_type = 1
 
-[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" node_paths=PackedStringArray("ammo_handler") instance=ExtResource("3_tuyoq")]
+[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler") instance=ExtResource("3_tuyoq")]
 ammo_handler = NodePath("../../../../../AmmoHandler")
 
-[node name="CrosshairContainer" type="CenterContainer" parent="."]
+[node name="CrosshairContainer" type="CenterContainer" parent="." unique_id=2031583331]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -165,11 +180,11 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Crosshair" type="Control" parent="CrosshairContainer"]
+[node name="Crosshair" type="Control" parent="CrosshairContainer" unique_id=958928721]
 layout_mode = 2
 script = ExtResource("3_qhqgy")
 
-[node name="DamageTexture" type="TextureRect" parent="."]
+[node name="DamageTexture" type="TextureRect" parent="." unique_id=1012273844]
 modulate = Color(1, 1, 1, 0)
 anchors_preset = 15
 anchor_right = 1.0
@@ -180,31 +195,29 @@ pivot_offset = Vector2(576, 324)
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_smehm")
 
-[node name="DamageAnimation" type="AnimationPlayer" parent="DamageTexture"]
+[node name="DamageAnimation" type="AnimationPlayer" parent="DamageTexture" unique_id=905886058]
 unique_name_in_owner = true
 root_node = NodePath("../..")
-libraries = {
-&"": SubResource("AnimationLibrary_tuyoq")
-}
+libraries/ = SubResource("AnimationLibrary_tuyoq")
 
-[node name="AmmoUI" type="MarginContainer" parent="."]
+[node name="AmmoUI" type="MarginContainer" parent="." unique_id=1634767536]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
-[node name="Label" type="Label" parent="AmmoUI"]
+[node name="Label" type="Label" parent="AmmoUI" unique_id=1797945434]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "99"
 label_settings = SubResource("LabelSettings_y4r1p")
 
-[node name="GameOverMenu" parent="." instance=ExtResource("5_qlg0r")]
+[node name="GameOverMenu" parent="." unique_id=1022983286 instance=ExtResource("5_qlg0r")]
 visible = false

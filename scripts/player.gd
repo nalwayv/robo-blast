@@ -1,6 +1,17 @@
 class_name Player
 extends CharacterBody3D
 
+# NOTE's
+# Kinematic Jump Formulas:
+# link = https://www.gdquest.com/library/kinematic_jump_formulas/
+# inital_velocity 	=  2 * height / time_to_peak
+# jump_gavity 		= -2 * height / time_to_peak ^ 2
+# fall_gravity 		= -2 * height / time_to_decent ^ 2
+#
+# Jump buffering:
+# coyote time - forgives the player for being a few frames too late to to press jump
+# jump buffer - forgive the player for being a few frame to early when pressing jump
+
 enum JumpType {
 	DEFAULT,
 	KINEMATIC,
@@ -8,7 +19,7 @@ enum JumpType {
 
 const SPEED: float = 5.0
 const MOUSE_SENSITIVITY: float = 0.001
-const PI_OVER_2: float = PI / 2.0
+
 
 @export_category("jumping")
 @export var jump_type: JumpType = JumpType.DEFAULT
@@ -18,27 +29,10 @@ const PI_OVER_2: float = PI / 2.0
 @export var fall_multiplier: float = 2.0 # default
 @export var coyote_duration: float = 0.15
 @export var jump_buffer_duration: float = 0.15
-@export_category("health")
-@export var max_hitpoints: int = 100
 
 var mouse_motion := Vector2.ZERO
-var hitpoints: int = max_hitpoints:
-	set(value):
-		# damage taken
-		if value < hitpoints:
-			damage_animation.stop(false)
-			damage_animation.play("take_damage")
-			
-		hitpoints = value
-		if hitpoints <= 0:
-			game_over_menu.game_over()
-			
 var was_on_floor: bool
-# Kinematic Jump Formulas
-# https://www.gdquest.com/library/kinematic_jump_formulas/
-# inital_velocity 	=  2 * height / time_to_peak
-# jump_gavity 		= -2 * height / time_to_peak ^ 2
-# fall_gravity 		= -2 * height / time_to_decent ^ 2
+
 @onready var jump_velocity := (2.0 * jump_height) / jump_time_to_peak
 @onready var jump_gravity := (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
 @onready var fall_gravity := (-2.0 * jump_height) / (jump_time_to_decent * jump_time_to_decent)
@@ -47,11 +41,21 @@ var was_on_floor: bool
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
 @onready var damage_animation: AnimationPlayer = %DamageAnimation
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
+@onready var interval_timer: IntervalTimer = $IntervalTimer
 
 
 func _ready() -> void:
 	# Capture mouse movement even when the cursor is outside the window.
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	
+	interval_timer.on_interval.connect(func(): print("tick"))
+	interval_timer.start_timer()
+	
+	# Connect health component signals
+	if has_meta("Health"):
+		var health := get_meta("Health") as Health
+		health.damaged.connect(on_damage_taken)
+		health.died.connect(game_over_menu.game_over)
 
 
 func _input(event: InputEvent) -> void:
@@ -64,72 +68,95 @@ func _input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
-	_update_camera_rotation()
+	update_camera_rotation()
 	
-	# apply gravity
 	if not is_on_floor():
-		match jump_type:
-			JumpType.DEFAULT:
-				if velocity.y >= 0.0:
-					velocity += get_gravity() * delta
-				else:
-					velocity += get_gravity() * fall_multiplier * delta
-			JumpType.KINEMATIC:
-				velocity += _get_kinematic_gravity() * delta
+		apply_gravity(delta)
 				
-	# check if coyote time is available
-	if was_on_floor and not is_on_floor():
-		coyote_timer.start(coyote_duration)
-		
-	# handle jump and jump buffering
-	# coyote time - forgives the player for being a few frames too late to to press jump
-	# jump buffer - forgive the player for being a few frame to early when pressing jump
+	start_coyote_timer()
+
 	if Input.is_action_just_pressed("jump"):
 		if is_on_floor() or not coyote_timer.is_stopped():
 			coyote_timer.stop()
-			_jump()
+			jump()
 		else:
 			jump_buffer_timer.start(jump_buffer_duration)
 	
-	if is_on_floor() and not jump_buffer_timer.is_stopped():
-		jump_buffer_timer.stop()
-		_jump()
-				
-	# handle movement
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-	var direction := (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
-	if direction != Vector3.ZERO:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0.0, SPEED)
-		velocity.z = move_toward(velocity.z, 0.0, SPEED)
+	jump_buffering()
+	
+	update_direction_velocity(get_input_direction(), SPEED)
 	
 	was_on_floor = is_on_floor()
 	move_and_slide()
 
 
-func _get_kinematic_gravity() -> Vector3:
+## Margin to allow for jumping.
+func jump_buffering() -> void:
+	if is_on_floor() and not jump_buffer_timer.is_stopped():
+		jump_buffer_timer.stop()
+		jump()
+
+
+## Check conditions befor starting coyote timer.
+func start_coyote_timer() -> void:
+	if was_on_floor and not is_on_floor():
+		coyote_timer.start(coyote_duration)
+
+		
+func on_damage_taken() -> void:
+	damage_animation.stop(false)
+	damage_animation.play("take_damage")
+
+
+func get_kinematic_gravity() -> Vector3:
 	return Vector3(0.0, fall_gravity if velocity.y < 0.0 else jump_gravity, 0.0)
 
 
 ## Rotate self using mouse motion
-func _update_camera_rotation() -> void:
+func update_camera_rotation() -> void:
 	rotate_y(mouse_motion.x)
 	camera_pivot.rotate_x(mouse_motion.y)
 	camera_pivot.rotation_degrees.x = clampf(camera_pivot.rotation_degrees.x, -90.0, 90.0)
 	
-	_reset_mouse_motion()
+	reset_mouse_motion()
 
 
 ## Prevent camera from continually rotating when the mouse is not moving.
-func _reset_mouse_motion() -> void:
+func reset_mouse_motion() -> void:
 	mouse_motion = Vector2.ZERO
 
 
-func _jump() -> void:
+## Apply gravity to velocity.
+func apply_gravity(delta: float) -> void:
+	match jump_type:
+		JumpType.DEFAULT:
+			if velocity.y >= 0.0:
+				velocity += get_gravity() * delta
+			else:
+				velocity += get_gravity() * fall_multiplier * delta
+		JumpType.KINEMATIC:
+			velocity += get_kinematic_gravity() * delta
+
+
+func get_input_direction() -> Vector3:
+	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+	return (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
+
+
+## Apply jump to current velocity.
+func jump() -> void:
 	match jump_type:
 		JumpType.DEFAULT:
 			velocity.y = sqrt(2.0 * jump_height * -get_gravity().y)
 		JumpType.KINEMATIC:
 			velocity.y = jump_velocity
+
+
+## Apply direction to velocity.
+func update_direction_velocity(new_direction: Vector3, speed: float) -> void:
+	if new_direction:
+		velocity.x = new_direction.x * speed
+		velocity.z = new_direction.z * speed
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, speed)
+		velocity.z = move_toward(velocity.z, 0.0, speed)

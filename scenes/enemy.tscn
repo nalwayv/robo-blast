@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=4 uid="uid://c0fv2li0eheot"]
+[gd_scene format=4 uid="uid://c0fv2li0eheot"]
 
 [ext_resource type="Script" uid="uid://ttuvrqc8yxcl" path="res://scripts/enemy.gd" id="1_7p1mj"]
 [ext_resource type="Script" uid="uid://dg1x0sec8c7v5" path="res://scripts/enemy_debug.gd" id="2_md0e3"]
+[ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/health.gd" id="3_4ra3w"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8tegq"]
 
@@ -46,30 +47,35 @@ _data = {
 &"attack": SubResource("Animation_7p1mj")
 }
 
-[node name="Enemy" type="CharacterBody3D"]
+[node name="Enemy" type="CharacterBody3D" unique_id=226968340]
 script = ExtResource("1_7p1mj")
 fov = 170.0
 aggro_range = 5.5
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Health" type="Node" parent="." unique_id=1469167002]
+editor_description = "Health component"
+script = ExtResource("3_4ra3w")
+max_hitpoints = 100
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=535933570]
 mesh = SubResource("CapsuleMesh_8tegq")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1171297815]
 shape = SubResource("CapsuleShape3D_7p1mj")
 
-[node name="Visor" type="MeshInstance3D" parent="."]
+[node name="Visor" type="MeshInstance3D" parent="." unique_id=1364863873]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.367)
 mesh = SubResource("ArrayMesh_7p1mj")
 
-[node name="Debug" type="Node3D" parent="."]
+[node name="Debug" type="Node3D" parent="." unique_id=1032669398]
 editor_description = "view field of range"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 script = ExtResource("2_md0e3")
 
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1671771318]
 debug_enabled = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_md0e3")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1423746893]
+libraries/ = SubResource("AnimationLibrary_md0e3")
+
+[node name="Timer" type="Timer" parent="." unique_id=1371630657]

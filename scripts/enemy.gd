@@ -3,7 +3,6 @@ extends CharacterBody3D
 
 const SPEED: float = 2.0
 
-@export var max_hitpoints: int = 100
 @export var attack_damage: int = 20
 @export var fov: float = 90.0
 @export var fov_range: float = 5.0
@@ -11,18 +10,18 @@ const SPEED: float = 2.0
 
 var provoked: bool = false
 var attack_range: float = 2.0;
-var hitpoints: int = max_hitpoints:
-	set(value):
-		hitpoints = value
-		provoked = true
-		
-		if hitpoints <= 0:
-			print("i am dead")
-			queue_free()
-		
+
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var player := get_tree().get_first_node_in_group("player") as Player
+
+
+func _ready() -> void:
+	# connect up health component signals
+	if has_meta("Health"):
+		var health := get_meta("Health") as Health
+		health.died.connect(queue_free)
+		health.damaged.connect(on_hit)
 
 
 func _process(_delta: float) -> void:
@@ -60,9 +59,15 @@ func look_at_target(target: Vector3) -> void:
 
 
 func attack() -> void:
-	# NOTE - funtion is being called within attack animation
-	player.hitpoints -= attack_damage
-	printt("attack! player health is now", player.hitpoints)
+	# NOTE - funtion is being called within attack animation on AnimationPlayer
+	if player.has_meta("Health"):
+		var health := player.get_meta("Health") as Health
+		health.hitpoints -= attack_damage
+		printt("attack! player health is now", health.hitpoints)
+
+
+func on_hit() -> void:
+	provoked = true
 
 
 ## using local_space to check if player is within field of view

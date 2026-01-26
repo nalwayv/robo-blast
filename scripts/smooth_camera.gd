@@ -7,7 +7,6 @@ extends Node3D
 
 
 func _ready() -> void:
-	# make sure its set
 	camera.top_level = true
 
 

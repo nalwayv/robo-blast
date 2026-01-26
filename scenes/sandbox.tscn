@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dq7l8htxk371"]
+[gd_scene format=3 uid="uid://dq7l8htxk371"]
 
 [ext_resource type="PackedScene" uid="uid://dpw0ap4168r3r" path="res://scenes/player.tscn" id="1_2ddto"]
 [ext_resource type="PackedScene" uid="uid://c0fv2li0eheot" path="res://scenes/enemy.tscn" id="2_a8pr3"]
@@ -24,438 +24,438 @@ polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Arr
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qddow"]
 albedo_color = Color(0.29219002, 0.29219005, 0.29219002, 1)
 
-[node name="SandBox" type="Node3D"]
+[node name="SandBox" type="Node3D" unique_id=2032565734]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=185990577]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 layers = 3
 shadow_enabled = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1365830970]
 environment = SubResource("Environment_rgld7")
 
-[node name="Player" parent="." instance=ExtResource("1_2ddto")]
+[node name="Player" parent="." unique_id=1840628585 instance=ExtResource("1_2ddto")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 
-[node name="Enemy" parent="." instance=ExtResource("2_a8pr3")]
+[node name="Enemy" parent="." unique_id=1125067069 instance=ExtResource("2_a8pr3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1, -7)
 
-[node name="NavigationRegion" type="NavigationRegion3D" parent="."]
+[node name="NavigationRegion" type="NavigationRegion3D" parent="." unique_id=746795617]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19371319, -0.041765213, 0.012216568)
 navigation_mesh = SubResource("NavigationMesh_rgld7")
 
-[node name="Floor" type="CSGBox3D" parent="NavigationRegion"]
+[node name="Floor" type="CSGBox3D" parent="NavigationRegion" unique_id=1386569314]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0025930405, -0.50000024, -0.008770943)
 use_collision = true
 size = Vector3(32, 1, 32)
 material = SubResource("StandardMaterial3D_qddow")
 
-[node name="Area" type="Node3D" parent="NavigationRegion"]
+[node name="Area" type="Node3D" parent="NavigationRegion" unique_id=636292575]
 
-[node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1594118395]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -15)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(20, 2, 2)
 
-[node name="CSGBox3D17" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D17" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=2016270326]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -2)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 4)
 
-[node name="CSGBox3D18" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D18" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1702145036]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1, 0)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 2, 4)
 
-[node name="CSGBox3D19" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D19" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1245371558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 0)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 2, 4)
 
-[node name="CSGBox3D20" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D20" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1747468607]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 4)
 
-[node name="CSGBox3D5" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D5" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1414400390]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, -14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 4)
 
-[node name="CSGBox3D12" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D12" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=20657119]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1, -14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 2, 4)
 
-[node name="CSGBox3D8" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D8" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=782270130]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, -11)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 2)
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D2" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=375384136]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 15)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(20, 2, 2)
 
-[node name="CSGBox3D14" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D14" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1035906377]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 4)
 
-[node name="CSGBox3D16" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D16" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1499032815]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, 11)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 2)
 
-[node name="CSGBox3D15" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D15" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1832667521]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, 14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 2, 4)
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D3" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1968668696]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1, 0)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 2, 20)
 
-[node name="CSGBox3D6" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D6" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=241001384]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, -14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 4)
 
-[node name="CSGBox3D7" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D7" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1077749471]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1, -14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 2, 4)
 
-[node name="CSGBox3D13" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D13" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1759220568]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1, -11)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 2)
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D4" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1676860668]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 1, 0)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 2, 20)
 
-[node name="CSGBox3D9" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D9" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1813211649]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 4)
 
-[node name="CSGBox3D10" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D10" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1551086441]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1, 11)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(4, 2, 2)
 
-[node name="CSGBox3D11" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D11" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1258938956]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1, 14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 2, 4)
 
-[node name="CSGPolygon3D" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1493493993]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=571084483]
 transform = Transform3D(0, 0, 1.0000001, 0, 1, 0, -1.0000001, 0, 0, -12, 0, 10)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D3" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D3" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1753073990]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -14, 0, -10)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D4" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D4" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1928072665]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -12)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D5" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D5" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=369651555]
 transform = Transform3D(-0.99999994, 0, 0, 0, 1, 0, 0, 0, -0.99999994, 10, 0, -14)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D6" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D6" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=841327267]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 12, 0, -10)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D7" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D7" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=251938365]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14, 0, 10)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D8" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D8" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=677779775]
 transform = Transform3D(-1, 0, 8.940697e-08, 0, 1, 0, -8.940697e-08, 0, -1, 10, 0, 12)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D9" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D9" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=512503847]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -12, 2, 12)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D10" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D10" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1830656451]
 transform = Transform3D(-4.371139e-08, 1, 4.371139e-08, 0, -4.371139e-08, 1, 1, 4.371139e-08, 1.9106855e-15, -12, 2, -12)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D11" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D11" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=377236895]
 transform = Transform3D(-1, 0, 0, 0, 2.9802322e-08, 1, 0, 1, -2.980232e-08, 12, 2, -12)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D12" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D12" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1341593251]
 transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 0, -4.371139e-08, 1, -1, 4.371139e-08, 1.9106855e-15, 12, 2, 12)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D13" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D13" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1246658803]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -2, 0, 4)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 4.0
 
-[node name="CSGPolygon3D14" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D14" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=265937171]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 2)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 4.0
 
-[node name="CSGPolygon3D15" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D15" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=866745123]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2, 0, -4)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 4.0
 
-[node name="CSGPolygon3D16" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D16" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1700140464]
 transform = Transform3D(-1.0000001, 0, -2.9802322e-08, 0, 1, 0, 2.9802322e-08, 0, -1.0000001, -4, 0, -2)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 4, 0)
 depth = 4.0
 
-[node name="CSGPolygon3D17" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D17" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1893846607]
 transform = Transform3D(-4.371139e-08, 1, 4.371139e-08, 0, -4.371139e-08, 1, 1, 4.371139e-08, 1.9106855e-15, 2, 2, 2)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D18" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D18" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1034008200]
 transform = Transform3D(-1.0000001, 2.9802322e-08, -1.7763568e-15, 0, -4.371139e-08, 1, 2.9802322e-08, 1.0000001, 4.3711392e-08, -2, 2, 2)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D19" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D19" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=2043723698]
 transform = Transform3D(-4.371139e-08, -1, -4.371139e-08, 0, -4.371139e-08, 1, -1, 4.371139e-08, 1.9106855e-15, -2, 2, -2)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
 depth = 2.0
 
-[node name="CSGPolygon3D20" type="CSGPolygon3D" parent="NavigationRegion/Area"]
+[node name="CSGPolygon3D20" type="CSGPolygon3D" parent="NavigationRegion/Area" unique_id=1932629473]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 2, 2, -2)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
 depth = 2.0
 
-[node name="CSGBox3D21" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D21" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=238905091]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.5, -5)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 1, 2)
 
-[node name="CSGBox3D23" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D23" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=2093658747]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0.5, 13)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 1, 2)
 
-[node name="CSGBox3D22" type="CSGBox3D" parent="NavigationRegion/Area"]
+[node name="CSGBox3D22" type="CSGBox3D" parent="NavigationRegion/Area" unique_id=1223992482]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.977, 0.5, 1)
 material_override = ExtResource("2_rgld7")
 use_collision = true
 size = Vector3(2, 1, 2)
 
-[node name="Obstacle" type="Node3D" parent="NavigationRegion"]
+[node name="Obstacle" type="Node3D" parent="NavigationRegion" unique_id=633790607]
 
-[node name="NavigationObstacle3D2" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D2" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=1018521729]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 0)
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D8" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D8" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=40425310]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, -15)
 vertices = PackedVector3Array(-14, 0, -1, -14.018528, 0, 0.9909334, 18, 0, 1, 18, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D9" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D9" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=489491593]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 15)
 vertices = PackedVector3Array(-14, 0, -1, -14.018528, 0, 0.9909334, 18, 0, 1, 18, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D3" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D3" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=157498477]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D5" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D5" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=1840139464]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -5)
 height = 2.0
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D6" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D6" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=1901817292]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 1)
 height = 2.0
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D10" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D10" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=1059599324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 1)
 vertices = PackedVector3Array(-2, 0, -15, -2.018528, 0, 12.990933, 0, 0, 13, 0, 0, -15)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D11" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D11" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=89712981]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, 1)
 vertices = PackedVector3Array(-2, 0, -15, -2.018528, 0, 12.990933, 0, 0, 13, 0, 0, -15)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D7" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D7" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=770313838]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13)
 height = 2.0
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D12" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D12" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=728174525]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 13)
 vertices = PackedVector3Array(-2, 0, -3, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -3)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D18" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D18" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=621427511]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -11)
 vertices = PackedVector3Array(-2, 0, -3, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -3)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D19" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D19" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=608152042]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -11)
 vertices = PackedVector3Array(-2, 0, -3, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -3)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D15" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D15" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=2089780272]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 13)
 vertices = PackedVector3Array(-2, 0, -3, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -3)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D13" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D13" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=423103790]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 13)
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D14" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D14" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=657978233]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 13)
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D16" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D16" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=1238952585]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -13)
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D17" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D17" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=1891531699]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -13)
 vertices = PackedVector3Array(-2, 0, -1, -2.018529, 0, 0.9909334, 0, 0, 1, 0, 0, -1)
 affect_navigation_mesh = true
 
-[node name="NavigationObstacle3D4" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle"]
+[node name="NavigationObstacle3D4" type="NavigationObstacle3D" parent="NavigationRegion/Obstacle" unique_id=1444876914]
 vertices = PackedVector3Array(-2, 0, -4, -2, 0, 4, 2, 0, 4, 2, 0, -4)
 affect_navigation_mesh = true
 
-[node name="Walls" type="Node3D" parent="."]
+[node name="Walls" type="Node3D" parent="." unique_id=1205203904]
 metadata/_edit_lock_ = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Walls"]
+[node name="CSGBox3D" type="CSGBox3D" parent="Walls" unique_id=423067105]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.5, 3, 0)
 use_collision = true
 size = Vector3(1, 6, 32)
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="Walls"]
+[node name="CSGBox3D2" type="CSGBox3D" parent="Walls" unique_id=1103564685]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.5, 3, 0)
 use_collision = true
 size = Vector3(1, 6, 32)
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="Walls"]
+[node name="CSGBox3D3" type="CSGBox3D" parent="Walls" unique_id=1094915957]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -16.5)
 use_collision = true
 size = Vector3(32, 6, 1)
 
-[node name="CSGBox3D4" type="CSGBox3D" parent="Walls"]
+[node name="CSGBox3D4" type="CSGBox3D" parent="Walls" unique_id=41539324]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 16.5)
 use_collision = true
 size = Vector3(32, 6, 1)
 
-[node name="Pickups" type="Node3D" parent="."]
+[node name="Pickups" type="Node3D" parent="." unique_id=2092107993]
 
-[node name="LargeAmmoPickup" parent="Pickups" instance=ExtResource("4_tpt06")]
+[node name="LargeAmmoPickup" parent="Pickups" unique_id=1591982341 instance=ExtResource("4_tpt06")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, -8)
 frequency = 1.5
 amplitude = 0.5
 rotation_speed = 1.0
 
-[node name="SmallAmmoPickup" parent="Pickups" instance=ExtResource("5_16ffl")]
+[node name="SmallAmmoPickup" parent="Pickups" unique_id=2073387576 instance=ExtResource("5_16ffl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1, -10)
 frequency = 2.0
 amplitude = 0.5

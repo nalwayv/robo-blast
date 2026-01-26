@@ -32,8 +32,8 @@ func _process(delta: float) -> void:
 	else:
 		if Input.is_action_just_pressed("fire_weapon") and can_fire:
 			fire_weapon()
-			
-	weapon_node.position = weapon_node.position.lerp(original_weapon_position, recoil_speed * delta)
+	
+	recoil_animation(delta)
 
 
 func fire_weapon() -> void:
@@ -62,6 +62,16 @@ func spawn_hit_effect() -> void:
 
 func apply_damage_to_target() -> void:
 	var collider := ray_cast.get_collider()
-	if collider is Enemy:
-		collider.hitpoints -= weapon_damage
-		printt("fire weapon! enemy health is now", collider.hitpoints)
+	if collider.has_meta("Health"):
+		var health := collider.get_meta("Health") as Health
+		health.hitpoints -= weapon_damage
+		printt("fire weapon! enemy health is now", health.hitpoints)
+		
+	#if collider is Enemy:
+		#collider.hitpoints -= weapon_damage
+		#printt("fire weapon! enemy health is now", collider.hitpoints)
+
+
+func recoil_animation(delta: float) -> void:
+	weapon_node.position = weapon_node.position.lerp(original_weapon_position, recoil_speed * delta)
+	

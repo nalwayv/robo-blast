@@ -1,7 +1,7 @@
 @tool
 extends Node3D
 
-var fov: float = 90.0
+var fov: float = 90.0 
 var fov_range: float = 10.0
 var aggro_range: float = 10.0
 var circumference_segments: int = 64

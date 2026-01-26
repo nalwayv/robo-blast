@@ -1,5 +1,5 @@
 shader_type spatial;
-// spatial = 3d shader
+// spatial: 3d shader
 
 uniform float level : hint_range(0.0, 1.0) = 1.0;
 uniform float emission_intensity : hint_range(0.0, 1.0);

@@ -1,4 +1,5 @@
 shader_type canvas_item;
+// canvas: 2d shader
 render_mode blend_mix;
 
 // capture current screen
@@ -10,4 +11,3 @@ void fragment()
 {
 	COLOR.rgb = textureLod(screen_texture, SCREEN_UV, blur_strengh).rgb;
 }
-
