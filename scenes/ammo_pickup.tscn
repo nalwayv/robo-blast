@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://d2ht6tw7yma6l"]
+[gd_scene format=3 uid="uid://d2ht6tw7yma6l"]
 
 [ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/ammo_pickup.gd" id="1_ieo5p"]
 
@@ -10,15 +10,15 @@ size = Vector3(0.5, 0.5, 0.5)
 [sub_resource type="SphereShape3D" id="SphereShape3D_c710o"]
 radius = 1.0
 
-[node name="AmmoPickup" type="Area3D"]
+[node name="AmmoPickup" type="Area3D" unique_id=1552331146]
 script = ExtResource("1_ieo5p")
 
-[node name="AmmoMesh" type="MeshInstance3D" parent="."]
+[node name="AmmoMesh" type="MeshInstance3D" parent="." unique_id=1628967609]
 mesh = SubResource("BoxMesh_jrhku")
 
-[node name="EffectMesh" type="MeshInstance3D" parent="."]
+[node name="EffectMesh" type="MeshInstance3D" parent="." unique_id=1362845292]
 editor_description = "Base scene for an ammo pickup."
 mesh = SubResource("SphereMesh_ieo5p")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=442826753]
 shape = SubResource("SphereShape3D_c710o")

@@ -13,10 +13,6 @@ var ammo_storage: Dictionary[AmmoType, int] = {
 	AmmoType.SMALL_BULLET: 60,
 }
 
-func _enter_tree() -> void:
-	# add to owner to help with interacting with ammo pickups
-	owner.set_meta("AmmoHandler", self)
-
 
 func add_ammo(ammo_type: AmmoType, amount: int) -> void:
 	ammo_storage[ammo_type] += amount

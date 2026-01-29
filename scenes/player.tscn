@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c5wany3avu60x" path="res://scripts/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/health.gd" id="2_d2wvv"]
 [ext_resource type="Script" uid="uid://c1h5eg3tqwqm" path="res://scripts/smooth_camera.gd" id="2_y4r1p"]
+[ext_resource type="Script" uid="uid://conhe36xl47jl" path="res://scripts/weapon_zoom.gd" id="3_3v2ag"]
 [ext_resource type="Script" uid="uid://c0q7tkqr7sls6" path="res://scripts/weapon_handler.gd" id="3_fjrip"]
 [ext_resource type="Script" uid="uid://caxydu7plo1s6" path="res://scripts/crosshair.gd" id="3_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://djaa8dy6wdkse" path="res://scenes/rifle.tscn" id="3_tuyoq"]
@@ -11,7 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://dffqg0px71had" path="res://scenes/submachine_gun.tscn" id="5_fjrip"]
 [ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
-[ext_resource type="Script" uid="uid://d1eqlvyudk65u" path="res://scripts/interval_timer.gd" id="12_3v2ag"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_u8vuu"]
 
@@ -97,19 +97,6 @@ font_size = 64
 script = ExtResource("1_3vyb7")
 jump_type = 1
 
-[node name="Health" type="Node" parent="." unique_id=189041108]
-editor_description = "Health component"
-script = ExtResource("2_d2wvv")
-max_hitpoints = 100
-
-[node name="IntervalTimer" type="Node" parent="." unique_id=1941752826]
-script = ExtResource("12_3v2ag")
-interval = 1.0
-
-[node name="Timer" type="Timer" parent="IntervalTimer" unique_id=104537549]
-wait_time = 3.0
-one_shot = true
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=166658476]
 mesh = SubResource("CapsuleMesh_u8vuu")
 
@@ -135,14 +122,26 @@ one_shot = true
 editor_description = "buffer time to forgive player pressing jump to early"
 one_shot = true
 
+[node name="WeaponZoom" type="Node" parent="." unique_id=2082028648 node_paths=PackedStringArray("main_camera", "weapon_camera")]
+script = ExtResource("3_3v2ag")
+main_camera = NodePath("../CameraPivot/Camera")
+weapon_camera = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera")
+
+[node name="Health" type="Node" parent="." unique_id=189041108]
+unique_name_in_owner = true
+editor_description = "Health component"
+script = ExtResource("2_d2wvv")
+max_hitpoints = 100
+
+[node name="AmmoHandler" type="Node" parent="." unique_id=1605748613]
+unique_name_in_owner = true
+script = ExtResource("4_smehm")
+
 [node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889 node_paths=PackedStringArray("ammo_handler", "weapon_handler", "ammo_label")]
 script = ExtResource("4_smehm_presenter")
 ammo_handler = NodePath("../AmmoHandler")
 weapon_handler = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler")
 ammo_label = NodePath("../AmmoUI/Label")
-
-[node name="AmmoHandler" type="Node" parent="." unique_id=1605748613]
-script = ExtResource("4_smehm")
 
 [node name="WeaponSubViewport" type="SubViewportContainer" parent="." unique_id=1157993895]
 anchors_preset = 15
@@ -163,6 +162,7 @@ cull_mask = 2
 fov = 45.0
 
 [node name="WeaponHandler" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378]
+unique_name_in_owner = true
 script = ExtResource("3_fjrip")
 
 [node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler") instance=ExtResource("5_fjrip")]

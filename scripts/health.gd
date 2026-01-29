@@ -25,9 +25,5 @@ var hitpoints: int = max_hitpoints:
 			died.emit()
 
 
-func _enter_tree() -> void:
-	owner.set_meta("Health", self)
-
-
 func _ready() -> void:
 	hitpoints = max_hitpoints

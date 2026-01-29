@@ -41,28 +41,32 @@ var was_on_floor: bool
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
 @onready var damage_animation: AnimationPlayer = %DamageAnimation
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
-@onready var interval_timer: IntervalTimer = $IntervalTimer
 
 
 func _ready() -> void:
+	add_to_group("health")
+	add_to_group("ammo_handler")
+	
+	var health := get_node_or_null("%Health") as Health
+	if health:
+		health.died.connect(game_over_menu.game_over)
+		health.damaged.connect(on_damage_taken)
+		
 	# Capture mouse movement even when the cursor is outside the window.
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
-	interval_timer.on_interval.connect(func(): print("tick"))
-	interval_timer.start_timer()
-	
-	# Connect health component signals
-	if has_meta("Health"):
-		var health := get_meta("Health") as Health
-		health.damaged.connect(on_damage_taken)
-		health.died.connect(game_over_menu.game_over)
 
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			# get mouse motion
 			mouse_motion = -event.relative * MOUSE_SENSITIVITY
 			
+			# apply lag when zommed in
+			var weapon_zoom := get_node_or_null("WeaponZoom") as WeaponZoom
+			if weapon_zoom and weapon_zoom.is_zoomed_in:
+				mouse_motion *= weapon_zoom.fov_lag
+				
 	if event.is_action_pressed("escape"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
@@ -160,3 +164,11 @@ func update_direction_velocity(new_direction: Vector3, speed: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, speed)
 		velocity.z = move_toward(velocity.z, 0.0, speed)
+
+	apply_steady_aim_multiplyer()
+
+func apply_steady_aim_multiplyer() -> void:
+	var weapon_zoom := get_node_or_null("WeaponZoom") as WeaponZoom
+	if weapon_zoom and weapon_zoom.is_zoomed_in:
+		velocity.x *= weapon_zoom.steady_aim
+		velocity.z *= weapon_zoom.steady_aim

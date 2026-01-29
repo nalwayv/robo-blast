@@ -61,15 +61,16 @@ func spawn_hit_effect() -> void:
 
 
 func apply_damage_to_target() -> void:
-	var collider := ray_cast.get_collider()
-	if collider.has_meta("Health"):
-		var health := collider.get_meta("Health") as Health
-		health.hitpoints -= weapon_damage
-		printt("fire weapon! enemy health is now", health.hitpoints)
-		
-	#if collider is Enemy:
-		#collider.hitpoints -= weapon_damage
-		#printt("fire weapon! enemy health is now", collider.hitpoints)
+	var node := ray_cast.get_collider()
+	while node:
+		if node is CharacterBody3D and node.is_in_group("health"):
+			var health := node.get_node_or_null("%Health") as Health
+			if health:
+				health.hitpoints -= weapon_damage
+				printt("fire weapon! enemy health is now", health.hitpoints)
+				return
+		node = node.get_parent()
+	#print("oops")
 
 
 func recoil_animation(delta: float) -> void:

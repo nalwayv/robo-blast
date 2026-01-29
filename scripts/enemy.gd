@@ -17,11 +17,16 @@ var attack_range: float = 2.0;
 
 
 func _ready() -> void:
-	# connect up health component signals
-	if has_meta("Health"):
-		var health := get_meta("Health") as Health
-		health.died.connect(queue_free)
-		health.damaged.connect(on_hit)
+	add_to_group("health") # using groups like interfaces
+	var health := get_node_or_null("%Health")
+	if health:
+		(health as Health).died.connect(queue_free)
+		(health as Health).damaged.connect(func(): provoked = true)
+
+	#if has_componenet("Health"):
+		#var health := get_component("Health") as Health
+		#health.died.connect(queue_free)
+		#health.damaged.connect(func(): provoked = true)
 
 
 func _process(_delta: float) -> void:
@@ -60,14 +65,19 @@ func look_at_target(target: Vector3) -> void:
 
 func attack() -> void:
 	# NOTE - funtion is being called within attack animation on AnimationPlayer
-	if player.has_meta("Health"):
-		var health := player.get_meta("Health") as Health
+	var health := player.get_node_or_null("%Health") as Health
+	if health:
 		health.hitpoints -= attack_damage
 		printt("attack! player health is now", health.hitpoints)
 
 
-func on_hit() -> void:
-	provoked = true
+## using dot product to check if player is within field of view
+func is_player_within_fov_dot() -> bool:
+	var forward := -global_basis.z
+	var half_fov := deg_to_rad(fov * 0.5)
+	var direction_to := global_position.direction_to(player.global_position)
+	
+	return forward.dot(direction_to) > cos(half_fov)
 
 
 ## using local_space to check if player is within field of view
@@ -82,12 +92,3 @@ func on_hit() -> void:
 #	var v_angle := absf(atan2(local.y, -local.z))
 #
 #	return h_angle <= half_fov and v_angle <= half_fov
-
-
-## using dot product to check if player is within field of view
-func is_player_within_fov_dot() -> bool:
-	var forward := -global_basis.z
-	var half_fov := deg_to_rad(fov * 0.5)
-	var direction_to := global_position.direction_to(player.global_position)
-	
-	return forward.dot(direction_to) > cos(half_fov)

@@ -6,7 +6,7 @@ extends Pickup
 
 
 func _collected(body: Node3D) -> void:
-	if body.has_meta("AmmoHandler"):
-		var ammo_handler := body.get_meta("AmmoHandler") as AmmoHandler
-		if ammo_handler:
-			ammo_handler.add_ammo(ammo_type, ammo_amount)
+	if body.is_in_group("ammo_handler"):
+		var ammo := body.get_node_or_null("%AmmoHandler") as AmmoHandler
+		if ammo:
+			ammo.add_ammo(ammo_type, ammo_amount)
