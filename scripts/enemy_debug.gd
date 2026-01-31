@@ -8,11 +8,6 @@ var circumference_segments: int = 64
 
 
 func _process(_delta: float) -> void:
-	if owner is Enemy:
-		fov = owner.fov
-		fov_range = owner.fov_range
-		aggro_range = owner.aggro_range
-	
 	draw_fov()
 	draw_aggro_range()
 

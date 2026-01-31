@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cl5wh042l3ld6"]
+[gd_scene format=3 uid="uid://cl5wh042l3ld6"]
 
 [ext_resource type="PackedScene" uid="uid://d2ht6tw7yma6l" path="res://scenes/ammo_pickup.tscn" id="1_on4ha"]
 [ext_resource type="Shader" uid="uid://dr2s768xffa15" path="res://assets/fresnel.gdshader" id="2_v828t"]
@@ -15,15 +15,20 @@ shader_parameter/fresnel_color = Color(0.28235295, 0.5764706, 0.89411765, 1)
 shader_parameter/fresnel_intensity = 2.0000000475
 shader_parameter/fresnel_power = 2.000000095
 
-[node name="SmallAmmoPickup" instance=ExtResource("1_on4ha")]
+[node name="SmallAmmoPickup" unique_id=621068877 instance=ExtResource("1_on4ha")]
 ammo_amount = 50
 ammo_type = 1
 frequency = 1.5
 amplitude = 0.8
 rotation_speed = 1.0
 
-[node name="AmmoMesh" parent="." index="0"]
+[node name="AmmoMesh" parent="." index="0" unique_id=1628967609]
 material_override = SubResource("StandardMaterial3D_v828t")
 
-[node name="EffectMesh" parent="." index="1"]
+[node name="EffectMesh" parent="." index="1" unique_id=1362845292]
 material_override = SubResource("ShaderMaterial_6obw2")
+
+[node name="Label3D" type="Label3D" parent="." index="3" unique_id=1577656242]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+billboard = 1
+text = "small ammo"

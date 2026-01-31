@@ -16,6 +16,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="RoboBlast"
 config/tags=PackedStringArray("learn")
+run/main_scene="uid://dq7l8htxk371"
 config/use_hidden_project_data_directory=false
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"

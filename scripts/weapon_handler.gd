@@ -3,7 +3,7 @@ extends Node3D
 
 signal weapon_switched(weapon: HitScanWeapon)
 
-var current_weapon: int = 0
+var current_weapon := 0
 
 
 func _ready() -> void:

@@ -1,19 +1,19 @@
 class_name HitScanWeapon
 extends Node3D
 
-const RAY_LENGTH: int = 100
+const RAY_LENGTH := 100
 
-@export_range(1, 20) var fire_rate: float = 14.0
-@export var recoil: float = 0.1
-@export var weapon_damage: int = 10
-@export var is_automatic: bool = true
+@export_range(1, 20) var fire_rate := 14.0
+@export var recoil := 0.1
+@export var weapon_damage := 10
+@export var is_automatic := true
 @export var weapon_node: Node3D
 @export var muzzel_flash: GPUParticles3D
 @export var sparks: PackedScene
 @export var ammo_handler: AmmoHandler
 @export var ammo_type: AmmoHandler.AmmoType
 
-var recoil_speed: float = 10.0
+var recoil_speed := 10.0
 
 @onready var ray_cast: RayCast3D = $RayCast3D
 @onready var cooldown_timer: Timer = $CooldownTimer
@@ -70,7 +70,6 @@ func apply_damage_to_target() -> void:
 				printt("fire weapon! enemy health is now", health.hitpoints)
 				return
 		node = node.get_parent()
-	#print("oops")
 
 
 func recoil_animation(delta: float) -> void:

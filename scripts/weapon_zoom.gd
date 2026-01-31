@@ -4,8 +4,8 @@ extends Node
 @export var main_camera: Camera3D
 @export var weapon_camera: Camera3D
 
-var main_camera_fov: float
-var weapon_camera_fov: float
+var main_camera_fov := 0.0
+var weapon_camera_fov := 0.0
 var fov_multiplyer := 0.7
 var fov_lag := 0.4
 var transition_speed_in := 20.0

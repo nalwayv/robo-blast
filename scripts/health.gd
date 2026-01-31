@@ -7,7 +7,7 @@ signal health_changed(amount: int)
 
 @export var max_hitpoints: int
 
-var is_dead: bool
+var is_dead := false
 var hitpoints: int = max_hitpoints:
 	get:
 		return hitpoints

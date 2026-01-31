@@ -17,30 +17,34 @@ enum JumpType {
 	KINEMATIC,
 }
 
-const SPEED: float = 5.0
-const MOUSE_SENSITIVITY: float = 0.001
-
+const SPEED := 5.0
+const MOUSE_SENSITIVITY := 0.001
 
 @export_category("jumping")
-@export var jump_type: JumpType = JumpType.DEFAULT
-@export var jump_height: float = 1.0 # default / kinematic
-@export var jump_time_to_peak: float = 0.45 # kinematic
-@export var jump_time_to_decent: float = 0.35 # kinematic
-@export var fall_multiplier: float = 2.0 # default
-@export var coyote_duration: float = 0.15
-@export var jump_buffer_duration: float = 0.15
+@export var jump_type := JumpType.KINEMATIC
+@export var jump_height := 1.0 # default / kinematic
+@export var jump_time_to_peak := 0.45 # kinematic
+@export var jump_time_to_decent := 0.35 # kinematic
+@export var fall_multiplier := 2.0 # default
+@export var coyote_duration := 0.15
+@export var jump_buffer_duration := 0.15
+@export_category("head_bobbing")
+@export var bobbing_frequency := 2.0
+@export var bobbing_amplitude := 0.5
 
 var mouse_motion := Vector2.ZERO
-var was_on_floor: bool
+var was_on_floor := false
+var bobbing_time := 0.0
 
-@onready var jump_velocity := (2.0 * jump_height) / jump_time_to_peak
-@onready var jump_gravity := (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
-@onready var fall_gravity := (-2.0 * jump_height) / (jump_time_to_decent * jump_time_to_decent)
-@onready var camera_pivot: Node3D = $CameraPivot
+@onready var camera_pivot: SmoothCamera = $CameraPivot
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
 @onready var damage_animation: AnimationPlayer = %DamageAnimation
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
+@onready var jump_velocity := (2.0 * jump_height) / jump_time_to_peak
+@onready var jump_gravity := (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
+@onready var fall_gravity := (-2.0 * jump_height) / (jump_time_to_decent * jump_time_to_decent)
+@onready var camera_pivot_origin := camera_pivot.position
 
 
 func _ready() -> void:
@@ -52,7 +56,7 @@ func _ready() -> void:
 		health.died.connect(game_over_menu.game_over)
 		health.damaged.connect(on_damage_taken)
 		
-	# Capture mouse movement even when the cursor is outside the window.
+	# capture mouse movement even when the cursor is outside the window.
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
@@ -76,37 +80,58 @@ func _physics_process(delta: float) -> void:
 	
 	if not is_on_floor():
 		apply_gravity(delta)
-				
-	start_coyote_timer()
-
+		
+	# start coyote timer
+	if was_on_floor and not is_on_floor():
+		coyote_timer.start(coyote_duration)
+		
 	if Input.is_action_just_pressed("jump"):
 		if is_on_floor() or not coyote_timer.is_stopped():
 			coyote_timer.stop()
 			jump()
 		else:
 			jump_buffer_timer.start(jump_buffer_duration)
-	
-	jump_buffering()
-	
-	update_direction_velocity(get_input_direction(), SPEED)
-	
-	was_on_floor = is_on_floor()
-	move_and_slide()
-
-
-## Margin to allow for jumping.
-func jump_buffering() -> void:
+			
+	# apply jump buffering
 	if is_on_floor() and not jump_buffer_timer.is_stopped():
 		jump_buffer_timer.stop()
 		jump()
-
-
-## Check conditions befor starting coyote timer.
-func start_coyote_timer() -> void:
-	if was_on_floor and not is_on_floor():
-		coyote_timer.start(coyote_duration)
-
 		
+	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
+	var direction := (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
+	
+	if direction:
+		velocity.x = direction.x * SPEED
+		velocity.z = direction.z * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0.0, SPEED)
+		velocity.z = move_toward(velocity.z, 0.0, SPEED)
+		
+	# apply steay aim 
+	var weapon_zoom := get_node_or_null("WeaponZoom") as WeaponZoom
+	if weapon_zoom and weapon_zoom.is_zoomed_in:
+		velocity.x *= weapon_zoom.steady_aim
+		velocity.z *= weapon_zoom.steady_aim
+	
+	head_bobbing(delta)
+	
+	was_on_floor = is_on_floor()
+	
+	move_and_slide()
+
+
+func head_bobbing(delta: float) -> void:
+	var bobbing_speed := velocity.length()
+	var bobbing_weight := 1.0 if is_on_floor() else 0.0
+	
+	bobbing_time += delta * bobbing_speed * bobbing_weight
+	
+	var bobbing_y := sin(bobbing_time * bobbing_frequency) * bobbing_amplitude
+	var bobbing_x := cos(bobbing_time * bobbing_frequency * 0.5) * bobbing_amplitude
+	
+	camera_pivot.position = camera_pivot_origin + Vector3(bobbing_x, bobbing_y, 0.0)
+
+
 func on_damage_taken() -> void:
 	damage_animation.stop(false)
 	damage_animation.play("take_damage")
@@ -122,11 +147,7 @@ func update_camera_rotation() -> void:
 	camera_pivot.rotate_x(mouse_motion.y)
 	camera_pivot.rotation_degrees.x = clampf(camera_pivot.rotation_degrees.x, -90.0, 90.0)
 	
-	reset_mouse_motion()
-
-
-## Prevent camera from continually rotating when the mouse is not moving.
-func reset_mouse_motion() -> void:
+	# reset mouse to prevent the camera from continually rotating when the not moving.
 	mouse_motion = Vector2.ZERO
 
 
@@ -142,11 +163,6 @@ func apply_gravity(delta: float) -> void:
 			velocity += get_kinematic_gravity() * delta
 
 
-func get_input_direction() -> Vector3:
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-	return (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
-
-
 ## Apply jump to current velocity.
 func jump() -> void:
 	match jump_type:
@@ -154,21 +170,3 @@ func jump() -> void:
 			velocity.y = sqrt(2.0 * jump_height * -get_gravity().y)
 		JumpType.KINEMATIC:
 			velocity.y = jump_velocity
-
-
-## Apply direction to velocity.
-func update_direction_velocity(new_direction: Vector3, speed: float) -> void:
-	if new_direction:
-		velocity.x = new_direction.x * speed
-		velocity.z = new_direction.z * speed
-	else:
-		velocity.x = move_toward(velocity.x, 0.0, speed)
-		velocity.z = move_toward(velocity.z, 0.0, speed)
-
-	apply_steady_aim_multiplyer()
-
-func apply_steady_aim_multiplyer() -> void:
-	var weapon_zoom := get_node_or_null("WeaponZoom") as WeaponZoom
-	if weapon_zoom and weapon_zoom.is_zoomed_in:
-		velocity.x *= weapon_zoom.steady_aim
-		velocity.z *= weapon_zoom.steady_aim

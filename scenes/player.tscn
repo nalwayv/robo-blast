@@ -95,7 +95,7 @@ font_size = 64
 
 [node name="Player" type="CharacterBody3D" unique_id=944678354 groups=["player"]]
 script = ExtResource("1_3vyb7")
-jump_type = 1
+bobbing_amplitude = 0.1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=166658476]
 mesh = SubResource("CapsuleMesh_u8vuu")

@@ -73,8 +73,8 @@ editor_description = "view field of range"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 script = ExtResource("2_md0e3")
 
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1671771318]
-debug_enabled = true
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1423746893]
 libraries/ = SubResource("AnimationLibrary_md0e3")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1671771318]
+debug_enabled = true
