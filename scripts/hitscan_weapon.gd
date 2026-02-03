@@ -3,8 +3,9 @@ extends Node3D
 
 const RAY_LENGTH := 100
 
-@export_range(1, 20) var fire_rate := 14.0
+@export_range(1.0, 20.0) var fire_rate := 14.0
 @export var recoil := 0.1
+@export var recoil_shake := 0.07
 @export var weapon_damage := 10
 @export var is_automatic := true
 @export var weapon_node: Node3D
@@ -46,6 +47,11 @@ func fire_weapon() -> void:
 	muzzel_flash.restart()
 	weapon_node.position.z += recoil
 	
+	# add camera shake if owner has it
+	var player_camera := owner.get_node_or_null("%PlayerCamera") as PlayerCamera
+	if player_camera:
+		player_camera.add_shake(recoil_shake)
+	
 	ray_cast.force_raycast_update()
 	if not ray_cast.is_colliding():
 		return
@@ -61,7 +67,7 @@ func spawn_hit_effect() -> void:
 
 
 func apply_damage_to_target() -> void:
-	var node := ray_cast.get_collider()
+	var node := ray_cast.get_collider() as Node
 	while node:
 		if node is CharacterBody3D and node.is_in_group("health"):
 			var health := node.get_node_or_null("%Health") as Health

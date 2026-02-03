@@ -30,13 +30,13 @@ const MOUSE_SENSITIVITY := 0.001
 @export var jump_buffer_duration := 0.15
 @export_category("head_bobbing")
 @export var bobbing_frequency := 2.0
-@export var bobbing_amplitude := 0.5
+@export var bobbing_amplitude := 0.1
 
 var mouse_motion := Vector2.ZERO
 var was_on_floor := false
 var bobbing_time := 0.0
 
-@onready var camera_pivot: SmoothCamera = $CameraPivot
+@onready var player_camera: PlayerCamera = $PlayerCamera
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
 @onready var damage_animation: AnimationPlayer = %DamageAnimation
@@ -44,7 +44,7 @@ var bobbing_time := 0.0
 @onready var jump_velocity := (2.0 * jump_height) / jump_time_to_peak
 @onready var jump_gravity := (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
 @onready var fall_gravity := (-2.0 * jump_height) / (jump_time_to_decent * jump_time_to_decent)
-@onready var camera_pivot_origin := camera_pivot.position
+@onready var player_camera_origin := player_camera.position
 
 
 func _ready() -> void:
@@ -92,6 +92,10 @@ func _physics_process(delta: float) -> void:
 		else:
 			jump_buffer_timer.start(jump_buffer_duration)
 			
+	# test camera shake
+	if Input.is_action_just_pressed("foo"):
+		player_camera.add_shake(3.0)
+	
 	# apply jump buffering
 	if is_on_floor() and not jump_buffer_timer.is_stopped():
 		jump_buffer_timer.stop()
@@ -128,13 +132,15 @@ func head_bobbing(delta: float) -> void:
 	
 	var bobbing_y := sin(bobbing_time * bobbing_frequency) * bobbing_amplitude
 	var bobbing_x := cos(bobbing_time * bobbing_frequency * 0.5) * bobbing_amplitude
+	var bobbing_offset := Vector3(bobbing_x, bobbing_y, 0.0)
 	
-	camera_pivot.position = camera_pivot_origin + Vector3(bobbing_x, bobbing_y, 0.0)
+	player_camera.position = player_camera_origin + bobbing_offset
 
 
 func on_damage_taken() -> void:
 	damage_animation.stop(false)
 	damage_animation.play("take_damage")
+	player_camera.add_shake(1.0)
 
 
 func get_kinematic_gravity() -> Vector3:
@@ -144,8 +150,8 @@ func get_kinematic_gravity() -> Vector3:
 ## Rotate self using mouse motion
 func update_camera_rotation() -> void:
 	rotate_y(mouse_motion.x)
-	camera_pivot.rotate_x(mouse_motion.y)
-	camera_pivot.rotation_degrees.x = clampf(camera_pivot.rotation_degrees.x, -90.0, 90.0)
+	player_camera.rotate_x(mouse_motion.y)
+	player_camera.rotation_degrees.x = clampf(player_camera.rotation_degrees.x, -90.0, 90.0)
 	
 	# reset mouse to prevent the camera from continually rotating when the not moving.
 	mouse_motion = Vector2.ZERO

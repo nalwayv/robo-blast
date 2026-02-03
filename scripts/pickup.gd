@@ -1,24 +1,37 @@
 class_name Pickup
 extends Area3D
 
-@export_category("animation")
-@export var frequency: float = 2.0
-@export var amplitude: float = 0.5
-@export var rotation_speed: float = 0.75
+
+@export_category("animation_spring")
+@export var frequency := 3.0
+@export var damping := 0.1
+@export var nudge := 5.0
+@export var time_interval := 1.0
+@export var rotation_speed := 0.5
 
 var time: float
+var spring := DampSpring.new()
 
-@onready var original_position: Vector3 = position
 @onready var ammo_mesh: MeshInstance3D = $AmmoMesh
 
 
 func _ready() -> void:
 	body_entered.connect(on_body_entered)
+	
+	spring.goal = position.y
+	spring.position = spring.goal
+	spring.frequency = frequency
+	spring.damping = damping
 
 
 func _process(delta: float) -> void:
 	time += delta
-	position.y = amplitude * absf(sin(time * frequency)) + original_position.y
+	if time >= time_interval:
+		time = 0.0
+		spring.velocity += nudge
+		
+	spring.step(delta)
+	position.y = spring.position
 	ammo_mesh.rotate_y(rotation_speed * delta)
 
 

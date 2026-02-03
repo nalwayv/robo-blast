@@ -66,7 +66,6 @@ func _physics_process(delta: float) -> void:
 		var turn_speed := 15.0 if absf(angle_diff) > deg_to_rad(60.0) else 5.0
 		rotation.y = lerp_angle(rotation.y, target_yaw, turn_speed * delta)
 		
-		
 	move_and_slide()
 
 
@@ -76,13 +75,12 @@ func _physics_process(delta: float) -> void:
 
 
 func attack() -> void:
-	# NOTE - funtion is being called within attack animation on AnimationPlayer
+	# NOTE - function is being called within attack animation on AnimationPlayer
 	var health := player.get_node_or_null("%Health") as Health
 	if health:
 		health.hitpoints -= attack_damage
 
 
-## using dot product to check if player is within field of view
 func is_player_within_fov_dot() -> bool:
 	var forward := -global_basis.z
 	var half_fov := deg_to_rad(fov * 0.5)
