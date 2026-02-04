@@ -48,9 +48,9 @@ func fire_weapon() -> void:
 	weapon_node.position.z += recoil
 	
 	# add camera shake if owner has it
-	var player_camera := owner.get_node_or_null("%PlayerCamera") as PlayerCamera
-	if player_camera:
-		player_camera.add_shake(recoil_shake)
+	var camera_rig := owner.get_node_or_null("%CameraRig") as CameraRig
+	if camera_rig:
+		camera_rig.add_shake(1.0, deg_to_rad(3.0))
 	
 	ray_cast.force_raycast_update()
 	if not ray_cast.is_colliding():

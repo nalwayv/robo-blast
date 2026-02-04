@@ -1,6 +1,7 @@
 class_name Player
 extends CharacterBody3D
 
+
 # NOTE's
 # Kinematic Jump Formulas:
 # link = https://www.gdquest.com/library/kinematic_jump_formulas/
@@ -28,15 +29,13 @@ const MOUSE_SENSITIVITY := 0.001
 @export var fall_multiplier := 2.0 # default
 @export var coyote_duration := 0.15
 @export var jump_buffer_duration := 0.15
-@export_category("head_bobbing")
-@export var bobbing_frequency := 2.0
-@export var bobbing_amplitude := 0.1
+
 
 var mouse_motion := Vector2.ZERO
 var was_on_floor := false
 var bobbing_time := 0.0
 
-@onready var player_camera: PlayerCamera = $PlayerCamera
+@onready var player_camera: CameraRig = $CameraRig
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
 @onready var damage_animation: AnimationPlayer = %DamageAnimation
@@ -94,8 +93,8 @@ func _physics_process(delta: float) -> void:
 			
 	# test camera shake
 	if Input.is_action_just_pressed("foo"):
-		player_camera.add_shake(3.0)
-	
+		player_camera.add_shake(1.0, deg_to_rad(5.0))
+		
 	# apply jump buffering
 	if is_on_floor() and not jump_buffer_timer.is_stopped():
 		jump_buffer_timer.stop()
@@ -117,30 +116,15 @@ func _physics_process(delta: float) -> void:
 		velocity.x *= weapon_zoom.steady_aim
 		velocity.z *= weapon_zoom.steady_aim
 	
-	head_bobbing(delta)
-	
 	was_on_floor = is_on_floor()
 	
 	move_and_slide()
 
 
-func head_bobbing(delta: float) -> void:
-	var bobbing_speed := velocity.length()
-	var bobbing_weight := 1.0 if is_on_floor() else 0.0
-	
-	bobbing_time += delta * bobbing_speed * bobbing_weight
-	
-	var bobbing_y := sin(bobbing_time * bobbing_frequency) * bobbing_amplitude
-	var bobbing_x := cos(bobbing_time * bobbing_frequency * 0.5) * bobbing_amplitude
-	var bobbing_offset := Vector3(bobbing_x, bobbing_y, 0.0)
-	
-	player_camera.position = player_camera_origin + bobbing_offset
-
-
 func on_damage_taken() -> void:
 	damage_animation.stop(false)
 	damage_animation.play("take_damage")
-	player_camera.add_shake(1.0)
+	player_camera.add_shake_rotation(deg_to_rad(25.0))
 
 
 func get_kinematic_gravity() -> Vector3:
