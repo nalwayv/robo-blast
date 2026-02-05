@@ -1,5 +1,6 @@
-class_name DampSpring
+class_name DampedSpring
 extends Resource
+
 
 const EPSILON := 0.0001
 
@@ -26,7 +27,7 @@ func step(delta: float) -> void:
 		
 	# Coefficient calculation
 	if zeta > 1.0 + EPSILON:
-		# Over-damped
+		# Over damped
 		var za := -omega * zeta
 		var zb := omega * sqrt(zeta * zeta - 1.0)
 		var z1 := za - zb
@@ -45,7 +46,7 @@ func step(delta: float) -> void:
 		_vp = (z1 * e1_2zb - z2 * e2_2zb + e2) * z2
 		_vv = -z1 * e1_2zb + z2 * e2_2zb
 	elif zeta < 1.0 - EPSILON:
-		# Under-damped
+		# Under damped
 		var omega_zeta := omega * zeta
 		var alpha := omega * sqrt(1.0 - zeta * zeta)
 		
