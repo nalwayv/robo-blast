@@ -32,12 +32,14 @@ const MOUSE_SENSITIVITY := 0.001
 
 var mouse_motion := Vector2.ZERO
 var was_on_floor := false
+var in_air := false
 
 @onready var camera_rig: CameraRig = $CameraRig
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
 @onready var damage_animation: AnimationPlayer = %DamageAnimation
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
+@onready var health: Health = $%Health
 @onready var jump_velocity := (2.0 * jump_height) / jump_time_to_peak
 @onready var jump_gravity := (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
 @onready var fall_gravity := (-2.0 * jump_height) / (jump_time_to_decent * jump_time_to_decent)
@@ -48,11 +50,9 @@ func _ready() -> void:
 	add_to_group("health")
 	add_to_group("ammo_handler")
 	
-	var health := get_node_or_null("%Health") as Health
-	if health:
-		health.died.connect(game_over_menu.game_over)
-		health.damaged.connect(on_damage_taken)
-		
+	health.died.connect(game_over_menu.game_over)
+	health.damaged.connect(on_damage_taken)
+	
 	# capture mouse movement even when the cursor is outside the window.
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
@@ -81,7 +81,8 @@ func _physics_process(delta: float) -> void:
 	# start coyote timer
 	if was_on_floor and not is_on_floor():
 		coyote_timer.start(coyote_duration)
-		
+		in_air = true
+	
 	if Input.is_action_just_pressed("jump"):
 		if is_on_floor() or not coyote_timer.is_stopped():
 			coyote_timer.stop()
@@ -93,6 +94,11 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor() and not jump_buffer_timer.is_stopped():
 		jump_buffer_timer.stop()
 		jump()
+	
+	# land on floor after jump
+	if is_on_floor() and in_air:
+		camera_rig.apply_rotation_impulse(Vector3(-1,0,0), deg_to_rad(10.0))
+		in_air = false
 		
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	var direction := (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
@@ -111,7 +117,10 @@ func _physics_process(delta: float) -> void:
 		velocity.z *= weapon_zoom.steady_aim
 
 	# apply bobbing
-	camera_rig.add_bob(delta, velocity.length(), is_on_floor())
+	camera_rig.apply_bob(delta, velocity.length(), is_on_floor())
+	
+	# apply lean
+	camera_rig.apply_lean(Input.get_axis("move_right", "move_left"))
 	
 	was_on_floor = is_on_floor()
 	
@@ -121,7 +130,7 @@ func _physics_process(delta: float) -> void:
 func on_damage_taken() -> void:
 	damage_animation.stop(false)
 	damage_animation.play("take_damage")
-	camera_rig.add_shake_rotation(deg_to_rad(25.0))
+	camera_rig.apply_shake(1.0, deg_to_rad(5.0))
 
 
 func get_kinematic_gravity() -> Vector3:

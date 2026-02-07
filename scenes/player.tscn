@@ -5,11 +5,14 @@
 [ext_resource type="Script" uid="uid://bhkxq62whfx8w" path="res://scripts/camera_rig.gd" id="2_y4r1p"]
 [ext_resource type="Script" uid="uid://conhe36xl47jl" path="res://scripts/weapon_zoom.gd" id="3_3v2ag"]
 [ext_resource type="Script" uid="uid://c0q7tkqr7sls6" path="res://scripts/weapon_handler.gd" id="3_fjrip"]
+[ext_resource type="Script" uid="uid://qpt7krqqx606" path="res://scripts/camera_bob_effect.gd" id="3_jej6c"]
 [ext_resource type="Script" uid="uid://caxydu7plo1s6" path="res://scripts/crosshair.gd" id="3_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://djaa8dy6wdkse" path="res://scenes/rifle.tscn" id="3_tuyoq"]
+[ext_resource type="Script" uid="uid://cgb1kneyqm1l7" path="res://scripts/camera_shake.gd" id="4_f1ej7"]
 [ext_resource type="Script" uid="uid://b57i01rnvv3ap" path="res://scripts/ammo_handler.gd" id="4_smehm"]
 [ext_resource type="Script" uid="uid://bcxfbd7msjs2k" path="res://scripts/ammo_presenter.gd" id="4_smehm_presenter"]
 [ext_resource type="PackedScene" uid="uid://dffqg0px71had" path="res://scenes/submachine_gun.tscn" id="5_fjrip"]
+[ext_resource type="Script" uid="uid://b2e1es5atkw7u" path="res://scripts/camera_lean.gd" id="5_oprun"]
 [ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
 
@@ -106,9 +109,6 @@ shape = SubResource("CapsuleShape3D_3vyb7")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 script = ExtResource("2_y4r1p")
-position_frequency = 30.0
-rotation_frequency = 25.0
-rotation_damping = 0.2
 
 [node name="Camera" type="Camera3D" parent="CameraRig" unique_id=1926266097]
 unique_name_in_owner = true
@@ -117,6 +117,15 @@ cull_mask = 1048573
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraRig/Camera" unique_id=838088627]
 remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
+
+[node name="CameraShake" type="Node" parent="CameraRig" unique_id=57683371]
+script = ExtResource("4_f1ej7")
+
+[node name="CameraBobbing" type="Node" parent="CameraRig" unique_id=903513385]
+script = ExtResource("3_jej6c")
+
+[node name="CameraLean" type="Node" parent="CameraRig" unique_id=242216423]
+script = ExtResource("5_oprun")
 
 [node name="CoyoteTimer" type="Timer" parent="." unique_id=485077830]
 editor_description = "buffer time to forgive player pressing jump to late"

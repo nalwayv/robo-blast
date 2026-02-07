@@ -1,49 +1,15 @@
 class_name CameraRig
 extends Node3D
 
-
-@export_category("camera")
 @export var rotation_speed := 45.0
-@export_group("shake effect")
-@export var position_frequency := 22.0
-@export var position_damping := 0.5
-@export var rotation_frequency := 22.0
-@export var rotation_damping := 0.5
-@export_group("bob effect")
-@export var bob_frequency := 12.0
-@export var bob_damping := 0.85
-@export var bob_amplitude := 0.08
-
-var pos_spring_x := DampedSpring.new()
-var pos_spring_y := DampedSpring.new()
-var pos_spring_z := DampedSpring.new()
-
-var rot_spring_x := DampedSpring.new()
-var rot_spring_y := DampedSpring.new()
-var rot_spring_z := DampedSpring.new()
-
-var bob_spring_x := DampedSpring.new()
-var bob_spring_y := DampedSpring.new()
-var bob_timer := 0.0
-
 @onready var camera: Camera3D = $Camera
+@onready var camera_bob: CameraBobbing = $CameraBobbing
+@onready var camera_shake: CameraShake = $CameraShake
+@onready var camera_lean: CameraLean = $CameraLean
 
 
 func _ready() -> void:
-	# for smooth camera movement
 	camera.top_level = true
-	
-	for spring: DampedSpring in [pos_spring_x, pos_spring_y, pos_spring_z]:
-		spring.frequency = position_frequency
-		spring.damping = position_damping
-		
-	for spring: DampedSpring in [rot_spring_x, rot_spring_y, rot_spring_z]:
-		spring.frequency = rotation_frequency
-		spring.damping = rotation_damping
-	
-	for spring: DampedSpring in [bob_spring_x, bob_spring_y]:
-		spring.frequency = bob_frequency
-		spring.damping = bob_damping
 
 
 func _process(delta: float) -> void:
@@ -51,78 +17,31 @@ func _process(delta: float) -> void:
 	var weight := clampf(delta * rotation_speed, 0.0, 1.0)
 	var t := camera.global_transform.interpolate_with(global_transform, weight)
 	
-	# shake
-	for spring in [pos_spring_x, pos_spring_y, pos_spring_z]:
-		spring.step(delta)
-		
-	for spring in [rot_spring_x, rot_spring_y, rot_spring_z]:
-		spring.step(delta)
-		
-	var pos_offset := Vector3(pos_spring_x.position, pos_spring_y.position, pos_spring_z.position)
-	var rot_offset := Vector3(rot_spring_x.position, rot_spring_y.position, rot_spring_z.position)
-
-	t.origin += t.basis * pos_offset
-	t.basis *= Basis.from_euler(rot_offset)
-	
-	# bob
-	for spring in [bob_spring_x, bob_spring_y]:
-		spring.step(delta)
-
-	var bob_offset := Vector3(bob_spring_x.position, bob_spring_y.position, 0.0)
-
-	t.origin += t.basis * bob_offset
+	# apply springs
+	for child in get_children():
+		if child is CameraSpingComponent:
+			t *= child._get_offset()
 	
 	camera.global_transform = t
 
 
-## Remove all shake effects
-func reset_shake() -> void:
-	for p: DampedSpring in [pos_spring_x, pos_spring_y, pos_spring_z]:
-		p.position = 0.0
-		p.velocity = 0.0
-	for r: DampedSpring in [rot_spring_x, rot_spring_y, rot_spring_z]:
-		r.position = 0.0
-		r.velocity = 0.0
-	for b: DampedSpring in [bob_spring_x, bob_spring_y]:
-		b.position = 0.0
-		b.velocity = 0.0
+func apply_shake(strength: float, radians: float) -> void:
+	camera_shake.apply_shake(strength, radians)
 
 
-## Add a shake effect to the camera
-## [param strength] how strong the shake should be
-## [param radians] how much the camera should rotate
-func add_shake(strength: float, radians: float) -> void:
-	pos_spring_x.velocity += randf_range(-strength, strength)
-	pos_spring_y.velocity += randf_range(-strength, strength)
-
-	#rot_spring_x.velocity += randf_range(-radians, radians)
-	rot_spring_z.velocity += randf_range(-radians, radians)
+func apply_impulse(dir: Vector3, radians: float) -> void:
+	camera_shake.apply_rotation_impulse(dir.normalized(), radians)
 
 
-## Add a shake rotation effect to the camera
-## [param radians] how much the camera should rotate
-func add_shake_rotation(radians: float) -> void:
-#	rot_spring_x.velocity += rad * sign(angle)
-#	rot_spring_z.velocity += radians
-	rot_spring_x.velocity += randf_range(-radians, radians)
-	rot_spring_z.velocity += randf_range(-radians, radians)
+func apply_rotation_impulse(dir: Vector3, radians: float) -> void:
+	camera_shake.apply_rotation_impulse(dir.normalized(), radians)
 
 
-## Add a bobbing effect to the camera
-## [param delta] time
-## [param strength] how fast the camera bobbing should happen
-## [param is_moving] whether to apply bobbing or not
-func add_bob(delta: float, strength: float, is_moveing: bool) -> void:
-	if is_moveing:
-		bob_timer += delta
-		var target_y := sin(bob_timer * strength * 2.0) * 0.05
-		var target_x := cos(bob_timer * strength) * 0.03
+func apply_bob(delta: float, strength: float, is_moveing: bool) -> void:
+	camera_bob.apply_bob(delta, strength, is_moveing)
 
-#		bob_spring_y.velocity += target_y	
-#		bob_spring_x.velocity += target_x	
-		bob_spring_y.goal = target_y
-		bob_spring_x.goal = target_x
-	else:
-		bob_spring_y.goal = 0.0
-		bob_spring_x.goal = 0.0
-#		bob_timer = lerpf(bob_timer, 0.0, delta * 0.6)	
+
+## Add a lean when moveing along an axis
+func apply_lean(axis: float) -> void:
+	camera_lean.apply_lean(axis)
+	

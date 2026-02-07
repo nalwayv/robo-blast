@@ -3,6 +3,7 @@ extends Node3D
 
 const RAY_LENGTH := 100
 
+
 @export_range(1.0, 20.0) var fire_rate := 14.0
 @export var recoil := 0.1
 @export var recoil_shake := 0.07
@@ -13,7 +14,6 @@ const RAY_LENGTH := 100
 @export var sparks: PackedScene
 @export var ammo_handler: AmmoHandler
 @export var ammo_type: AmmoHandler.AmmoType
-
 var recoil_speed := 10.0
 
 @onready var ray_cast: RayCast3D = $RayCast3D
@@ -47,10 +47,9 @@ func fire_weapon() -> void:
 	muzzel_flash.restart()
 	weapon_node.position.z += recoil
 	
-	# add camera shake if owner has it
-	var camera_rig := owner.get_node_or_null("%CameraRig") as CameraRig
-	if camera_rig:
-		camera_rig.add_shake(1.0, deg_to_rad(3.0))
+	var camera := owner.get_node_or_null("CameraRig") as CameraRig
+	if camera:
+		camera.apply_shake(recoil, deg_to_rad(10.0))
 	
 	ray_cast.force_raycast_update()
 	if not ray_cast.is_colliding():
@@ -73,7 +72,7 @@ func apply_damage_to_target() -> void:
 			var health := node.get_node_or_null("%Health") as Health
 			if health:
 				health.hitpoints -= weapon_damage
-				printt("fire weapon! enemy health is now", health.hitpoints)
+				#printt("fire weapon! enemy health is now", health.hitpoints)
 				return
 		node = node.get_parent()
 

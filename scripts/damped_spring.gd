@@ -21,13 +21,11 @@ func step(delta: float) -> void:
 	var zeta := maxf(damping, 0.0)
 	var omega := maxf(frequency, 0.0)
 	
-	# Identity if no frequency
 	if omega < EPSILON:
 		return
 		
-	# Coefficient calculation
 	if zeta > 1.0 + EPSILON:
-		# Over damped
+		# Overdamped
 		var za := -omega * zeta
 		var zb := omega * sqrt(zeta * zeta - 1.0)
 		var z1 := za - zb
@@ -46,7 +44,7 @@ func step(delta: float) -> void:
 		_vp = (z1 * e1_2zb - z2 * e2_2zb + e2) * z2
 		_vv = -z1 * e1_2zb + z2 * e2_2zb
 	elif zeta < 1.0 - EPSILON:
-		# Under damped
+		# Underdamped
 		var omega_zeta := omega * zeta
 		var alpha := omega * sqrt(1.0 - zeta * zeta)
 		
@@ -75,7 +73,6 @@ func step(delta: float) -> void:
 		_vp = -omega * time_exp_freq
 		_vv = -time_exp_freq + exp_term
 		
-	# Integrate state
 	var rel_pos := position - goal
 	var new_pos := rel_pos * _pp + velocity * _pv
 	var new_vel := rel_pos * _vp + velocity * _vv

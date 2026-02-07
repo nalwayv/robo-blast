@@ -1,7 +1,9 @@
 class_name WeaponHandler
 extends Node3D
 
+
 signal weapon_switched(weapon: HitScanWeapon)
+
 
 var current_weapon := 0
 

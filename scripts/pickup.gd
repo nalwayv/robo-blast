@@ -10,7 +10,7 @@ extends Area3D
 @export var rotation_speed := 0.5
 
 var time: float
-var spring := DampedSpring.new()
+var spring := DampedSpringV3.new()
 
 @onready var ammo_mesh: MeshInstance3D = $AmmoMesh
 
@@ -18,20 +18,21 @@ var spring := DampedSpring.new()
 func _ready() -> void:
 	body_entered.connect(on_body_entered)
 	
-	spring.goal = position.y
+	spring.goal = position
 	spring.position = spring.goal
 	spring.frequency = frequency
 	spring.damping = damping
+	spring.velocity = Vector3(0.0, nudge, 0.0)
 
 
 func _process(delta: float) -> void:
 	time += delta
 	if time >= time_interval:
 		time = 0.0
-		spring.velocity += nudge
+		spring.velocity += Vector3(0.0, nudge, 0.0)
 		
 	spring.step(delta)
-	position.y = spring.position
+	position = spring.position
 	ammo_mesh.rotate_y(rotation_speed * delta)
 
 
