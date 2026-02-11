@@ -1,15 +1,18 @@
 @tool
 extends Node3D
 
-var fov: float = 90.0 
+var show_debug := false
+# default
+var fov: float = 90.0
 var fov_range: float = 10.0
 var aggro_range: float = 10.0
 var circumference_segments: int = 64
 
 
 func _process(_delta: float) -> void:
-	draw_fov()
-	draw_aggro_range()
+	if show_debug:
+		draw_fov()
+		draw_aggro_range()
 
 
 func draw_aggro_range() -> void:

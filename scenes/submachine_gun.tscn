@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dffqg0px71had"]
+[gd_scene format=3 uid="uid://dffqg0px71had"]
 
 [ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_vpl36"]
 [ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_7q7np"]
@@ -33,20 +33,19 @@ fov_override = 45.0
 material = SubResource("StandardMaterial3D_v4m1q")
 size = Vector3(0.1, 0.1, 0.1)
 
-[node name="SubmachineGun" node_paths=PackedStringArray("weapon_node", "muzzel_flash") instance=ExtResource("1_vpl36")]
-recoil = 0.15
+[node name="SubmachineGun" unique_id=122189766 node_paths=PackedStringArray("weapon_model", "muzzel_flash") instance=ExtResource("1_vpl36")]
 weapon_damage = 5
-weapon_node = NodePath("Model")
+weapon_model = NodePath("Model")
 muzzel_flash = NodePath("MuzzelFlash")
 sparks = ExtResource("2_7q7np")
 
-[node name="Model" type="CSGBox3D" parent="." index="1"]
+[node name="Model" type="CSGBox3D" parent="." index="1" unique_id=514974302]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.3, -0.94015706)
 layers = 2
 material_override = SubResource("StandardMaterial3D_0xfrr")
 size = Vector3(0.15, 0.35, 0.986084)
 
-[node name="MuzzelFlash" type="GPUParticles3D" parent="." index="2"]
+[node name="MuzzelFlash" type="GPUParticles3D" parent="." index="2" unique_id=1474340202]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.21309765, -1.4319963)
 layers = 2
 cast_shadow = 0

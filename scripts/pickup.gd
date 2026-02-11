@@ -2,7 +2,7 @@ class_name Pickup
 extends Area3D
 
 
-@export_category("animation_spring")
+@export_group("animation_spring")
 @export var frequency := 3.0
 @export var damping := 0.1
 @export var nudge := 5.0

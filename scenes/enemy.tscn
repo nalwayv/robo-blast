@@ -47,10 +47,13 @@ _data = {
 &"attack": SubResource("Animation_7p1mj")
 }
 
-[node name="Enemy" type="CharacterBody3D" unique_id=226968340]
+[node name="EnemyControler" type="CharacterBody3D" unique_id=226968340 node_paths=PackedStringArray("health", "debug")]
 script = ExtResource("1_7p1mj")
 fov = 170.0
 aggro_range = 5.5
+health = NodePath("Health")
+show_debug = true
+debug = NodePath("Debug")
 
 [node name="Health" type="Node" parent="." unique_id=1469167002]
 unique_name_in_owner = true

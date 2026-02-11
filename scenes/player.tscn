@@ -1,34 +1,23 @@
 [gd_scene format=3 uid="uid://dpw0ap4168r3r"]
 
 [ext_resource type="Script" uid="uid://c5wany3avu60x" path="res://scripts/player.gd" id="1_3vyb7"]
+[ext_resource type="Script" uid="uid://chudfqujwjkhl" path="res://scripts/input_handler.gd" id="2_a8ls1"]
 [ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/health.gd" id="2_d2wvv"]
-[ext_resource type="Script" uid="uid://bhkxq62whfx8w" path="res://scripts/camera_rig.gd" id="2_y4r1p"]
-[ext_resource type="Script" uid="uid://conhe36xl47jl" path="res://scripts/weapon_zoom.gd" id="3_3v2ag"]
 [ext_resource type="Script" uid="uid://c0q7tkqr7sls6" path="res://scripts/weapon_handler.gd" id="3_fjrip"]
-[ext_resource type="Script" uid="uid://qpt7krqqx606" path="res://scripts/camera_bob_effect.gd" id="3_jej6c"]
+[ext_resource type="Script" uid="uid://bhkxq62whfx8w" path="res://scripts/player_camera.gd" id="3_jej6c"]
 [ext_resource type="Script" uid="uid://caxydu7plo1s6" path="res://scripts/crosshair.gd" id="3_qhqgy"]
 [ext_resource type="PackedScene" uid="uid://djaa8dy6wdkse" path="res://scenes/rifle.tscn" id="3_tuyoq"]
-[ext_resource type="Script" uid="uid://cgb1kneyqm1l7" path="res://scripts/camera_shake.gd" id="4_f1ej7"]
 [ext_resource type="Script" uid="uid://b57i01rnvv3ap" path="res://scripts/ammo_handler.gd" id="4_smehm"]
 [ext_resource type="Script" uid="uid://bcxfbd7msjs2k" path="res://scripts/ammo_presenter.gd" id="4_smehm_presenter"]
 [ext_resource type="PackedScene" uid="uid://dffqg0px71had" path="res://scenes/submachine_gun.tscn" id="5_fjrip"]
-[ext_resource type="Script" uid="uid://b2e1es5atkw7u" path="res://scripts/camera_lean.gd" id="5_oprun"]
 [ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
+[ext_resource type="Script" uid="uid://d0gwaflnqyk5t" path="res://scripts/camera_controler.gd" id="7_f1ej7"]
+[ext_resource type="Script" uid="uid://rkyc8ouda5mh" path="res://scripts/mouse_capture.gd" id="8_oprun"]
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_u8vuu"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3v2ag"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
-
-[sub_resource type="Gradient" id="Gradient_fjrip"]
-offsets = PackedFloat32Array(0, 0.6631016, 1)
-colors = PackedColorArray(0, 0, 0, 0, 0.59607846, 0, 0.078431375, 0, 0.74509805, 0, 0.09411765, 0.6156863)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_smehm"]
-gradient = SubResource("Gradient_fjrip")
-fill = 2
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 1)
 
 [sub_resource type="Animation" id="Animation_qlg0r"]
 length = 0.4
@@ -92,53 +81,56 @@ _data = {
 &"take_damage": SubResource("Animation_dqkch")
 }
 
+[sub_resource type="Gradient" id="Gradient_fjrip"]
+offsets = PackedFloat32Array(0, 0.6631016, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0.59607846, 0, 0.078431375, 0, 0.74509805, 0, 0.09411765, 0.6156863)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_smehm"]
+gradient = SubResource("Gradient_fjrip")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_y4r1p"]
 font = ExtResource("8_ur7pv")
 font_size = 64
 
-[node name="Player" type="CharacterBody3D" unique_id=944678354 groups=["player"]]
+[node name="PlayerControler" type="CharacterBody3D" unique_id=944678354 node_paths=PackedStringArray("input_handler", "mouse_capture", "health") groups=["player"]]
+editor_description = "Player controles cameras Yaw"
 script = ExtResource("1_3vyb7")
+input_handler = NodePath("InputHandler")
+mouse_capture = NodePath("MouseCapture")
+health = NodePath("Health")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=166658476]
-mesh = SubResource("CapsuleMesh_u8vuu")
+[node name="PlayerModel" type="MeshInstance3D" parent="." unique_id=1946704507]
+mesh = SubResource("CapsuleMesh_3v2ag")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1816839160]
 shape = SubResource("CapsuleShape3D_3vyb7")
 
-[node name="CameraRig" type="Node3D" parent="." unique_id=663478485]
-unique_name_in_owner = true
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
-script = ExtResource("2_y4r1p")
+[node name="CameraControler" type="Node3D" parent="." unique_id=1061473629 node_paths=PackedStringArray("player_camera", "weapon_camera", "mouse_capture", "input_handler")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+script = ExtResource("7_f1ej7")
+player_camera = NodePath("Camera3D")
+weapon_camera = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera")
+mouse_capture = NodePath("../MouseCapture")
+input_handler = NodePath("../InputHandler")
 
-[node name="Camera" type="Camera3D" parent="CameraRig" unique_id=1926266097]
-unique_name_in_owner = true
-top_level = true
+[node name="Camera3D" type="Camera3D" parent="CameraControler" unique_id=1122465746]
 cull_mask = 1048573
+script = ExtResource("3_jej6c")
+is_top_level = true
+impule_enabled = true
 
-[node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraRig/Camera" unique_id=838088627]
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraControler/Camera3D" unique_id=1010528068]
 remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
 
-[node name="CameraShake" type="Node" parent="CameraRig" unique_id=57683371]
-script = ExtResource("4_f1ej7")
+[node name="InputHandler" type="Node" parent="." unique_id=1691015048]
+script = ExtResource("2_a8ls1")
 
-[node name="CameraBobbing" type="Node" parent="CameraRig" unique_id=903513385]
-script = ExtResource("3_jej6c")
-
-[node name="CameraLean" type="Node" parent="CameraRig" unique_id=242216423]
-script = ExtResource("5_oprun")
-
-[node name="CoyoteTimer" type="Timer" parent="." unique_id=485077830]
-editor_description = "buffer time to forgive player pressing jump to late"
-one_shot = true
-
-[node name="JumpBufferTimer" type="Timer" parent="." unique_id=1786767595]
-editor_description = "buffer time to forgive player pressing jump to early"
-one_shot = true
-
-[node name="WeaponZoom" type="Node" parent="." unique_id=2082028648 node_paths=PackedStringArray("main_camera", "weapon_camera")]
-script = ExtResource("3_3v2ag")
-main_camera = NodePath("../CameraRig/Camera")
-weapon_camera = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera")
+[node name="MouseCapture" type="Node" parent="." unique_id=1492553876]
+script = ExtResource("8_oprun")
+mouse_sensitivity = 1.0
 
 [node name="Health" type="Node" parent="." unique_id=189041108]
 unique_name_in_owner = true
@@ -150,11 +142,14 @@ max_hitpoints = 100
 unique_name_in_owner = true
 script = ExtResource("4_smehm")
 
-[node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889 node_paths=PackedStringArray("ammo_handler", "weapon_handler", "ammo_label")]
+[node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889 node_paths=PackedStringArray("ammo_label", "weapon_handler", "ammo_handler")]
 script = ExtResource("4_smehm_presenter")
-ammo_handler = NodePath("../AmmoHandler")
-weapon_handler = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler")
 ammo_label = NodePath("../AmmoUI/Label")
+weapon_handler = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler")
+ammo_handler = NodePath("../AmmoHandler")
+
+[node name="DamageAnimation" type="AnimationPlayer" parent="." unique_id=905886058]
+libraries/ = SubResource("AnimationLibrary_tuyoq")
 
 [node name="WeaponSubViewport" type="SubViewportContainer" parent="." unique_id=1157993895]
 anchors_preset = 15
@@ -171,20 +166,23 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="WeaponCamera" type="Camera3D" parent="WeaponSubViewport/SubViewport" unique_id=983178200]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 cull_mask = 2
 fov = 45.0
 
 [node name="WeaponHandler" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378]
-unique_name_in_owner = true
 script = ExtResource("3_fjrip")
 
-[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler") instance=ExtResource("5_fjrip")]
+[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler", "camera_controler") instance=ExtResource("5_fjrip")]
 ammo_handler = NodePath("../../../../../AmmoHandler")
 ammo_type = 1
+input_handler = NodePath("../../../../../InputHandler")
+camera_controler = NodePath("../../../../../CameraControler")
 
-[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler") instance=ExtResource("3_tuyoq")]
-recoil_shake = 0.3
+[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler", "camera_controler") instance=ExtResource("3_tuyoq")]
 ammo_handler = NodePath("../../../../../AmmoHandler")
+input_handler = NodePath("../../../../../InputHandler")
+camera_controler = NodePath("../../../../../CameraControler")
 
 [node name="CrosshairContainer" type="CenterContainer" parent="." unique_id=2031583331]
 anchors_preset = 15
@@ -208,11 +206,6 @@ grow_vertical = 2
 pivot_offset = Vector2(576, 324)
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_smehm")
-
-[node name="DamageAnimation" type="AnimationPlayer" parent="DamageTexture" unique_id=905886058]
-unique_name_in_owner = true
-root_node = NodePath("../..")
-libraries/ = SubResource("AnimationLibrary_tuyoq")
 
 [node name="AmmoUI" type="MarginContainer" parent="." unique_id=1634767536]
 anchors_preset = 15

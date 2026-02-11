@@ -1,9 +1,11 @@
 class_name AmmoPresenter
 extends Node
 
-@export var ammo_handler: AmmoHandler
-@export var weapon_handler: WeaponHandler
+@export_group("label")
 @export var ammo_label: Label
+@export_group("componenets")
+@export var weapon_handler: WeaponHandler
+@export var ammo_handler: AmmoHandler
 
 var current_active_ammo_type: AmmoHandler.AmmoType
 

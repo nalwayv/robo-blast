@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://cjxiofopnc0fl"]
+
+[node name="CameraBase" type="Node3D" unique_id=1405614200]
+
+[node name="CameraRot" type="Node3D" parent="." unique_id=1243467042]
+
+[node name="Camera3D" type="Camera3D" parent="CameraRot" unique_id=800985717]
+cull_mask = 1048573
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraRot/Camera3D" unique_id=551480848]
+remote_path = NodePath("../../../../WeaponSubViewport/SubViewport/WeaponCamera")

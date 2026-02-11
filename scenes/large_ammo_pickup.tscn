@@ -17,8 +17,6 @@ shader_parameter/fresnel_power = 2.000000095
 
 [node name="LargeAmmoPickup" unique_id=2094064908 instance=ExtResource("1_viogc")]
 ammo_amount = 10
-amplitude = 0.8
-rotation_speed = 0.5
 
 [node name="AmmoMesh" parent="." index="0" unique_id=1628967609]
 material_override = SubResource("StandardMaterial3D_m1k42")

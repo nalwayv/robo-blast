@@ -1,153 +1,136 @@
-class_name Player
+class_name PlayerControler
 extends CharacterBody3D
 
-
-# NOTE's
-# Kinematic Jump Formulas:
+# Kinematic Jump
 # link = https://www.gdquest.com/library/kinematic_jump_formulas/
-# inital_velocity 	=  2 * height / time_to_peak
-# jump_gavity 		= -2 * height / time_to_peak ^ 2
-# fall_gravity 		= -2 * height / time_to_decent ^ 2
-#
-# Jump buffering:
-# coyote time - forgives the player for being a few frames too late to to press jump
-# jump buffer - forgive the player for being a few frame to early when pressing jump
 
 enum JumpType {
 	DEFAULT,
 	KINEMATIC,
 }
 
-const SPEED := 5.0
-const MOUSE_SENSITIVITY := 0.001
-
-@export_category("jumping")
+@export_group("movement")
+@export var movement_speed := 5.0
+@export_group("jumping")
 @export var jump_type := JumpType.KINEMATIC
-@export var jump_height := 1.0 # default / kinematic
-@export var jump_time_to_peak := 0.45 # kinematic
-@export var jump_time_to_decent := 0.35 # kinematic
-@export var fall_multiplier := 2.0 # default
-@export var coyote_duration := 0.15
-@export var jump_buffer_duration := 0.15
+@export_subgroup("kinematic")
+@export var jump_height := 1.0
+@export var jump_time_to_peak := 0.45
+@export var jump_time_to_decent := 0.35
+@export_subgroup("default")
+@export var fall_multiplier := 2.0
+@export_group("timers")
+@export var coyote_time := 0.15
+@export var jump_buffer_time := 0.15
+@export_group("aiming")
+@export_range(0.1, 1.0) var aim_standing_percent := 0.4
+@export_range(0.1, 1.0) var aim_jumping_percent := 0.2
+@export_group("componenets")
+#@export var camera_controler: CameraControler
+@export var input_handler: InputHandler
+@export var mouse_capture: MouseCapture
+@export var health: Health
 
-var mouse_motion := Vector2.ZERO
 var was_on_floor := false
-var in_air := false
+var is_airborn := false
 
-@onready var camera_rig: CameraRig = $CameraRig
-@onready var coyote_timer: Timer = $CoyoteTimer
-@onready var jump_buffer_timer: Timer = $JumpBufferTimer
-@onready var damage_animation: AnimationPlayer = %DamageAnimation
+var jump_velocity := 0.0
+var jump_gravity := 0.0
+var fall_gravity := 0.0
+
+var coyote_timer := Timer.new()
+var jump_buffer_timer := Timer.new()
+
+@onready var damage_animation: AnimationPlayer = $DamageAnimation
+@onready var player_model: MeshInstance3D = $PlayerModel
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
-@onready var health: Health = $%Health
-@onready var jump_velocity := (2.0 * jump_height) / jump_time_to_peak
-@onready var jump_gravity := (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
-@onready var fall_gravity := (-2.0 * jump_height) / (jump_time_to_decent * jump_time_to_decent)
-@onready var player_camera_origin := camera_rig.position
-
 
 func _ready() -> void:
+	# groups
 	add_to_group("health")
 	add_to_group("ammo_handler")
 	
+	# kinematic jump settings
+	jump_velocity = (2.0 * jump_height) / jump_time_to_peak
+	jump_gravity = (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
+	fall_gravity = (-2.0 * jump_height) / (jump_time_to_decent * jump_time_to_decent)
+	
+	# timers
+	coyote_timer.one_shot = true
+	jump_buffer_timer.one_shot = true
+	add_child(coyote_timer)
+	add_child(jump_buffer_timer)
+	
+	# signals
 	health.died.connect(game_over_menu.game_over)
 	health.damaged.connect(on_damage_taken)
-	
-	# capture mouse movement even when the cursor is outside the window.
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	#input_handler.shoot_pressed.connect(on_weapon_fired)
 
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			# get mouse motion
-			mouse_motion = -event.relative * MOUSE_SENSITIVITY
-			
-			# apply lag when zommed in
-			var weapon_zoom := get_node_or_null("WeaponZoom") as WeaponZoom
-			if weapon_zoom and weapon_zoom.is_zoomed_in:
-				mouse_motion *= weapon_zoom.fov_lag
-				
-	if event.is_action_pressed("escape"):
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+func _process(_delta: float):
+	rotate_y(mouse_capture.motion.x)
 
 
 func _physics_process(delta: float) -> void:
-	update_camera_rotation()
-	
 	if not is_on_floor():
 		apply_gravity(delta)
 		
-	# start coyote timer
 	if was_on_floor and not is_on_floor():
-		coyote_timer.start(coyote_duration)
-		in_air = true
-	
-	if Input.is_action_just_pressed("jump"):
+		coyote_timer.start(coyote_time)
+		is_airborn = true
+		
+	if input_handler.is_jumping:
 		if is_on_floor() or not coyote_timer.is_stopped():
 			coyote_timer.stop()
 			jump()
 		else:
-			jump_buffer_timer.start(jump_buffer_duration)
-		
-	# apply jump buffering
+			jump_buffer_timer.start(jump_buffer_time)
+	input_handler.is_jumping = false
+	
 	if is_on_floor() and not jump_buffer_timer.is_stopped():
 		jump_buffer_timer.stop()
 		jump()
 	
-	# land on floor after jump
-	if is_on_floor() and in_air:
-		camera_rig.apply_rotation_impulse(Vector3(-1,0,0), deg_to_rad(10.0))
-		in_air = false
-		
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-	var direction := (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
+	var input_v3 := Vector3(
+		input_handler.input_direction.x,
+		0.0,
+		input_handler.input_direction.y)
+	var direction := (transform.basis * input_v3).normalized()
+	
+	var speed_this_frame := movement_speed
+	if input_handler.is_aiming:
+		if is_on_floor():
+			speed_this_frame *= aim_standing_percent
+		else:
+			speed_this_frame *= aim_jumping_percent
 	
 	if direction:
-		velocity.x = direction.x * SPEED
-		velocity.z = direction.z * SPEED
+		velocity.x = direction.x * speed_this_frame
+		velocity.z = direction.z * speed_this_frame
 	else:
-		velocity.x = move_toward(velocity.x, 0.0, SPEED)
-		velocity.z = move_toward(velocity.z, 0.0, SPEED)
-		
-	# apply steay aim 
-	var weapon_zoom := get_node_or_null("WeaponZoom") as WeaponZoom
-	if weapon_zoom and weapon_zoom.is_zoomed_in:
-		velocity.x *= weapon_zoom.steady_aim
-		velocity.z *= weapon_zoom.steady_aim
+		velocity.x = move_toward(velocity.x, 0.0, speed_this_frame)
+		velocity.z = move_toward(velocity.z, 0.0, speed_this_frame)
 
-	# apply bobbing
-	camera_rig.apply_bob(delta, velocity.length(), is_on_floor())
-	
-	# apply lean
-	camera_rig.apply_lean(Input.get_axis("move_right", "move_left"))
-	
 	was_on_floor = is_on_floor()
 	
 	move_and_slide()
 
 
 func on_damage_taken() -> void:
-	damage_animation.stop(false)
-	damage_animation.play("take_damage")
-	camera_rig.apply_shake(1.0, deg_to_rad(5.0))
+	damage_animation.stop()
+	if damage_animation.has_animation("take_damage"):
+		damage_animation.play("take_damage")
+
+
+#func on_weapon_fired() -> void:
+	#camera_controler.player_camera.apply_impule(1.0)
 
 
 func get_kinematic_gravity() -> Vector3:
-	return Vector3(0.0, fall_gravity if velocity.y < 0.0 else jump_gravity, 0.0)
+	var gavity_value := fall_gravity if velocity.y < 0.0 else jump_gravity
+	return Vector3(0.0, gavity_value, 0.0)
 
 
-## Rotate self using mouse motion
-func update_camera_rotation() -> void:
-	rotate_y(mouse_motion.x)
-	camera_rig.rotate_x(mouse_motion.y)
-	camera_rig.rotation_degrees.x = clampf(camera_rig.rotation_degrees.x, -90.0, 90.0)
-	
-	# reset mouse to prevent the camera from continually rotating when the not moving.
-	mouse_motion = Vector2.ZERO
-
-
-## Apply gravity to velocity.
 func apply_gravity(delta: float) -> void:
 	match jump_type:
 		JumpType.DEFAULT:
@@ -159,7 +142,6 @@ func apply_gravity(delta: float) -> void:
 			velocity += get_kinematic_gravity() * delta
 
 
-## Apply jump to current velocity.
 func jump() -> void:
 	match jump_type:
 		JumpType.DEFAULT:

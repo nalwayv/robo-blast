@@ -1,6 +1,8 @@
 class_name WeaponZoom
 extends Node
 
+# TODO move
+
 @export var main_camera: Camera3D
 @export var weapon_camera: Camera3D
 

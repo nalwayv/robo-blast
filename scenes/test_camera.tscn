@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://cl1b58pchyve1"]
+
+[ext_resource type="Script" uid="uid://cbnqyr710lqas" path="res://scripts/test_character.gd" id="1_aibmo"]
+[ext_resource type="Script" uid="uid://chudfqujwjkhl" path="res://scripts/input_handler.gd" id="1_dnhau"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8a2oc"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_dnhau"]
+sky_material = SubResource("ProceduralSkyMaterial_8a2oc")
+
+[sub_resource type="Environment" id="Environment_aibmo"]
+background_mode = 2
+sky = SubResource("Sky_dnhau")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_aibmo"]
+
+[node name="Main" type="Node3D" unique_id=985802015]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=990211265]
+environment = SubResource("Environment_aibmo")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="WorldEnvironment" unique_id=1738961872]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.7073948)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=215359535]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=827431139 node_paths=PackedStringArray("controler")]
+script = ExtResource("1_aibmo")
+controler = NodePath("Controler")
+
+[node name="Controler" type="Node" parent="CharacterBody3D" unique_id=70940182 node_paths=PackedStringArray("camera_base", "camera_rot", "main_camera")]
+script = ExtResource("1_dnhau")
+camera_base = NodePath("../CameraBase")
+camera_rot = NodePath("../CameraBase/CameraRot")
+main_camera = NodePath("../CameraBase/CameraRot/Camera3D")
+
+[node name="CameraBase" type="Node3D" parent="CharacterBody3D" unique_id=282131906]
+
+[node name="CameraRot" type="Node3D" parent="CharacterBody3D/CameraBase" unique_id=258165554]
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D/CameraBase/CameraRot" unique_id=539649407]
+top_level = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=978079245]
+shape = SubResource("SphereShape3D_aibmo")
