@@ -15,7 +15,7 @@ var current_weapon_idx := 0
 func _ready() -> void:
 	equip_weapon(current_weapon_idx)
 
-
+# TODO: use input handler
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("equip_weapon_1"):
 		equip_weapon(DEAULT_FIRST_WEAPON)
