@@ -170,19 +170,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 cull_mask = 2
 fov = 45.0
 
-[node name="WeaponHandler" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378]
+[node name="WeaponHandler" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378 node_paths=PackedStringArray("input_handler")]
 script = ExtResource("3_fjrip")
+input_handler = NodePath("../../../../InputHandler")
 
-[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler", "camera_controler") instance=ExtResource("5_fjrip")]
+[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler", "shakable") instance=ExtResource("5_fjrip")]
 ammo_handler = NodePath("../../../../../AmmoHandler")
 ammo_type = 1
 input_handler = NodePath("../../../../../InputHandler")
-camera_controler = NodePath("../../../../../CameraControler")
+shakable = NodePath("../../../../../CameraControler/Camera3D")
 
-[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler", "camera_controler") instance=ExtResource("3_tuyoq")]
+[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler", "shakable") instance=ExtResource("3_tuyoq")]
 ammo_handler = NodePath("../../../../../AmmoHandler")
 input_handler = NodePath("../../../../../InputHandler")
-camera_controler = NodePath("../../../../../CameraControler")
+shakable = NodePath("../../../../../CameraControler/Camera3D")
 
 [node name="CrosshairContainer" type="CenterContainer" parent="." unique_id=2031583331]
 anchors_preset = 15

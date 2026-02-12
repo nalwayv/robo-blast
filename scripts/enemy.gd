@@ -53,7 +53,7 @@ func _physics_process(delta: float) -> void:
 	var direction: Vector3 = global_position.direction_to(next_path_position)
 	var distance: float = global_position.distance_to(player.global_position)
 	
-	if distance <= aggro_range and is_player_within_fov():
+	if distance <= aggro_range and _is_player_within_fov():
 		provoked = true
 	
 	if provoked and distance <= attack_range:
@@ -77,13 +77,13 @@ func _physics_process(delta: float) -> void:
 
 
 func attack() -> void:
-	# NOTE - function is being called within attack animation on AnimationPlayer
+	# NOTE - this is being called within AnimationPlayer "attack"
 	var player_health := player.get_node_or_null("%Health") as Health
 	if player_health:
 		player_health.hitpoints -= attack_damage
 
 
-func is_player_within_fov() -> bool:
+func _is_player_within_fov() -> bool:
 	var forward := -global_basis.z
 	var half_fov := deg_to_rad(fov * 0.5)
 	var direction_to := global_position.direction_to(player.global_position)

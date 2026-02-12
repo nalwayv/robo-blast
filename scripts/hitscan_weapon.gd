@@ -20,9 +20,11 @@ const RAY_LENGTH := 100
 @export var ammo_type: AmmoHandler.AmmoType
 @export_group("components")
 @export var input_handler: InputHandler
-@export var camera_controler: CameraControler
+@export_group("groups")
+@export var shakable: Node3D ## node that is with group shakable to able to call add_shake
 
 var model_position := Vector3.ZERO
+var can_shoot := false
 
 @onready var ray_cast: RayCast3D = $RayCast3D
 @onready var cooldown_timer: Timer = $CooldownTimer
@@ -32,18 +34,22 @@ func _ready() -> void:
 	cooldown_timer.wait_time = 1.0 / fire_rate
 	model_position = weapon_model.position
 	
+	input_handler.shoot_pressed.connect(func(): can_shoot = true)
+	input_handler.shoot_released.connect(func(): can_shoot = false)
+
 
 func _process(delta: float) -> void:
 	var can_fire := cooldown_timer.is_stopped()
+	
 	if is_automatic:
 		if input_handler.is_shooting and can_fire:
 			fire_weapon()
 	else:
-		# TODO: current setup means you can hold doen fire and use like its automatic
-		if input_handler.is_shooting and can_fire:
+		if can_shoot and can_fire:
 			fire_weapon()
-	
-	recoil_animation(delta)
+			can_shoot = false
+			
+	_recoil_animation(delta)
 
 
 func fire_weapon() -> void:
@@ -56,22 +62,22 @@ func fire_weapon() -> void:
 	muzzel_flash.restart()
 	weapon_model.position.z += recoil_amount
 	
-	ray_cast.force_raycast_update()
-	if not ray_cast.is_colliding():
-		return
+	if shakable and shakable.is_in_group("shakable"):
+		shakable.apply_shake(recoil_impule)
 		
-	spawn_hit_effect()
-	apply_damage_to_target()
-	camera_controler.player_camera.apply_impule(recoil_impule)
+	ray_cast.force_raycast_update()
+	if ray_cast.is_colliding():
+		_spawn_hit_effect()
+		_apply_damage_to_target()
 
 
-func spawn_hit_effect() -> void:
+func _spawn_hit_effect() -> void:
 	var hit_spark := sparks.instantiate()
 	add_child(hit_spark)
 	hit_spark.global_position = ray_cast.get_collision_point()
 
 
-func apply_damage_to_target() -> void:
+func _apply_damage_to_target() -> void:
 	var node := ray_cast.get_collider() as Node
 	while node:
 		if node is CharacterBody3D and node.is_in_group("health"):
@@ -82,5 +88,5 @@ func apply_damage_to_target() -> void:
 		node = node.get_parent()
 
 
-func recoil_animation(delta: float) -> void:
+func _recoil_animation(delta: float) -> void:
 	weapon_model.position = weapon_model.position.lerp(model_position, recoil_speed * delta)

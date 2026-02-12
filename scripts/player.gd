@@ -26,7 +26,6 @@ enum JumpType {
 @export_range(0.1, 1.0) var aim_standing_percent := 0.4
 @export_range(0.1, 1.0) var aim_jumping_percent := 0.2
 @export_group("componenets")
-#@export var camera_controler: CameraControler
 @export var input_handler: InputHandler
 @export var mouse_capture: MouseCapture
 @export var health: Health
@@ -44,6 +43,7 @@ var jump_buffer_timer := Timer.new()
 @onready var damage_animation: AnimationPlayer = $DamageAnimation
 @onready var player_model: MeshInstance3D = $PlayerModel
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
+
 
 func _ready() -> void:
 	# groups
@@ -63,8 +63,7 @@ func _ready() -> void:
 	
 	# signals
 	health.died.connect(game_over_menu.game_over)
-	health.damaged.connect(on_damage_taken)
-	#input_handler.shoot_pressed.connect(on_weapon_fired)
+	health.damaged.connect(_on_damage_taken)
 
 
 func _process(_delta: float):
@@ -73,7 +72,7 @@ func _process(_delta: float):
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
-		apply_gravity(delta)
+		_apply_gravity(delta)
 		
 	if was_on_floor and not is_on_floor():
 		coyote_timer.start(coyote_time)
@@ -82,14 +81,14 @@ func _physics_process(delta: float) -> void:
 	if input_handler.is_jumping:
 		if is_on_floor() or not coyote_timer.is_stopped():
 			coyote_timer.stop()
-			jump()
+			_jump()
 		else:
 			jump_buffer_timer.start(jump_buffer_time)
 	input_handler.is_jumping = false
 	
 	if is_on_floor() and not jump_buffer_timer.is_stopped():
 		jump_buffer_timer.stop()
-		jump()
+		_jump()
 	
 	var input_v3 := Vector3(
 		input_handler.input_direction.x,
@@ -116,7 +115,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-func on_damage_taken() -> void:
+func _on_damage_taken() -> void:
 	damage_animation.stop()
 	if damage_animation.has_animation("take_damage"):
 		damage_animation.play("take_damage")
@@ -126,12 +125,12 @@ func on_damage_taken() -> void:
 	#camera_controler.player_camera.apply_impule(1.0)
 
 
-func get_kinematic_gravity() -> Vector3:
+func _get_kinematic_gravity() -> Vector3:
 	var gavity_value := fall_gravity if velocity.y < 0.0 else jump_gravity
 	return Vector3(0.0, gavity_value, 0.0)
 
 
-func apply_gravity(delta: float) -> void:
+func _apply_gravity(delta: float) -> void:
 	match jump_type:
 		JumpType.DEFAULT:
 			if velocity.y >= 0.0:
@@ -139,10 +138,10 @@ func apply_gravity(delta: float) -> void:
 			else:
 				velocity += get_gravity() * fall_multiplier * delta
 		JumpType.KINEMATIC:
-			velocity += get_kinematic_gravity() * delta
+			velocity += _get_kinematic_gravity() * delta
 
 
-func jump() -> void:
+func _jump() -> void:
 	match jump_type:
 		JumpType.DEFAULT:
 			velocity.y = sqrt(2.0 * jump_height * -get_gravity().y)

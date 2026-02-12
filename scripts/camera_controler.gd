@@ -25,11 +25,11 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	rotate_camera(mouse_capture.motion)
-	update_fov(delta)
+	_rotate_camera(mouse_capture.motion)
+	_update_fov(delta)
 
 
-func update_fov(delta: float) -> void:
+func _update_fov(delta: float) -> void:
 	if input_handler.is_aiming:
 		player_camera.fov = lerpf(
 			player_camera.fov,
@@ -50,5 +50,5 @@ func update_fov(delta: float) -> void:
 			transition_speed_out * delta)
 
 
-func rotate_camera(move: Vector2) -> void:
+func _rotate_camera(move: Vector2) -> void:
 	rotation.x = clampf(rotation.x + move.y, MIN_X_ROTATION, MAX_X_ROTATION)

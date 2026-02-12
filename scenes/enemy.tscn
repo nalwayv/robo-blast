@@ -72,7 +72,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.367)
 mesh = SubResource("ArrayMesh_7p1mj")
 
 [node name="Debug" type="Node3D" parent="." unique_id=1032669398]
-editor_description = "view field of range"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 script = ExtResource("2_md0e3")
 

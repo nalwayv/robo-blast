@@ -16,6 +16,8 @@ var camera_impulse_spring := DampedSpringV3.new()
 
 
 func _ready() -> void:
+	add_to_group("shakable")
+	
 	top_level = is_top_level
 
 	camera_impulse_spring.frequency = frequency
@@ -23,27 +25,28 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	var trans := Transform3D()
+	var t := Transform3D()
 	
 	if top_level and parent is Node3D:
-		trans *= apply_smooth_movement(delta)
+		t *= _apply_smooth_movement(delta)
 	
 	if impule_enabled:
 		camera_impulse_spring.step(delta)
-		trans *= get_impule_offset()
+		t *= _get_shake_offset()
 	
-	global_transform = trans
+	global_transform = t
 
-func apply_smooth_movement(delta) -> Transform3D:
+
+func _apply_smooth_movement(delta) -> Transform3D:
 	var weight := clampf(rotation_speed * delta, 0.0, 1.0)
 	return global_transform.interpolate_with(parent.global_transform, weight)
 
 
-func get_impule_offset() -> Transform3D:
+func _get_shake_offset() -> Transform3D:
 	return Transform3D(Basis(), camera_impulse_spring.position)
 
 
-func apply_impule(strength: float) -> void:
+func apply_shake(strength: float) -> void:
 	var x := randf_range(-strength, strength)
 	var y := randf_range(-strength, strength)
 	camera_impulse_spring.velocity += Vector3(x, y, 0.0)
