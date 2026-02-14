@@ -20,23 +20,22 @@ enum JumpType {
 @export_subgroup("default")
 @export var fall_multiplier := 2.0
 @export_group("timers")
-@export var coyote_time := 0.15
-@export var jump_buffer_time := 0.15
+@export var coyote_time := 0.15 # allow jump when not on ground
+@export var jump_buffer_time := 0.15 # allow jump when jump press befor hitting ground
 @export_group("aiming")
 @export_range(0.1, 1.0) var aim_standing_percent := 0.4
 @export_range(0.1, 1.0) var aim_jumping_percent := 0.2
 @export_group("componenets")
-@export var input_handler: InputHandler
 @export var mouse_capture: MouseCapture
 @export var health: Health
 
 var was_on_floor := false
-var is_airborn := false
 
 var jump_velocity := 0.0
 var jump_gravity := 0.0
 var fall_gravity := 0.0
 
+var coyote := 100.0
 var coyote_timer := Timer.new()
 var jump_buffer_timer := Timer.new()
 
@@ -57,8 +56,9 @@ func _ready() -> void:
 	
 	# timers
 	coyote_timer.one_shot = true
-	jump_buffer_timer.one_shot = true
 	add_child(coyote_timer)
+	
+	jump_buffer_timer.one_shot = true
 	add_child(jump_buffer_timer)
 	
 	# signals
@@ -73,45 +73,13 @@ func _process(_delta: float):
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		_apply_gravity(delta)
-		
-	if was_on_floor and not is_on_floor():
-		coyote_timer.start(coyote_time)
-		is_airborn = true
-		
-	if input_handler.is_jumping:
-		if is_on_floor() or not coyote_timer.is_stopped():
-			coyote_timer.stop()
-			_jump()
-		else:
-			jump_buffer_timer.start(jump_buffer_time)
-	input_handler.is_jumping = false
-	
-	if is_on_floor() and not jump_buffer_timer.is_stopped():
-		jump_buffer_timer.stop()
-		_jump()
-	
-	var input_v3 := Vector3(
-		input_handler.input_direction.x,
-		0.0,
-		input_handler.input_direction.y)
-	var direction := (transform.basis * input_v3).normalized()
-	
-	var speed_this_frame := movement_speed
-	if input_handler.is_aiming:
-		if is_on_floor():
-			speed_this_frame *= aim_standing_percent
-		else:
-			speed_this_frame *= aim_jumping_percent
-	
-	if direction:
-		velocity.x = direction.x * speed_this_frame
-		velocity.z = direction.z * speed_this_frame
-	else:
-		velocity.x = move_toward(velocity.x, 0.0, speed_this_frame)
-		velocity.z = move_toward(velocity.z, 0.0, speed_this_frame)
-
+			
+	#if was_on_floor and not is_on_floor():
+		#coyote_timer.start(coyote_time)
+		#
+	## NOTE: testing out a simple state machine
+#
 	was_on_floor = is_on_floor()
-	
 	move_and_slide()
 
 
@@ -119,10 +87,6 @@ func _on_damage_taken() -> void:
 	damage_animation.stop()
 	if damage_animation.has_animation("take_damage"):
 		damage_animation.play("take_damage")
-
-
-#func on_weapon_fired() -> void:
-	#camera_controler.player_camera.apply_impule(1.0)
 
 
 func _get_kinematic_gravity() -> Vector3:

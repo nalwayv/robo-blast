@@ -14,6 +14,9 @@
 [ext_resource type="Script" uid="uid://d0gwaflnqyk5t" path="res://scripts/camera_controler.gd" id="7_f1ej7"]
 [ext_resource type="Script" uid="uid://rkyc8ouda5mh" path="res://scripts/mouse_capture.gd" id="8_oprun"]
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
+[ext_resource type="Script" uid="uid://bnfkklxobhv20" path="res://scripts/state_machine.gd" id="9_oprun"]
+[ext_resource type="Script" uid="uid://rbj0hif2c7cc" path="res://scripts/moving_state.gd" id="11_qfm1y"]
+[ext_resource type="Script" uid="uid://lajw57okowxf" path="res://scripts/jumping_state.gd" id="12_fulsm"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3v2ag"]
 
@@ -95,10 +98,9 @@ fill_to = Vector2(1, 1)
 font = ExtResource("8_ur7pv")
 font_size = 64
 
-[node name="PlayerControler" type="CharacterBody3D" unique_id=944678354 node_paths=PackedStringArray("input_handler", "mouse_capture", "health") groups=["player"]]
+[node name="PlayerControler" type="CharacterBody3D" unique_id=944678354 node_paths=PackedStringArray("mouse_capture", "health") groups=["player"]]
 editor_description = "Player controles cameras Yaw"
 script = ExtResource("1_3vyb7")
-input_handler = NodePath("InputHandler")
 mouse_capture = NodePath("MouseCapture")
 health = NodePath("Health")
 
@@ -148,6 +150,20 @@ ammo_label = NodePath("../AmmoUI/Label")
 weapon_handler = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler")
 ammo_handler = NodePath("../AmmoHandler")
 
+[node name="StateMachine" type="Node" parent="." unique_id=735036328]
+editor_description = "Testing out a simple state machine for the player"
+script = ExtResource("9_oprun")
+
+[node name="Move" type="Node" parent="StateMachine" unique_id=77062762 node_paths=PackedStringArray("player", "input_handler")]
+script = ExtResource("11_qfm1y")
+player = NodePath("../..")
+input_handler = NodePath("../../InputHandler")
+
+[node name="Airborn" type="Node" parent="StateMachine" unique_id=1876274156 node_paths=PackedStringArray("player", "input_handler")]
+script = ExtResource("12_fulsm")
+player = NodePath("../..")
+input_handler = NodePath("../../InputHandler")
+
 [node name="DamageAnimation" type="AnimationPlayer" parent="." unique_id=905886058]
 libraries/ = SubResource("AnimationLibrary_tuyoq")
 
@@ -175,12 +191,14 @@ script = ExtResource("3_fjrip")
 input_handler = NodePath("../../../../InputHandler")
 
 [node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler", "shakable") instance=ExtResource("5_fjrip")]
+recoil_impule = 1.0
 ammo_handler = NodePath("../../../../../AmmoHandler")
 ammo_type = 1
 input_handler = NodePath("../../../../../InputHandler")
 shakable = NodePath("../../../../../CameraControler/Camera3D")
 
 [node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler", "shakable") instance=ExtResource("3_tuyoq")]
+recoil_impule = 1.5
 ammo_handler = NodePath("../../../../../AmmoHandler")
 input_handler = NodePath("../../../../../InputHandler")
 shakable = NodePath("../../../../../CameraControler/Camera3D")
