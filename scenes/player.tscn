@@ -128,7 +128,7 @@ remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
 editor_description = "Testing out a simple state machine for the player"
 script = ExtResource("9_oprun")
 
-[node name="Ground" type="Node" parent="StateMachine" unique_id=77062762 node_paths=PackedStringArray("player", "camera_controler", "mouse_capture", "input_handler")]
+[node name="Move" type="Node" parent="StateMachine" unique_id=77062762 node_paths=PackedStringArray("player", "camera_controler", "mouse_capture", "input_handler")]
 script = ExtResource("11_qfm1y")
 player = NodePath("../..")
 camera_controler = NodePath("../../CameraController")

@@ -2,7 +2,7 @@ class_name StateMachine
 extends Node
 
 @export_group("states")
-@export_enum("ground", "airborn") var inital_state := "ground"
+@export_enum("move", "airborn") var inital_state := "move"
 
 var current_state: State
 var states: Dictionary[String, State] = {}

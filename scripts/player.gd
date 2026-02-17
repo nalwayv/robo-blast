@@ -1,6 +1,9 @@
 class_name PlayerController
 extends CharacterBody3D
 
+# Kinematic Jump
+# link = https://www.gdquest.com/library/kinematic_jump_formulas/
+
 
 @export_group("movement")
 @export var max_speed := 5.0
@@ -12,9 +15,6 @@ extends CharacterBody3D
 @export var jump_height := 1.0
 @export var jump_time_to_peak := 0.45
 @export var jump_time_to_decent := 0.35
-@export_group("air")
-@export_range(0.1, 1.0) var air_control := 0.7
-@export_range(0.1, 1.0) var max_air_speed := 0.6
 @export var air_acceleration := 100.0
 @export_group("jump timers")
 @export var coyote_time := 0.15
@@ -24,6 +24,7 @@ extends CharacterBody3D
 @export_range(0.1, 1.0) var aim_jumping_percent := 0.2
 @export_group("componenets")
 @export var health: Health
+
 
 var jump_velocity := 0.0
 var jump_gravity := 0.0
