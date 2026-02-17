@@ -25,6 +25,9 @@ func _ready() -> void:
 	spring.velocity = Vector3(0.0, nudge, 0.0)
 
 
+func _exit_tree() -> void:
+	spring = null
+
 func _process(delta: float) -> void:
 	time += delta
 	if time >= time_interval:

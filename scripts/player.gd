@@ -1,35 +1,29 @@
-class_name PlayerControler
+class_name PlayerController
 extends CharacterBody3D
 
-# Kinematic Jump
-# link = https://www.gdquest.com/library/kinematic_jump_formulas/
-
-enum JumpType {
-	DEFAULT,
-	KINEMATIC,
-}
 
 @export_group("movement")
-@export var movement_speed := 5.0
-@export_group("jumping")
-@export var jump_type := JumpType.KINEMATIC
+@export var max_speed := 5.0
+@export var stop_speed := 2.0
+@export var acceleration := 10.0 
+@export var friction := 6.0
+@export var air_cap := 0.9
 @export_subgroup("kinematic")
 @export var jump_height := 1.0
 @export var jump_time_to_peak := 0.45
 @export var jump_time_to_decent := 0.35
-@export_subgroup("default")
-@export var fall_multiplier := 2.0
-@export_group("timers")
-@export var coyote_time := 0.15 # allow jump when not on ground
-@export var jump_buffer_time := 0.15 # allow jump when jump press befor hitting ground
+@export_group("air")
+@export_range(0.1, 1.0) var air_control := 0.7
+@export_range(0.1, 1.0) var max_air_speed := 0.6
+@export var air_acceleration := 100.0
+@export_group("jump timers")
+@export var coyote_time := 0.15
+@export var jump_buffer_time := 0.15
 @export_group("aiming")
 @export_range(0.1, 1.0) var aim_standing_percent := 0.4
 @export_range(0.1, 1.0) var aim_jumping_percent := 0.2
 @export_group("componenets")
-@export var mouse_capture: MouseCapture
 @export var health: Health
-
-var was_on_floor := false
 
 var jump_velocity := 0.0
 var jump_gravity := 0.0
@@ -66,48 +60,60 @@ func _ready() -> void:
 	health.damaged.connect(_on_damage_taken)
 
 
-func _process(_delta: float):
-	rotate_y(mouse_capture.motion.x)
-
-
-func _physics_process(delta: float) -> void:
-	if not is_on_floor():
-		_apply_gravity(delta)
-			
-	#if was_on_floor and not is_on_floor():
-		#coyote_timer.start(coyote_time)
-		#
-	## NOTE: testing out a simple state machine
-#
-	was_on_floor = is_on_floor()
-	move_and_slide()
-
-
 func _on_damage_taken() -> void:
 	damage_animation.stop()
 	if damage_animation.has_animation("take_damage"):
 		damage_animation.play("take_damage")
 
 
-func _get_kinematic_gravity() -> Vector3:
+func apply_gravity(delta) -> void:
+	if is_on_floor():
+		return
+
 	var gavity_value := fall_gravity if velocity.y < 0.0 else jump_gravity
-	return Vector3(0.0, gavity_value, 0.0)
+	velocity += Vector3(0.0, gavity_value, 0.0) * delta
 
 
-func _apply_gravity(delta: float) -> void:
-	match jump_type:
-		JumpType.DEFAULT:
-			if velocity.y >= 0.0:
-				velocity += get_gravity() * delta
-			else:
-				velocity += get_gravity() * fall_multiplier * delta
-		JumpType.KINEMATIC:
-			velocity += _get_kinematic_gravity() * delta
+func on_jump() -> void:
+	velocity.y = jump_velocity
 
 
-func _jump() -> void:
-	match jump_type:
-		JumpType.DEFAULT:
-			velocity.y = sqrt(2.0 * jump_height * -get_gravity().y)
-		JumpType.KINEMATIC:
-			velocity.y = jump_velocity
+func apply_friction(delta: float):
+	var speed := velocity.length()
+	if speed < 0.01:
+		velocity = Vector3.ZERO
+		return
+	
+	var control := maxf(speed, stop_speed)
+	var drop := control * friction * delta
+	var new_speed := maxf(0.0, speed - drop)
+	if speed > 0.0:
+		new_speed /= speed
+	velocity *= new_speed
+
+
+func apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
+	var current_speed := velocity.dot(wish_dir)
+	var add_speed := max_speed - current_speed
+	
+	if add_speed <= 0.0:
+		return
+	
+	var accel_speed := minf(acceleration * delta * wish_speed, add_speed)
+	velocity += wish_dir * accel_speed
+
+
+func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
+	var wish_speed_cap := minf(wish_speed, air_cap)
+	var current_speed := velocity.dot(wish_dir)
+	var add_speed := wish_speed_cap - current_speed
+	
+	if add_speed <= 0:
+		return
+	
+	var accel_speed := minf(air_acceleration * wish_speed * delta, add_speed)
+	velocity += wish_dir * accel_speed
+
+
+func get_wish_velocity(input: Vector2) -> Vector3:
+	return transform.basis * Vector3(input.x, 0.0, input.y)

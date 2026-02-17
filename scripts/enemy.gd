@@ -21,7 +21,7 @@ var provoked := false
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var player := get_tree().get_first_node_in_group("player") as PlayerControler
+@onready var player := get_tree().get_first_node_in_group("player") as PlayerController
 
 
 func _ready() -> void:

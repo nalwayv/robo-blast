@@ -3,6 +3,7 @@ extends Node
 
 signal transitioned(name: String)
 
+
 func _enter() -> void: pass
 func _exit() -> void: pass
 func _update(_delta: float) -> void: pass

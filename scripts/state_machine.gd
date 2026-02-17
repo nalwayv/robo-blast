@@ -1,11 +1,13 @@
 class_name StateMachine
 extends Node
 
-@export_enum("move", "airborn") var inital_state := "move"
+@export_group("states")
+@export_enum("ground", "airborn") var inital_state := "ground"
+
 var current_state: State
 var states: Dictionary[String, State] = {}
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
 	for child in get_children():
 		if child is State:

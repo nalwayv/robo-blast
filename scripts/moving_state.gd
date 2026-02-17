@@ -1,34 +1,35 @@
-class_name Move
+class_name GroundMove
 extends State
 
-@export_group("actor")
-@export var player: PlayerControler
+
+@export var player: PlayerController
 @export_group("components")
+@export var camera_controler: CameraController
+@export var mouse_capture: MouseCapture
 @export var input_handler: InputHandler
 
 
-func _physics_update(_delta: float) -> void:
-	if player.was_on_floor and not player.is_on_floor():
-		print("ctime start")
-		player.coyote_timer.start(player.coyote_time)
-		
-	# NOTE: testing out a simple state machine
+func _update(delta: float) -> void:
+	camera_controler.update_camera_rotation(mouse_capture.motion)
+	camera_controler.apply_fov(input_handler.is_aiming, delta)
 
-	
-	var input_v3 := Vector3(input_handler.input_direction.x, 0.0, input_handler.input_direction.y)
-	var direction := (player.transform.basis * input_v3).normalized()
-	
-	var speed_this_frame := player.movement_speed
-	if input_handler.is_aiming and player.is_on_floor():
-		speed_this_frame *= player.aim_standing_percent
-		
-	if direction:
-		player.velocity.x = direction.x * speed_this_frame
-		player.velocity.z = direction.z * speed_this_frame
-	else:
-		player.velocity.x = move_toward(player.velocity.x, 0.0, speed_this_frame)
-		player.velocity.z = move_toward(player.velocity.z, 0.0, speed_this_frame)
-	
-	
+	player.global_transform.basis = camera_controler.get_horizontal_rotation_basis()
+
+
+func _physics_update(delta: float) -> void:
+	var wish_vel := player.get_wish_velocity(input_handler.direction)
+	var wish_dir := wish_vel.normalized()
+	var wish_speed := wish_vel.length() * player.max_speed
+
+	player.apply_friction(delta)
+	player.apply_accelerate(wish_dir, wish_speed, delta)
+
+	player.move_and_slide()
+
 	if input_handler.is_jumping:
+		player.on_jump()
+		transitioned.emit("airborn")
+		return
+	
+	if not player.is_on_floor():
 		transitioned.emit("airborn")

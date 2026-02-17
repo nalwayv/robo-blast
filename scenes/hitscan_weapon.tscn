@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://co4138kr28e4p"]
+[gd_scene format=3 uid="uid://co4138kr28e4p"]
 
 [ext_resource type="Script" uid="uid://c4xmb7jqob23q" path="res://scripts/hitscan_weapon.gd" id="1_37e2n"]
 

@@ -24,6 +24,10 @@ func _ready() -> void:
 	camera_impulse_spring.damping = damping
 
 
+func _exit_tree() -> void:
+	camera_impulse_spring = null
+
+
 func _process(delta: float) -> void:
 	var t := Transform3D()
 	
