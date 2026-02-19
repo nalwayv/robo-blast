@@ -3,14 +3,17 @@ extends CharacterBody3D
 
 const MAX_TURN_ANGLE := deg_to_rad(60.0)
 
+@export_group("movement")
 @export var movement_speed := 2.0
 @export var turn_speed_min := 5.0
 @export var turn_speed_max := 15.0
-@export var attack_damage := 20
+@export_group("attack field of view")
+@export var aggro_range := 5.0
 @export var fov := 90.0
 @export var fov_range := 5.0
-@export var aggro_range := 5.0
+@export_group("attack")
 @export var attack_range := 2.0
+@export var attack_damage := 20
 @export_group("components")
 @export var health: Health
 @export_group("debug")

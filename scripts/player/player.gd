@@ -16,6 +16,8 @@ extends CharacterBody3D
 @export var jump_time_to_peak := 0.45
 @export var jump_time_to_decent := 0.35
 @export var air_acceleration := 100.0
+@export_group("model")
+@export var model_rotation_speed := 50.0
 @export_group("jump timers")
 @export var coyote_time := 0.15
 @export var jump_buffer_time := 0.15
@@ -35,8 +37,8 @@ var coyote_timer := Timer.new()
 var jump_buffer_timer := Timer.new()
 
 @onready var damage_animation: AnimationPlayer = $DamageAnimation
-@onready var player_model: MeshInstance3D = $PlayerModel
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
+@onready var model: Node3D = $Model
 
 
 func _ready() -> void:
@@ -61,6 +63,12 @@ func _ready() -> void:
 	health.damaged.connect(_on_damage_taken)
 
 
+func _process(delta: float) -> void:
+	# help prevent model jittering 
+	var weight := clampf(model_rotation_speed * delta, 0.0, 1.0)
+	model.global_transform = model.global_transform.interpolate_with(global_transform, weight)
+
+
 func _on_damage_taken() -> void:
 	damage_animation.stop()
 	if damage_animation.has_animation("take_damage"):
@@ -75,7 +83,7 @@ func apply_gravity(delta) -> void:
 	velocity += Vector3(0.0, gavity_value, 0.0) * delta
 
 
-func on_jump() -> void:
+func jump() -> void:
 	velocity.y = jump_velocity
 
 
@@ -109,7 +117,7 @@ func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
 	var current_speed := velocity.dot(wish_dir)
 	var add_speed := wish_speed_cap - current_speed
 	
-	if add_speed <= 0:
+	if add_speed <= 0.0:
 		return
 	
 	var accel_speed := minf(air_acceleration * wish_speed * delta, add_speed)

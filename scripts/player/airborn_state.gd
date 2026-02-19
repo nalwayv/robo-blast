@@ -1,4 +1,4 @@
-class_name Airborn
+class_name Airborne
 extends State
 
 
@@ -34,22 +34,30 @@ func _physics_update(delta: float) -> void:
 
 	player.apply_air_accelerate(wish_dir, wish_speed, delta)
 
+	_handle_jump_input()
 
-	if input_handler.is_jumping:
-		if player.is_on_floor() or not player.coyote_timer.is_stopped():
-			player.on_jump()
-			player.coyote_timer.stop()
-		else:
-			player.jump_buffer_timer.start(player.jump_buffer_time)
-	input_handler.is_jumping = false
-
-	
 	player.move_and_slide()
 
-
 	if player.is_on_floor():
-		if not player.jump_buffer_timer.is_stopped():
-			player.on_jump()
-			player.jump_buffer_timer.stop()
-		else:
-			transitioned.emit("move")
+		_handle_landing()
+
+
+func _handle_jump_input() -> void:
+	if not input_handler.is_jumping:
+		return
+
+	if player.is_on_floor() or not player.coyote_timer.is_stopped():
+		player.jump()
+		player.coyote_timer.stop()
+		input_handler.is_jumping = false
+	else:
+		player.jump_buffer_timer.start(player.jump_buffer_time)
+		input_handler.is_jumping = false
+
+
+func _handle_landing() -> void:
+	if not player.jump_buffer_timer.is_stopped():
+		player.jump()
+		player.jump_buffer_timer.stop()
+	else:
+		transitioned.emit(PlayerStates.Type.MOVING)

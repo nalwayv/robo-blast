@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bnd3cdytkfh0n"]
 
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="1_cwb3k"]
-[ext_resource type="Script" uid="uid://wnm82o26q5hs" path="res://scripts/game_over_menu.gd" id="2_ccgoi"]
+[ext_resource type="Script" uid="uid://wnm82o26q5hs" path="res://scripts/ui/game_over_menu.gd" id="2_ccgoi"]
 [ext_resource type="Shader" uid="uid://ctg462a28iljk" path="res://assets/blur_background.gdshader" id="5_7u104"]
 
 [sub_resource type="Theme" id="Theme_wqhvx"]

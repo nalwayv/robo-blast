@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://co4138kr28e4p"]
 
-[ext_resource type="Script" uid="uid://c4xmb7jqob23q" path="res://scripts/hitscan_weapon.gd" id="1_37e2n"]
+[ext_resource type="Script" uid="uid://c4xmb7jqob23q" path="res://scripts/weapon/hitscan_weapon.gd" id="1_37e2n"]
 
 [node name="HitscanWeapon" type="Node3D"]
 script = ExtResource("1_37e2n")

@@ -1,6 +1,8 @@
 class_name Health
 extends Node
 
+# groups_name: health
+
 signal died
 signal damaged
 signal health_changed(amount: int)

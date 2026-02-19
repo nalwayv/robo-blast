@@ -1,8 +1,13 @@
 class_name PlayerCamera
 extends Camera3D
 
+# groups: 
+# 	name: shakable
+# 	funcs:
+#		- apply_shake(strength)
 
-@export var rotation_speed := 45.0
+
+@export var rotation_speed := 50.0
 @export_group("apply_smoothing")
 @export var is_top_level := false
 @export_group("impulse effect")
@@ -42,6 +47,7 @@ func _process(delta: float) -> void:
 
 
 func _apply_smooth_movement(delta) -> Transform3D:
+	# because the camera is top_level we need to use global to find were the parent is
 	var weight := clampf(rotation_speed * delta, 0.0, 1.0)
 	return global_transform.interpolate_with(parent.global_transform, weight)
 

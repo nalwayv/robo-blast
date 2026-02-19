@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d2ht6tw7yma6l"]
 
-[ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/ammo_pickup.gd" id="1_ieo5p"]
+[ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/pickup/ammo_pickup.gd" id="1_ieo5p"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_jrhku"]
 size = Vector3(0.5, 0.5, 0.5)

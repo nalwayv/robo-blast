@@ -1,7 +1,8 @@
 class_name State
 extends Node
 
-signal transitioned(name: String)
+
+signal transitioned(state: PlayerStates.Type)
 
 
 func _enter() -> void: pass
