@@ -1,5 +1,5 @@
 class_name DampedSpringV3
-extends Resource
+extends RefCounted
 
 
 const EPSILON := 0.0001
