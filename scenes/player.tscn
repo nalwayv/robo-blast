@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c5wany3avu60x" path="res://scripts/player/player.gd" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://chudfqujwjkhl" path="res://scripts/player/input_handler.gd" id="2_a8ls1"]
 [ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/components/health.gd" id="2_d2wvv"]
+[ext_resource type="Resource" uid="uid://bo74oabk07mif" path="res://resource/player_camera_shake_bus.tres" id="2_fulsm"]
 [ext_resource type="Script" uid="uid://c0q7tkqr7sls6" path="res://scripts/player/weapon_handler.gd" id="3_fjrip"]
 [ext_resource type="Script" uid="uid://bhkxq62whfx8w" path="res://scripts/player/player_camera.gd" id="3_jej6c"]
 [ext_resource type="Script" uid="uid://caxydu7plo1s6" path="res://scripts/player/crosshair.gd" id="3_qhqgy"]
@@ -102,6 +103,7 @@ font_size = 64
 editor_description = "Player controles cameras Yaw"
 script = ExtResource("1_3vyb7")
 health = NodePath("Health")
+camera_shake_bus = ExtResource("2_fulsm")
 
 [node name="Model" type="Node3D" parent="." unique_id=1335922153]
 editor_description = "Set to top level for smooth movement and help prevent jittering."
@@ -125,6 +127,7 @@ cull_mask = 1048573
 script = ExtResource("3_jej6c")
 is_top_level = true
 impule_enabled = true
+camera_shake_bus = ExtResource("2_fulsm")
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraController/Camera3D" unique_id=1010528068]
 remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
@@ -196,18 +199,18 @@ fov = 45.0
 script = ExtResource("3_fjrip")
 input_handler = NodePath("../../../../InputHandler")
 
-[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler", "shakable") instance=ExtResource("5_fjrip")]
+[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler") instance=ExtResource("5_fjrip")]
 recoil_impule = 1.0
 ammo_handler = NodePath("../../../../../AmmoHandler")
 ammo_type = 1
 input_handler = NodePath("../../../../../InputHandler")
-shakable = NodePath("../../../../../CameraController/Camera3D")
+camera_shake_bus = ExtResource("2_fulsm")
 
-[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler", "shakable") instance=ExtResource("3_tuyoq")]
+[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler") instance=ExtResource("3_tuyoq")]
 recoil_impule = 1.5
 ammo_handler = NodePath("../../../../../AmmoHandler")
 input_handler = NodePath("../../../../../InputHandler")
-shakable = NodePath("../../../../../CameraController/Camera3D")
+camera_shake_bus = ExtResource("2_fulsm")
 
 [node name="CrosshairContainer" type="CenterContainer" parent="." unique_id=2031583331]
 anchors_preset = 15

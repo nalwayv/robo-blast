@@ -1,13 +1,17 @@
-class_name EnemyControler
+class_name EnemyController
 extends CharacterBody3D
 
 const MAX_TURN_ANGLE := deg_to_rad(60.0)
+const EPSILON := 0.01
 
 @export_group("movement")
-@export var movement_speed := 2.0
-@export var turn_speed_min := 5.0
-@export var turn_speed_max := 15.0
-@export_group("attack field of view")
+@export var max_speed := 2.5
+@export var stop_speed := 2.0
+@export var acceleration := 10.0
+@export var friction := 6.0
+@export var min_turn_speed := 5.0
+@export var max_turn_speed := 15.0
+@export_group("field of view")
 @export var aggro_range := 5.0
 @export var fov := 90.0
 @export var fov_range := 5.0
@@ -21,6 +25,10 @@ const MAX_TURN_ANGLE := deg_to_rad(60.0)
 @export var debug: Node3D
 
 var provoked := false
+var smooth_direction := 10.0
+var movement_prediction_threshold := 0.33
+var movement_prediction_time := 1.0
+var current_direction := Vector3.FORWARD
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
@@ -28,11 +36,9 @@ var provoked := false
 
 
 func _ready() -> void:
-	add_to_group("health")
-	
 	health.died.connect(queue_free)
 	health.damaged.connect(func(): provoked = true)
-	
+
 	if show_debug:
 		debug.show_debug = true
 		debug.fov = fov
@@ -42,41 +48,38 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if provoked:
-		navigation_agent_3d.target_position = player.global_position
+		_update_prediction_target()
 
 
 func _physics_process(delta: float) -> void:
-	if not player:
-		return
-		
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	var next_path_position: Vector3 = navigation_agent_3d.get_next_path_position()
-	var direction: Vector3 = global_position.direction_to(next_path_position)
-	var distance: float = global_position.distance_to(player.global_position)
-	
-	if distance <= aggro_range and _is_player_within_fov():
-		provoked = true
-	
-	if provoked and distance <= attack_range:
-		animation_player.play("attack")
-	
-	if direction:
-		velocity.x = direction.x * movement_speed
-		velocity.z = direction.z * movement_speed
-	else:
-		velocity.x = move_toward(velocity.x, 0.0, movement_speed)
-		velocity.z = move_toward(velocity.z, 0.0, movement_speed)
-	
 	if provoked:
-		# rotate towards player
-		var target_yaw := atan2(-direction.x, -direction.z)
-		var angle_diff := angle_difference(rotation.y, target_yaw)
-		var turn_speed := turn_speed_max if absf(angle_diff) > MAX_TURN_ANGLE else turn_speed_min
-		rotation.y = lerp_angle(rotation.y, target_yaw, turn_speed * delta)
-		
+		var next_path_position := navigation_agent_3d.get_next_path_position()
+		var direction := global_position.direction_to(next_path_position)
+
+		current_direction = current_direction.lerp(direction, smooth_direction * delta)
+		var wish_direction := Vector3(current_direction.x, 0.0, current_direction.z).normalized()
+
+		_apply_friction(delta)
+		_apply_accelerate(wish_direction, max_speed, delta)
+		_apply_rotation(direction, delta)
+	else:
+		_apply_friction(delta)
+
 	move_and_slide()
+
+	var distance := global_position.distance_to(player.global_position)
+	_update_is_provoked(distance)
+	_check_can_attack(distance)
+
+
+func _apply_rotation(direction: Vector3, delta: float) -> void:
+	var target_yaw := atan2(-direction.x, -direction.z)
+	var angle_diff := angle_difference(rotation.y, target_yaw)
+	var turn_speed := max_turn_speed if absf(angle_diff) > MAX_TURN_ANGLE else min_turn_speed
+	rotation.y = lerp_angle(rotation.y, target_yaw, turn_speed * delta)
 
 
 func attack() -> void:
@@ -86,9 +89,64 @@ func attack() -> void:
 		player_health.hitpoints -= attack_damage
 
 
+func _update_is_provoked(distance: float):
+	if distance <= aggro_range and _is_player_within_fov():
+		provoked = true
+
+
+func _check_can_attack(distance: float):
+	if distance <= attack_range and provoked:
+		animation_player.play("attack")
+
+
 func _is_player_within_fov() -> bool:
 	var forward := -global_basis.z
 	var half_fov := deg_to_rad(fov * 0.5)
 	var direction_to := global_position.direction_to(player.global_position)
 	
 	return forward.dot(direction_to) > cos(half_fov)
+
+
+func _update_prediction_target() -> void:
+	# calculate time to reach player
+	var speed := max_speed if max_speed > 0.0 else 1.0
+	var time_to_player := global_position.distance_to(player.global_position) / speed
+
+	# clamp time to be no more then 1 second
+	time_to_player = minf(time_to_player, movement_prediction_time)
+
+	var target_prediction := player.global_position + player.average_velocity * time_to_player
+	var dir_to_target := global_position.direction_to(target_prediction)
+	var dir_to_player := global_position.direction_to(player.global_position)
+
+	# is directions are to far apwart fall back to players current position
+	if dir_to_player.dot(dir_to_target) < movement_prediction_threshold:
+		target_prediction = player.global_position
+
+	navigation_agent_3d.target_position = target_prediction
+
+
+func _apply_friction(delta: float):
+	var speed := velocity.length()
+	if speed < 0.01:
+		velocity = Vector3.ZERO
+		return
+	
+	var control := maxf(speed, stop_speed)
+	var drop := control * friction * delta
+	var new_speed := maxf(0.0, speed - drop)
+	if speed > 0.0:
+		new_speed /= speed
+
+	velocity *= new_speed
+
+
+func _apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
+	var current_speed := velocity.dot(wish_dir)
+	var add_speed := max_speed - current_speed
+	
+	if add_speed <= 0.0:
+		return
+	
+	var accel_speed := minf(acceleration * delta * wish_speed, add_speed)
+	velocity += wish_dir * accel_speed

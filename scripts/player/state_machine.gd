@@ -12,9 +12,9 @@ var states: Dictionary[PlayerStates.Type, State] = {}
 func _ready() -> void:
 	for child in get_children():
 		if child is State:
-			var state := _get_state_type_from_class(child)
-			states[state] = child
+			var state_type := _get_state_type_from_class(child)
 			child.transitioned.connect(_on_transition)
+			states[state_type] = child
 	
 	var starting_state := states.get(inital_state) as State
 	if starting_state:

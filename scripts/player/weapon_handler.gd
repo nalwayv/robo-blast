@@ -1,6 +1,8 @@
 class_name WeaponHandler
 extends Node3D
 
+# connections
+# - AmmoPresenter
 
 signal weapon_switched(weapon: HitScanWeapon)
 
@@ -33,6 +35,7 @@ func _equip_weapon(weapon_index: int) -> void:
 			if i == current_equiped:
 				child.visible = true
 				child.set_process(true)
+
 				weapon_switched.emit(child)
 			else:
 				child.visible = false

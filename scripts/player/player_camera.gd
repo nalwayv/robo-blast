@@ -1,12 +1,6 @@
 class_name PlayerCamera
 extends Camera3D
 
-# groups: 
-# 	name: shakable
-# 	funcs:
-#		- apply_shake(strength)
-
-
 @export var rotation_speed := 50.0
 @export_group("apply_smoothing")
 @export var is_top_level := false
@@ -14,6 +8,8 @@ extends Camera3D
 @export var impule_enabled := false
 @export var frequency := 22.0
 @export var damping := 0.5
+@export_group("resources")
+@export var camera_shake_bus: CameraShakeBus
 
 var camera_impulse_spring := DampedSpringV3.new()
 
@@ -21,12 +17,16 @@ var camera_impulse_spring := DampedSpringV3.new()
 
 
 func _ready() -> void:
-	add_to_group("shakable")
-	
+	# camera
 	top_level = is_top_level
 
+	# spring
 	camera_impulse_spring.frequency = frequency
 	camera_impulse_spring.damping = damping
+
+	# bus
+	if camera_shake_bus:
+		camera_shake_bus.shake_request.connect(_on_shake_request)
 
 
 func _exit_tree() -> void:
@@ -48,6 +48,7 @@ func _process(delta: float) -> void:
 
 func _apply_smooth_movement(delta) -> Transform3D:
 	# because the camera is top_level we need to use global to find were the parent is
+	# and follow it
 	var weight := clampf(rotation_speed * delta, 0.0, 1.0)
 	return global_transform.interpolate_with(parent.global_transform, weight)
 
@@ -55,8 +56,15 @@ func _apply_smooth_movement(delta) -> Transform3D:
 func _get_shake_offset() -> Transform3D:
 	return Transform3D(Basis(), camera_impulse_spring.position)
 
+# # TODO: 
+# func apply_shake(strength: float) -> void:
+# 	var x := randf_range(-strength, strength)
+# 	var y := randf_range(-strength, strength)
+# 	camera_impulse_spring.velocity += Vector3(x, y, 0.0)
 
-func apply_shake(strength: float) -> void:
-	var x := randf_range(-strength, strength)
-	var y := randf_range(-strength, strength)
+
+func _on_shake_request(intensity: float) -> void:
+	var x := randf_range(-intensity, intensity)
+	var y := randf_range(-intensity, intensity)
+
 	camera_impulse_spring.velocity += Vector3(x, y, 0.0)

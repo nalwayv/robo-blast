@@ -20,8 +20,8 @@ const RAY_LENGTH := 100
 @export var ammo_type: AmmoHandler.AmmoType
 @export_group("components")
 @export var input_handler: InputHandler
-@export_group("groups")
-@export var shakable: Node3D ## node that is with group shakable to able to call add_shake
+@export_group("resources")
+@export var camera_shake_bus: CameraShakeBus
 
 var model_position := Vector3.ZERO
 var can_shoot := false
@@ -62,8 +62,8 @@ func fire_weapon() -> void:
 	muzzel_flash.restart()
 	weapon_model.position.z += recoil_amount
 	
-	if shakable and shakable.is_in_group("shakable"):
-		shakable.apply_shake(recoil_impule)
+	if camera_shake_bus:
+		camera_shake_bus.emit_shake(recoil_impule)
 		
 	ray_cast.force_raycast_update()
 	if ray_cast.is_colliding():
@@ -79,13 +79,11 @@ func _spawn_hit_effect() -> void:
 
 func _apply_damage_to_target() -> void:
 	var node := ray_cast.get_collider() as Node
-	while node:
-		if node is CharacterBody3D and node.is_in_group("health"):
-			var health := node.get_node_or_null("%Health") as Health
-			if health:
-				health.hitpoints -= weapon_damage
-				return
-		node = node.get_parent()
+	if node is CharacterBody3D:
+		# check of node has a health component.
+		var health := node.get_node_or_null("%Health") as Health
+		if health:
+			health.hitpoints -= weapon_damage
 
 
 func _recoil_animation(delta: float) -> void:

@@ -1,7 +1,7 @@
 extends Pickup
 
 @export_category("ammo")
-@export var ammo_amount: int = 0
+@export var ammo_amount := 0
 @export var ammo_type: AmmoHandler.AmmoType
 
 

@@ -1,7 +1,6 @@
 class_name Airborne
 extends State
 
-
 @export var player: PlayerController
 @export_group("components")
 @export var mouse_capture: MouseCapture
@@ -10,7 +9,7 @@ extends State
 
 
 func _enter() -> void:
-	player.coyote_timer.start(player.coyote_time)
+	player.coyote_timer.start()
 
 
 func _exit() -> void:
@@ -28,11 +27,11 @@ func _update(delta: float) -> void:
 func _physics_update(delta: float) -> void:
 	player.apply_gravity(delta)
 	
-	var wish_vel := player.get_wish_velocity(input_handler.direction)
-	var wish_dir := wish_vel.normalized()
-	var wish_speed := wish_vel.length()
+	var wish_velocity := player.get_wish_velocity(input_handler.direction)
+	var wish_direction := wish_velocity.normalized()
+	var wish_speed := wish_velocity.length()
 
-	player.apply_air_accelerate(wish_dir, wish_speed, delta)
+	player.apply_air_accelerate(wish_direction, wish_speed, delta)
 
 	_handle_jump_input()
 
@@ -51,7 +50,7 @@ func _handle_jump_input() -> void:
 		player.coyote_timer.stop()
 		input_handler.is_jumping = false
 	else:
-		player.jump_buffer_timer.start(player.jump_buffer_time)
+		player.jump_buffer_timer.start()
 		input_handler.is_jumping = false
 
 
