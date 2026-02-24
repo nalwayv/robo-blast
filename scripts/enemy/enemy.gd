@@ -57,7 +57,7 @@ func _physics_process(delta: float) -> void:
 
 	if provoked:
 		var next_path_position := navigation_agent_3d.get_next_path_position()
-		var direction := global_position.direction_to(next_path_position)
+		var direction := global_transform.origin.direction_to(next_path_position)
 
 		current_direction = current_direction.lerp(direction, smooth_direction * delta)
 		var wish_direction := Vector3(current_direction.x, 0.0, current_direction.z).normalized()
@@ -70,7 +70,7 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
-	var distance := global_position.distance_to(player.global_position)
+	var distance := global_transform.origin.distance_to(player.global_transform.origin)
 	_update_is_provoked(distance)
 	_check_can_attack(distance)
 
@@ -102,7 +102,7 @@ func _check_can_attack(distance: float):
 func _is_player_within_fov() -> bool:
 	var forward := -global_basis.z
 	var half_fov := deg_to_rad(fov * 0.5)
-	var direction_to := global_position.direction_to(player.global_position)
+	var direction_to := global_transform.origin.direction_to(player.global_transform.origin)
 	
 	return forward.dot(direction_to) > cos(half_fov)
 
@@ -110,18 +110,18 @@ func _is_player_within_fov() -> bool:
 func _update_prediction_target() -> void:
 	# calculate time to reach player
 	var speed := max_speed if max_speed > 0.0 else 1.0
-	var time_to_player := global_position.distance_to(player.global_position) / speed
+	var time_to_player := global_transform.origin.distance_to(player.global_transform.origin) / speed
 
 	# clamp time to be no more then 1 second
 	time_to_player = minf(time_to_player, movement_prediction_time)
 
-	var target_prediction := player.global_position + player.average_velocity * time_to_player
-	var dir_to_target := global_position.direction_to(target_prediction)
-	var dir_to_player := global_position.direction_to(player.global_position)
+	var target_prediction := player.global_transform.origin + player.average_velocity * time_to_player
+	var dir_to_target := global_transform.origin.direction_to(target_prediction)
+	var dir_to_player := global_transform.origin.direction_to(player.global_transform.origin)
 
 	# is directions are to far apwart fall back to players current position
 	if dir_to_player.dot(dir_to_target) < movement_prediction_threshold:
-		target_prediction = player.global_position
+		target_prediction = player.global_transform.origin
 
 	navigation_agent_3d.target_position = target_prediction
 

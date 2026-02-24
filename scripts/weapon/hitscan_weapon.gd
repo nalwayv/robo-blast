@@ -17,14 +17,14 @@ const RAY_LENGTH := 100
 @export var sparks: PackedScene
 @export_group("ammo")
 @export var ammo_handler: AmmoHandler
-@export var ammo_type: AmmoHandler.AmmoType
+@export var ammo_type: AmmoType.Type
 @export_group("components")
 @export var input_handler: InputHandler
 @export_group("resources")
 @export var camera_shake_bus: CameraShakeBus
 
 var model_position := Vector3.ZERO
-var can_shoot := false
+var can_shoot_single_shot := false
 
 @onready var ray_cast: RayCast3D = $RayCast3D
 @onready var cooldown_timer: Timer = $CooldownTimer
@@ -34,8 +34,8 @@ func _ready() -> void:
 	cooldown_timer.wait_time = 1.0 / fire_rate
 	model_position = weapon_model.position
 	
-	input_handler.shoot_pressed.connect(func(): can_shoot = true)
-	input_handler.shoot_released.connect(func(): can_shoot = false)
+	input_handler.shoot_pressed.connect(func(): can_shoot_single_shot = true)
+	input_handler.shoot_released.connect(func(): can_shoot_single_shot = false)
 
 
 func _process(delta: float) -> void:
@@ -45,9 +45,9 @@ func _process(delta: float) -> void:
 		if input_handler.is_shooting and can_fire:
 			fire_weapon()
 	else:
-		if can_shoot and can_fire:
+		if can_shoot_single_shot and can_fire:
 			fire_weapon()
-			can_shoot = false
+			can_shoot_single_shot = false
 			
 	_recoil_animation(delta)
 
@@ -60,7 +60,7 @@ func fire_weapon() -> void:
 	
 	cooldown_timer.start(1.0 / fire_rate)
 	muzzel_flash.restart()
-	weapon_model.position.z += recoil_amount
+	weapon_model.transform.origin.z += recoil_amount
 	
 	if camera_shake_bus:
 		camera_shake_bus.emit_shake(recoil_impule)
@@ -74,17 +74,16 @@ func fire_weapon() -> void:
 func _spawn_hit_effect() -> void:
 	var hit_spark := sparks.instantiate()
 	add_child(hit_spark)
-	hit_spark.global_position = ray_cast.get_collision_point()
+	hit_spark.global_transform.origin = ray_cast.get_collision_point()
 
 
 func _apply_damage_to_target() -> void:
 	var node := ray_cast.get_collider() as Node
 	if node is CharacterBody3D:
-		# check of node has a health component.
 		var health := node.get_node_or_null("%Health") as Health
 		if health:
 			health.hitpoints -= weapon_damage
 
 
 func _recoil_animation(delta: float) -> void:
-	weapon_model.position = weapon_model.position.lerp(model_position, recoil_speed * delta)
+	weapon_model.transform.origin = weapon_model.transform.origin.lerp(model_position, recoil_speed * delta)

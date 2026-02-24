@@ -132,6 +132,9 @@ camera_shake_bus = ExtResource("2_fulsm")
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraController/Camera3D" unique_id=1010528068]
 remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
 
+[node name="NearEdgeCheck" type="RayCast3D" parent="." unique_id=807837531]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -0.5)
+
 [node name="StateMachine" type="Node" parent="." unique_id=735036328]
 editor_description = "Testing out a simple state machine for the player"
 script = ExtResource("9_oprun")
@@ -202,13 +205,13 @@ input_handler = NodePath("../../../../InputHandler")
 [node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler") instance=ExtResource("5_fjrip")]
 recoil_impule = 1.0
 ammo_handler = NodePath("../../../../../AmmoHandler")
-ammo_type = 1
 input_handler = NodePath("../../../../../InputHandler")
 camera_shake_bus = ExtResource("2_fulsm")
 
 [node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler") instance=ExtResource("3_tuyoq")]
 recoil_impule = 1.5
 ammo_handler = NodePath("../../../../../AmmoHandler")
+ammo_type = 1
 input_handler = NodePath("../../../../../InputHandler")
 camera_shake_bus = ExtResource("2_fulsm")
 

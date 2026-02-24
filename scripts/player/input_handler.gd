@@ -1,10 +1,8 @@
 class_name InputHandler
 extends Node
 
-
 signal shoot_pressed
 signal shoot_released
-#
 signal equip_preessed(int)
 signal equip_next
 signal equip_previous

@@ -1,7 +1,6 @@
 class_name Pickup
 extends Area3D
 
-
 @export_group("animation_spring")
 @export var frequency := 3.0
 @export var damping := 0.1
@@ -18,7 +17,7 @@ var spring := DampedSpringV3.new()
 func _ready() -> void:
 	body_entered.connect(on_body_entered)
 	
-	spring.goal = position
+	spring.goal = transform.origin
 	spring.position = spring.goal
 	spring.frequency = frequency
 	spring.damping = damping
@@ -35,7 +34,7 @@ func _process(delta: float) -> void:
 		spring.velocity += Vector3(0.0, nudge, 0.0)
 		
 	spring.step(delta)
-	position = spring.position
+	transform.origin = spring.position
 	ammo_mesh.rotate_y(rotation_speed * delta)
 
 

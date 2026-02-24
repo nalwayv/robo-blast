@@ -2,10 +2,11 @@ class_name PlayerController
 extends CharacterBody3D
 
 const DAMAGE_SHAKE_AMOUNT := 0.7
+const EDGE_FRICTION := 2.0
 
 @export_group("movement")
-@export var max_speed := 5.0
-@export var stop_speed := 2.0
+@export var max_speed := 7.0
+@export var stop_speed := 3.0
 @export var acceleration := 10.0 
 @export var friction := 6.0
 @export var air_cap := 0.9
@@ -55,13 +56,10 @@ var history_velocity_timer := Timer.new()
 @onready var damage_animation: AnimationPlayer = $DamageAnimation
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
 @onready var model: Node3D = $Model
+@onready var near_edge_check: RayCast3D = $NearEdgeCheck
 
 
 func _ready() -> void:
-	# groups
-	add_to_group("health")
-	add_to_group("ammo_handler")
-	
 	# kinematic jump settings
 	jump_velocity = (2.0 * jump_height) / jump_time_to_peak
 	jump_gravity = (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
@@ -92,9 +90,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	# help prevent model jittering 
-	var weight := clampf(model_rotation_speed * delta, 0.0, 1.0)
-	model.global_transform = model.global_transform.interpolate_with(global_transform, weight)
+	_update_model_transform(delta)
 
 
 func apply_gravity(delta) -> void:
@@ -115,12 +111,28 @@ func apply_friction(delta: float):
 		velocity = Vector3.ZERO
 		return
 	
+	# increase friction when near an edge
+	var friction_amount := friction
+	if _is_near_edge():
+		friction_amount *= EDGE_FRICTION
+	
 	var control := maxf(speed, stop_speed)
-	var drop := control * friction * delta
-	var new_speed := maxf(0.0, speed - drop)
+	var new_speed := maxf(0.0, speed - control * friction_amount * delta)
 	if speed > 0.0:
 		new_speed /= speed
 	velocity *= new_speed
+
+
+func _is_near_edge() -> bool:
+	if not is_on_floor():
+		return false
+
+	var horizontal_velocity := Vector2(velocity.x, velocity.z)
+	if horizontal_velocity.length() < 0.1:
+		return false
+
+	near_edge_check.force_raycast_update()
+	return not near_edge_check.is_colliding()
 
 
 func apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
@@ -147,7 +159,12 @@ func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
 
 
 func get_wish_velocity(input: Vector2) -> Vector3:
-	return transform.basis * Vector3(input.x, 0.0, input.y)
+	return global_transform.basis * Vector3(input.x, 0.0, input.y)
+
+
+func _update_model_transform(delta: float) -> void:
+	var weight := clampf(model_rotation_speed * delta, 0.0, 1.0)
+	model.global_transform = model.global_transform.interpolate_with(global_transform, weight)
 
 
 func _on_damage_taken() -> void:
@@ -163,3 +180,5 @@ func _on_update_historical_velocities() -> void:
 	if historical_velocities.size() == max_historical_size:
 		historical_velocities.pop_front()
 	historical_velocities.push_back(velocity)
+
+
