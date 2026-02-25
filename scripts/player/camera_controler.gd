@@ -3,10 +3,13 @@ extends Node3D
 
 const MIN_X_ROTATION := deg_to_rad(-89.0)
 const MAX_X_ROTATION := deg_to_rad(70.0)
+const SENSITIVITY := 0.001
 
 @export_group("cameras")
 @export var player_camera: PlayerCamera
 @export var weapon_camera: Camera3D
+@export_group("sensitivity")
+@export_range(1.0, 5.0) var sensitivity := 2.0
 @export_group("fov")
 @export_range(0.1, 1.0) var fov_range_percent := 0.7
 @export var transition_speed_in := 20.0
@@ -14,12 +17,15 @@ const MAX_X_ROTATION := deg_to_rad(70.0)
 
 var main_default_fov := 0.0
 var weapon_default_fov := 0.0
-var _rotation := Vector3.ZERO
+
+var target_rotation := Vector3.ZERO
+var current_rotation := Vector3.ZERO
 
 
 func _ready() -> void:
 	main_default_fov = player_camera.fov
 	weapon_default_fov = weapon_camera.fov
+	sensitivity *= SENSITIVITY
 
 
 func apply_fov(zoom_in: bool, delta: float) -> void:
@@ -43,20 +49,15 @@ func apply_fov(zoom_in: bool, delta: float) -> void:
 			transition_speed_out * delta)
 
 
-func update_camera_rotation(input: Vector2) -> void:
-	_rotation.x += input.y # up, down
-	_rotation.y += input.x # left, right
-	_rotation.z = 0.0
+func update_camera_rotation(input: Vector2, speed: float, delta: float) -> void:
+	target_rotation.x += input.y * sensitivity
+	target_rotation.y += input.x * sensitivity
+	target_rotation.x = clampf(target_rotation.x, MIN_X_ROTATION, MAX_X_ROTATION)
 
-	_rotation.x = clampf(_rotation.x, MIN_X_ROTATION, MAX_X_ROTATION)
-	var camera_rotation := Vector3(_rotation.x, 0.0, 0.0)
+	current_rotation = current_rotation.lerp(target_rotation, speed * delta)
 	
-	transform.basis = Basis.from_euler(camera_rotation)
-
-
-func get_rotation_basis() -> Basis:
-	return Basis.from_euler(_rotation)
+	transform.basis = Basis.from_euler(Vector3(current_rotation.x, 0.0, 0.0))
 
 
 func get_horizontal_rotation_basis() -> Basis:
-	return Basis.from_euler(Vector3(0.0, _rotation.y, 0.0))
+	return Basis.from_euler(Vector3(0.0, current_rotation.y, 0.0))

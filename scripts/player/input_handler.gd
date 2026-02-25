@@ -44,5 +44,5 @@ func _process(_delta: float) -> void:
 	is_aiming = Input.is_action_pressed("aim")
 	
 
-func get_input_xz() -> Vector3:
-	return Vector3(direction.x, 0.0, direction.y)
+# func get_input_xz() -> Vector3:
+# 	return Vector3(direction.x, 0.0, direction.y)

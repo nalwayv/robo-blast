@@ -102,6 +102,7 @@ font_size = 64
 [node name="PlayerController" type="CharacterBody3D" unique_id=944678354 node_paths=PackedStringArray("health") groups=["player"]]
 editor_description = "Player controles cameras Yaw"
 script = ExtResource("1_3vyb7")
+rotation_speed = 20.0
 health = NodePath("Health")
 camera_shake_bus = ExtResource("2_fulsm")
 
@@ -146,19 +147,18 @@ mouse_capture = NodePath("../../MouseCapture")
 input_handler = NodePath("../../InputHandler")
 camera_controller = NodePath("../../CameraController")
 
-[node name="Airborne" type="Node" parent="StateMachine" unique_id=1876274156 node_paths=PackedStringArray("player", "mouse_capture", "input_handler", "camera_controler")]
+[node name="Airborne" type="Node" parent="StateMachine" unique_id=1876274156 node_paths=PackedStringArray("player", "mouse_capture", "input_handler", "camera_controller")]
 script = ExtResource("12_fulsm")
 player = NodePath("../..")
 mouse_capture = NodePath("../../MouseCapture")
 input_handler = NodePath("../../InputHandler")
-camera_controler = NodePath("../../CameraController")
+camera_controller = NodePath("../../CameraController")
 
 [node name="InputHandler" type="Node" parent="." unique_id=1691015048]
 script = ExtResource("2_a8ls1")
 
 [node name="MouseCapture" type="Node" parent="." unique_id=1492553876]
 script = ExtResource("8_oprun")
-mouse_sensitivity = 1.0
 
 [node name="Health" type="Node" parent="." unique_id=189041108]
 unique_name_in_owner = true

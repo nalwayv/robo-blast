@@ -5,7 +5,7 @@ extends State
 @export_group("components")
 @export var mouse_capture: MouseCapture
 @export var input_handler: InputHandler
-@export var camera_controler: CameraController
+@export var camera_controller: CameraController
 
 
 func _enter() -> void:
@@ -18,10 +18,10 @@ func _exit() -> void:
 
 
 func _update(delta: float) -> void:
-	camera_controler.update_camera_rotation(mouse_capture.motion)
-	camera_controler.apply_fov(input_handler.is_aiming, delta)
-	
-	player.global_transform.basis = camera_controler.get_horizontal_rotation_basis()
+	var motion := mouse_capture.get_motion()
+	camera_controller.update_camera_rotation(motion, player.rotation_speed, delta)
+	camera_controller.apply_fov(input_handler.is_aiming, delta)
+	player.global_transform.basis = camera_controller.get_horizontal_rotation_basis()
 
 
 func _physics_update(delta: float) -> void:
