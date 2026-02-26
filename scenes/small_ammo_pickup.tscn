@@ -18,11 +18,8 @@ shader_parameter/fresnel_power = 2.000000095
 [node name="SmallAmmoPickup" unique_id=621068877 instance=ExtResource("1_on4ha")]
 ammo_amount = 50
 ammo_type = 1
-frequency = 1.5
-amplitude = 0.8
-rotation_speed = 1.0
 
-[node name="AmmoMesh" parent="." index="0" unique_id=1628967609]
+[node name="Mesh" parent="." index="0" unique_id=1628967609]
 material_override = SubResource("StandardMaterial3D_v828t")
 
 [node name="EffectMesh" parent="." index="1" unique_id=1362845292]

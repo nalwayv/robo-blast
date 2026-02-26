@@ -10,7 +10,6 @@ const EDGE_FRICTION := 2.0
 @export var acceleration := 10.0 
 @export var friction := 6.0
 @export var air_cap := 0.9
-@export var rotation_speed := 10.0
 @export_subgroup("kinematic")
 @export var jump_height := 1.0
 @export var jump_time_to_peak := 0.45
@@ -151,7 +150,7 @@ func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
 	var wish_speed_cap := minf(wish_speed, air_cap)
 	var current_speed := velocity.dot(wish_dir)
 	var add_speed := wish_speed_cap - current_speed
-	
+
 	if add_speed <= 0.0:
 		return
 	
@@ -160,10 +159,13 @@ func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
 
 
 func get_wish_velocity(input: Vector2) -> Vector3:
+	# scales the input vector from local space into world space
+	# relative to the player’s orientation
 	return global_transform.basis * Vector3(input.x, 0.0, input.y)
 
 
 func _update_model_transform(delta: float) -> void:
+	# model is top level
 	var weight := clampf(model_rotation_speed * delta, 0.0, 1.0)
 	model.global_transform = model.global_transform.interpolate_with(global_transform, weight)
 
@@ -180,4 +182,5 @@ func _on_damage_taken() -> void:
 func _on_update_historical_velocities() -> void:
 	if historical_velocities.size() == max_historical_size:
 		historical_velocities.pop_front()
+
 	historical_velocities.push_back(velocity)

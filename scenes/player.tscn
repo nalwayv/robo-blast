@@ -23,6 +23,10 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 
+[sub_resource type="Curve" id="Curve_fulsm"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.48818898, 0.14559066), 0.5494175, 0.5494175, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
 [sub_resource type="Animation" id="Animation_qlg0r"]
 length = 0.4
 step = 0.1
@@ -102,7 +106,6 @@ font_size = 64
 [node name="PlayerController" type="CharacterBody3D" unique_id=944678354 node_paths=PackedStringArray("health") groups=["player"]]
 editor_description = "Player controles cameras Yaw"
 script = ExtResource("1_3vyb7")
-rotation_speed = 20.0
 health = NodePath("Health")
 camera_shake_bus = ExtResource("2_fulsm")
 
@@ -122,6 +125,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 script = ExtResource("7_f1ej7")
 player_camera = NodePath("Camera3D")
 weapon_camera = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera")
+input_curve = SubResource("Curve_fulsm")
 
 [node name="Camera3D" type="Camera3D" parent="CameraController" unique_id=1122465746]
 cull_mask = 1048573

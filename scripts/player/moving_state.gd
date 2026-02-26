@@ -10,7 +10,7 @@ extends State
 
 func _update(delta: float) -> void:
 	var motion := mouse_capture.get_motion()
-	camera_controller.update_camera_rotation(motion, player.rotation_speed, delta)
+	camera_controller.update_camera_rotation(motion, delta)
 	camera_controller.apply_fov(input_handler.is_aiming, delta)
 	player.global_transform.basis = camera_controller.get_horizontal_rotation_basis()
 

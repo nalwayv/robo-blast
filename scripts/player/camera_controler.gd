@@ -8,7 +8,8 @@ const SENSITIVITY := 0.001
 @export_group("cameras")
 @export var player_camera: PlayerCamera
 @export var weapon_camera: Camera3D
-@export_group("sensitivity")
+@export_group("smoothing")
+@export var weight := 25.0
 @export_range(1.0, 5.0) var sensitivity := 2.0
 @export_group("fov")
 @export_range(0.1, 1.0) var fov_range_percent := 0.7
@@ -18,8 +19,8 @@ const SENSITIVITY := 0.001
 var main_default_fov := 0.0
 var weapon_default_fov := 0.0
 
-var target_rotation := Vector3.ZERO
-var current_rotation := Vector3.ZERO
+var target_rotation := Vector2.ZERO
+var current_rotation := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -49,12 +50,12 @@ func apply_fov(zoom_in: bool, delta: float) -> void:
 			transition_speed_out * delta)
 
 
-func update_camera_rotation(input: Vector2, speed: float, delta: float) -> void:
-	target_rotation.x += input.y * sensitivity
-	target_rotation.y += input.x * sensitivity
+func update_camera_rotation(input: Vector2, delta: float) -> void:
+	target_rotation += Vector2(input.y, input.x) * sensitivity
 	target_rotation.x = clampf(target_rotation.x, MIN_X_ROTATION, MAX_X_ROTATION)
 
-	current_rotation = current_rotation.lerp(target_rotation, speed * delta)
+	var t := 1.0 - exp(-weight * delta)
+	current_rotation = current_rotation.lerp(target_rotation, t)
 	
 	transform.basis = Basis.from_euler(Vector3(current_rotation.x, 0.0, 0.0))
 
