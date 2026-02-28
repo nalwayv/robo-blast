@@ -12,7 +12,7 @@
 [ext_resource type="Script" uid="uid://bcxfbd7msjs2k" path="res://scripts/player/ammo_presenter.gd" id="4_smehm_presenter"]
 [ext_resource type="PackedScene" uid="uid://dffqg0px71had" path="res://scenes/submachine_gun.tscn" id="5_fjrip"]
 [ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
-[ext_resource type="Script" uid="uid://d0gwaflnqyk5t" path="res://scripts/player/camera_controler.gd" id="7_f1ej7"]
+[ext_resource type="Script" uid="uid://d0gwaflnqyk5t" path="res://scripts/player/camera_controller.gd" id="7_f1ej7"]
 [ext_resource type="Script" uid="uid://rkyc8ouda5mh" path="res://scripts/player/mouse_capture.gd" id="8_oprun"]
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
 [ext_resource type="Script" uid="uid://bnfkklxobhv20" path="res://scripts/player/state_machine.gd" id="9_oprun"]
@@ -22,10 +22,6 @@
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3v2ag"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
-
-[sub_resource type="Curve" id="Curve_fulsm"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.48818898, 0.14559066), 0.5494175, 0.5494175, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 3
 
 [sub_resource type="Animation" id="Animation_qlg0r"]
 length = 0.4
@@ -125,7 +121,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 script = ExtResource("7_f1ej7")
 player_camera = NodePath("Camera3D")
 weapon_camera = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera")
-input_curve = SubResource("Curve_fulsm")
 
 [node name="Camera3D" type="Camera3D" parent="CameraController" unique_id=1122465746]
 cull_mask = 1048573
@@ -163,6 +158,7 @@ script = ExtResource("2_a8ls1")
 
 [node name="MouseCapture" type="Node" parent="." unique_id=1492553876]
 script = ExtResource("8_oprun")
+invert_y = true
 
 [node name="Health" type="Node" parent="." unique_id=189041108]
 unique_name_in_owner = true

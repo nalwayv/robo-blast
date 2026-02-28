@@ -3,14 +3,17 @@ extends Node3D
 
 const MIN_X_ROTATION := deg_to_rad(-89.0)
 const MAX_X_ROTATION := deg_to_rad(70.0)
-const SENSITIVITY := 0.001
 
 @export_group("cameras")
 @export var player_camera: PlayerCamera
 @export var weapon_camera: Camera3D
 @export_group("smoothing")
-@export var weight := 25.0
-@export_range(1.0, 5.0) var sensitivity := 2.0
+@export var smoothing_weight := 20.0
+@export var base_sensitivity := 0.001
+@export_group("sensitivity")
+@export var inches_per_360 := 12.0 # How far you move mouse for a full 360 turn
+@export var dpi := 800.0 # Mouse hardware DPI
+@export var sensitivity := 1.0
 @export_group("fov")
 @export_range(0.1, 1.0) var fov_range_percent := 0.7
 @export var transition_speed_in := 20.0
@@ -21,12 +24,14 @@ var weapon_default_fov := 0.0
 
 var target_rotation := Vector2.ZERO
 var current_rotation := Vector2.ZERO
+var radians_per_count := 0.0
 
 
 func _ready() -> void:
 	main_default_fov = player_camera.fov
 	weapon_default_fov = weapon_camera.fov
-	sensitivity *= SENSITIVITY
+
+	radians_per_count = TAU / (inches_per_360 * dpi * sensitivity)
 
 
 func apply_fov(zoom_in: bool, delta: float) -> void:
@@ -50,11 +55,11 @@ func apply_fov(zoom_in: bool, delta: float) -> void:
 			transition_speed_out * delta)
 
 
-func update_camera_rotation(input: Vector2, delta: float) -> void:
-	target_rotation += Vector2(input.y, input.x) * sensitivity
+func update_camera_rotation(mouse_motion: Vector2, delta: float) -> void:
+	target_rotation += Vector2(mouse_motion.y, mouse_motion.x) * radians_per_count
 	target_rotation.x = clampf(target_rotation.x, MIN_X_ROTATION, MAX_X_ROTATION)
-
-	var t := 1.0 - exp(-weight * delta)
+	
+	var t := 1.0 - exp(-smoothing_weight * delta)
 	current_rotation = current_rotation.lerp(target_rotation, t)
 	
 	transform.basis = Basis.from_euler(Vector3(current_rotation.x, 0.0, 0.0))

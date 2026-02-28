@@ -12,17 +12,13 @@ const EPSILON := 0.01
 @export var min_turn_speed := 5.0
 @export var max_turn_speed := 15.0
 @export_group("field of view")
-@export var aggro_range := 5.0
-@export var fov := 90.0
-@export var fov_range := 5.0
+@export var detecion_radius := 5.0
+@export var fov_angle := 90.0
 @export_group("attack")
 @export var attack_range := 2.0
 @export var attack_damage := 20
 @export_group("components")
 @export var health: Health
-@export_group("debug")
-@export var show_debug := false
-@export var debug: Node3D
 
 var provoked := false
 var smooth_direction := 10.0
@@ -39,12 +35,6 @@ func _ready() -> void:
 	health.died.connect(queue_free)
 	health.damaged.connect(func(): provoked = true)
 
-	if show_debug:
-		debug.show_debug = true
-		debug.fov = fov
-		debug.fov_range = fov_range
-		debug.aggro_range = aggro_range
-		
 
 func _process(_delta: float) -> void:
 	if provoked:
@@ -71,7 +61,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 	var distance := global_transform.origin.distance_to(player.global_transform.origin)
-	_update_is_provoked(distance)
+	_is_player_within_detection_range(distance)
 	_check_can_attack(distance)
 
 
@@ -89,19 +79,19 @@ func attack() -> void:
 		player_health.hitpoints -= attack_damage
 
 
-func _update_is_provoked(distance: float):
-	if distance <= aggro_range and _is_player_within_fov():
+func _is_player_within_detection_range(distance: float):
+	if distance <= detecion_radius and _is_player_within_fov_angle():
 		provoked = true
 
 
 func _check_can_attack(distance: float):
-	if distance <= attack_range and provoked:
+	if provoked and distance <= attack_range:
 		animation_player.play("attack")
 
 
-func _is_player_within_fov() -> bool:
+func _is_player_within_fov_angle() -> bool:
 	var forward := -global_basis.z
-	var half_fov := deg_to_rad(fov * 0.5)
+	var half_fov := deg_to_rad(fov_angle * 0.5)
 	var direction_to := global_transform.origin.direction_to(player.global_transform.origin)
 	
 	return forward.dot(direction_to) > cos(half_fov)

@@ -111,7 +111,6 @@ func apply_friction(delta: float):
 		velocity = Vector3.ZERO
 		return
 	
-	# increase friction when near an edge
 	var friction_amount := friction
 	if _is_near_edge():
 		friction_amount *= EDGE_FRICTION
@@ -159,13 +158,10 @@ func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
 
 
 func get_wish_velocity(input: Vector2) -> Vector3:
-	# scales the input vector from local space into world space
-	# relative to the player’s orientation
 	return global_transform.basis * Vector3(input.x, 0.0, input.y)
 
 
 func _update_model_transform(delta: float) -> void:
-	# model is top level
 	var weight := clampf(model_rotation_speed * delta, 0.0, 1.0)
 	model.global_transform = model.global_transform.interpolate_with(global_transform, weight)
 
