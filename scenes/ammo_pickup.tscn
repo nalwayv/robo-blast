@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d2ht6tw7yma6l"]
 
-[ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/pickup/ammo_pickup.gd" id="1_ieo5p"]
+[ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/item/ammo.gd" id="1_ieo5p"]
 
 [sub_resource type="Curve" id="Curve_ieo5p"]
 _limits = [-1.0, 1.0, 0.0, 1.0]

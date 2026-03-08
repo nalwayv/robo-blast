@@ -3,7 +3,7 @@ extends Node
 
 
 @export_group("states")
-@export var inital_state := PlayerStates.Type.MOVING
+# @export var inital_state := PlayerStates.Type.MOVING
 
 var current_state: State
 var states: Dictionary[PlayerStates.Type, State] = {}
@@ -16,10 +16,15 @@ func _ready() -> void:
 			child.transitioned.connect(_on_transition)
 			states[state_type] = child
 	
-	var starting_state := states.get(inital_state) as State
-	if starting_state:
-		starting_state._enter()
-		current_state = starting_state
+
+	states[PlayerStates.Type.GROUNDED]._enter()
+	current_state = states[PlayerStates.Type.GROUNDED]
+
+
+	# var starting_state := states.get(inital_state) as State
+	# if starting_state:
+	# 	starting_state._enter()
+	# 	current_state = starting_state
 
 
 func _process(delta: float) -> void:
@@ -48,6 +53,6 @@ func _on_transition(state: PlayerStates.Type) -> void:
 
 func _get_state_type_from_class(state: State) -> PlayerStates.Type:
 	match state.name:
-		"Moving": return PlayerStates.Type.MOVING
+		"Grounded": return PlayerStates.Type.GROUNDED
 		"Airborne": return PlayerStates.Type.AIRBORNE
 		_: return PlayerStates.Type.NONE

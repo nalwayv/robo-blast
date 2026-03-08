@@ -1,7 +1,6 @@
 [gd_scene format=4 uid="uid://c0fv2li0eheot"]
 
 [ext_resource type="Script" uid="uid://ttuvrqc8yxcl" path="res://scripts/enemy/enemy.gd" id="1_7p1mj"]
-[ext_resource type="Script" uid="uid://dg1x0sec8c7v5" path="res://scripts/enemy/enemy_debug.gd" id="2_md0e3"]
 [ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/components/health.gd" id="3_4ra3w"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8tegq"]
@@ -71,9 +70,3 @@ max_hitpoints = 100
 libraries/ = SubResource("AnimationLibrary_md0e3")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1671771318]
-debug_enabled = true
-
-[node name="Debug" type="Node3D" parent="." unique_id=1032669398]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
-script = ExtResource("2_md0e3")
-detecion_radius = 5.0

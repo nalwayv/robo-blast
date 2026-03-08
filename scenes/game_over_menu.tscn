@@ -57,15 +57,12 @@ text = "game over"
 label_settings = SubResource("LabelSettings_cwb3k")
 horizontal_alignment = 1
 
-[node name="RestartButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1367366097]
+[node name="Restart" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1367366097]
 unique_name_in_owner = true
 layout_mode = 2
 text = "restart"
 
-[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1389867874]
+[node name="Quit" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1389867874]
 unique_name_in_owner = true
 layout_mode = 2
 text = "quit"
-
-[connection signal="pressed" from="CenterContainer/VBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
-[connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -3,7 +3,7 @@ extends RefCounted
 
 # static
 enum Type {
-	MOVING,
+	GROUNDED,
 	AIRBORNE,
     NONE,
 }

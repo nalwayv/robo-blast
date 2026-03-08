@@ -7,7 +7,7 @@ extends Node
 @export var weapon_handler: WeaponHandler
 @export var ammo_handler: AmmoHandler
 
-var current_ammo_type := AmmoType.Type.SMALL
+var current_ammo_type: AmmoType.Type
 
 
 func _ready() -> void:
@@ -15,11 +15,14 @@ func _ready() -> void:
 	weapon_handler.weapon_switched.connect(_on_weapon_switched)
 
 
-func _on_weapon_switched(weapon: HitScanWeapon) -> void:
-	current_ammo_type = weapon.ammo_type
-	ammo_label.text = str(ammo_handler.get_ammo_count(weapon.ammo_type))
-
-
 func _on_ammo_updated(ammo_type: AmmoType.Type, amount: int) -> void:
+	if not current_ammo_type:
+		current_ammo_type = ammo_type
+
 	if ammo_type == current_ammo_type:
 		ammo_label.text = str(amount)
+
+
+func _on_weapon_switched(ammo_type: AmmoType.Type) -> void:
+	current_ammo_type = ammo_type
+	ammo_label.text = str(ammo_handler.count(current_ammo_type))

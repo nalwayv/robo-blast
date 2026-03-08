@@ -5,10 +5,10 @@ signal died
 signal damaged
 signal health_changed(amount: int)
 
-@export var max_hitpoints: int
+@export var max_hitpoints := 100
 
 var is_dead := false
-var hitpoints: int = max_hitpoints:
+var hitpoints := max_hitpoints:
 	get:
 		return hitpoints
 	set(value):

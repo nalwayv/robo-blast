@@ -4,7 +4,8 @@ extends Node3D
 # connections
 # - AmmoPresenter
 
-signal weapon_switched(weapon: HitScanWeapon)
+# signal weapon_switched(weapon: HitScanWeapon)
+signal weapon_switched(ammo_type: AmmoType.Type)
 
 @export var input_handler: InputHandler
 
@@ -36,7 +37,7 @@ func _equip_weapon(weapon_index: int) -> void:
 				child.visible = true
 				child.set_process(true)
 
-				weapon_switched.emit(child)
+				weapon_switched.emit(child.ammo_type)
 			else:
 				child.visible = false
 				child.set_process(false)

@@ -18,9 +18,13 @@ func _exit() -> void:
 
 
 func _update(delta: float) -> void:
-	camera_controller.update_camera_rotation(mouse_capture.get_motion(), delta)
-	camera_controller.apply_fov(input_handler.is_aiming, delta)
-	player.global_transform.basis = camera_controller.get_horizontal_rotation_basis()
+	camera_controller.rotate_camera(mouse_capture.get_motion(), delta)
+	
+	if input_handler.is_aiming:
+		camera_controller.zoom_in(delta)
+	else:
+		camera_controller.zoom_out(delta)
+	player.global_basis = camera_controller.get_horizontal_rotation()
 
 
 func _physics_update(delta: float) -> void:
@@ -58,4 +62,4 @@ func _handle_landing() -> void:
 		player.jump()
 		player.jump_buffer_timer.stop()
 	else:
-		transitioned.emit(PlayerStates.Type.MOVING)
+		transitioned.emit(PlayerStates.Type.GROUNDED)
