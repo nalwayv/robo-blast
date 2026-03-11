@@ -1,20 +1,54 @@
-class_name DampedSpringV3
+class_name Vector3DampedSpring
 extends RefCounted
 
+## A utility class that simulates a damped spring for 3D vectors.
+##
+## Smoothly drives a [member position] toward a [member goal] over time,
+## with configurable oscillation speed and damping behaviour. Useful for
+## camera smoothing, procedural animation, and any value that should
+## follow a target without snapping or oscillating forever.
+##
+## [b]Quick start:[/b]
+## [codeblock]
+## var spring := Vector3DampedSpring.new()
+## spring.frequency = 10.0   # how fast it moves
+## spring.damping   = 0.8    # 1.0 = no overshoot, <1.0 = bouncy
+## spring.goal      = target_position
+##
+## func _process(delta):
+##     spring.step(delta)
+##     my_node.position = spring.position
+## [/codeblock]
+##
+## Based on the derivation by Ryan Juckett:
+## https://www.ryanjuckett.com/damped-springs/
 
 const EPSILON := 0.0001
 
+## Angular frequency (radians/s) controlling how fast the spring moves.
+## Higher values produce a snappier, more responsive spring.
+## Setting this to [code]0[/code] freezes the spring in place.
 var frequency := 20.0: 
 	set(value):
 		frequency = value
 		_last_delta = -1.0
+
+## Damping ratio controlling how the spring decays toward the goal.
+## [br][br]
+## [b]> 1.0[/b] — Over-damped: slow approach with no oscillation.[br]
+## [b]= 1.0[/b] — Critically damped: fastest settle with no overshoot.[br]
+## [b]< 1.0[/b] — Under-damped: fast but bouncy, overshoots the goal.[br]
+## [b]= 0.0[/b] — Undamped: oscillates forever.
 var damping := 0.5: 
 	set(value):
 		damping = value
 		_last_delta = -1.0
 
+## Current position of the spring.
 var position := Vector3.ZERO
+## Current velocity of the spring.
 var velocity := Vector3.ZERO
+## Target position the spring is trying to reach.
 var goal := Vector3.ZERO
 
 var _pp := 1.0
@@ -24,6 +58,7 @@ var _vv := 1.0
 var _last_delta := -1.0
 
 
+## Advances the spring simulation by delta seconds.
 func step(delta: float) -> void:
 	if delta <= 0.0: 
 		return
@@ -41,6 +76,7 @@ func step(delta: float) -> void:
 	velocity = new_vel
 
 
+# Recomputes the four motion coefficients for the given timestep.
 func _update_coefficients(delta: float) -> void:
 	var zeta := maxf(damping, 0.0)
 	var omega := maxf(frequency, 0.0)
@@ -53,7 +89,7 @@ func _update_coefficients(delta: float) -> void:
 		return
 
 	if zeta > 1.0 + EPSILON:
-		# Overdamped
+		# Over-damped
 		var za := -omega * zeta
 		var zb := omega * sqrt(zeta * zeta - 1.0)
 		var z1 := za - zb
@@ -67,7 +103,7 @@ func _update_coefficients(delta: float) -> void:
 		_vp = (e1 - e2) * (z1 * z2 * inv_2zb)
 		_vv = (e2 * z2 - e1 * z1) * inv_2zb
 	elif zeta < 1.0 - EPSILON:
-		# Underdamped
+		# Under-damped
 		var omega_zeta := omega * zeta
 		var alpha := omega * sqrt(1.0 - zeta * zeta)
 		var exp_term := exp(-omega_zeta * delta)
@@ -81,7 +117,7 @@ func _update_coefficients(delta: float) -> void:
 		_vv = exp_term * (cos_term - omega_zeta * sin_term * inv_alpha)
 		
 	else:
-		# Critically damped
+		# Critical-damped
 		var exp_term := exp(-omega * delta)
 		
 		_pp = exp_term * (1.0 + omega * delta)

@@ -1,11 +1,5 @@
 class_name Grounded
-extends State
-
-@export var player: PlayerController
-@export_group("components")
-@export var mouse_capture: MouseCapture
-@export var input_handler: InputHandler
-@export var camera_controller: CameraController
+extends PlayerBaseState
 
 
 func _update(delta: float) -> void:
@@ -21,18 +15,19 @@ func _update(delta: float) -> void:
 func _physics_update(delta: float) -> void:
 	var wish_velocity := player.get_wish_velocity(input_handler.direction)
 	var wish_direction := wish_velocity.normalized()
-	var wish_speed = wish_velocity.length() * player.max_speed
+	var wish_speed := wish_velocity.length() * player.max_speed
 
 	player.apply_friction(delta)
 	player.apply_accelerate(wish_direction, wish_speed, delta)
 	player.try_to_step_over()
+	
 	player.move_and_slide()
 
-	_check_if_player_jumps()
-	_check_player_is_not_on_floor()
+	_transition_to_airborn_from_jump()
+	_transition_to_airborn()
 
 
-func _check_if_player_jumps() -> void:
+func _transition_to_airborn_from_jump() -> void:
 	if not input_handler.is_jumping:
 		return
 	
@@ -40,7 +35,7 @@ func _check_if_player_jumps() -> void:
 	transitioned.emit(PlayerStates.Type.AIRBORNE)
 
 
-func _check_player_is_not_on_floor() -> void:
+func _transition_to_airborn() -> void:
 	if player.is_on_floor():
 		return
 

@@ -1,15 +1,27 @@
-class_name WeaponHandler
+class_name WeaponController # rename to weapon manager
 extends Node3D
 
-# connections
-# - AmmoPresenter
-
-# signal weapon_switched(weapon: HitScanWeapon)
 signal weapon_switched(ammo_type: AmmoType.Type)
 
 @export var input_handler: InputHandler
 
 var current_equiped := 0
+
+enum WeaponState {
+	UP, DOWN, UP_NEW, DOWN_PREV,
+}
+
+# NOTES:
+# @export list os weapons []
+# list slots []
+# add weapon func:
+	# if has_weapon then ignore
+	# for i in weapon_slots:
+		# add to empty slot:
+			# add_child
+			# hide and set process to false
+			# set slot[i] to child
+			# add weapon emit
 
 
 func _ready() -> void:
@@ -28,7 +40,6 @@ func _equip_weapon(weapon_index: int) -> void:
 	if not _is_valid_weapon_index(weapon_index):
 		return
 	
-	# set current weapon active and deactivate the rest
 	current_equiped = weapon_index
 	for i in get_child_count():
 		var child := get_child(i)

@@ -15,11 +15,15 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="RoboBlast"
-config/tags=PackedStringArray("learn")
+config/tags=PackedStringArray("3d", "learn", "physics")
 run/main_scene="uid://dq7l8htxk371"
 config/use_hidden_project_data_directory=false
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[debug]
+
+gdscript/warnings/untyped_declaration=1
 
 [debug_draw_3d]
 
@@ -28,6 +32,16 @@ settings/addon_root_folder="res://addons/debug_draw_3d"
 [dotnet]
 
 project/assembly_name="RoboBlast"
+
+[file_customization]
+
+folder_colors={
+"res://scripts/": "yellow"
+}
+
+[gui]
+
+theme/default_font_multichannel_signed_distance_field=true
 
 [input]
 

@@ -7,7 +7,7 @@ extends Area3D
 @export var rotation_speed := 1.5
 
 var time := 0.0
-var spring := DampedSpringV3.new()
+var spring := Vector3DampedSpring.new()
 
 @onready var mesh: MeshInstance3D = $Mesh
 

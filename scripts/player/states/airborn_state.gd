@@ -1,11 +1,5 @@
 class_name Airborne
-extends State
-
-@export var player: PlayerController
-@export_group("components")
-@export var mouse_capture: MouseCapture
-@export var input_handler: InputHandler
-@export var camera_controller: CameraController
+extends PlayerBaseState
 
 
 func _enter() -> void:
@@ -40,8 +34,9 @@ func _physics_update(delta: float) -> void:
 
 	player.move_and_slide()
 
-	if player.is_on_floor():
-		_handle_landing()
+	_handle_jump_buffering()
+	
+	_transition_to_grounded()
 
 
 func _handle_jump_input() -> void:
@@ -57,9 +52,12 @@ func _handle_jump_input() -> void:
 		input_handler.is_jumping = false
 
 
-func _handle_landing() -> void:
-	if not player.jump_buffer_timer.is_stopped():
+func _handle_jump_buffering() -> void:
+	if player.is_on_floor() and not player.jump_buffer_timer.is_stopped():
 		player.jump()
 		player.jump_buffer_timer.stop()
-	else:
+
+
+func _transition_to_grounded() -> void:
+	if player.is_on_floor() and player.jump_buffer_timer.is_stopped():
 		transitioned.emit(PlayerStates.Type.GROUNDED)

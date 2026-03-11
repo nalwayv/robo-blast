@@ -8,7 +8,7 @@ extends Camera3D
 @export_group("resources")
 @export var camera_shake_bus: CameraShakeBus
 
-var camera_impulse_spring := DampedSpringV3.new()
+var camera_impulse_spring := Vector3DampedSpring.new()
 
 @onready var parent := get_parent()
 
@@ -25,8 +25,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	var transform3D := Transform3D()
 	
-	if top_level and parent is Node3D:
-		transform3D *= _apply_smooth_movement(delta)
+	if parent is Node3D:
+		transform3D *= _smooth_movement(delta)
 	
 	camera_impulse_spring.step(delta)
 	transform3D *= _get_shake_offset()
@@ -34,7 +34,7 @@ func _process(delta: float) -> void:
 	global_transform = transform3D
 
 
-func _apply_smooth_movement(delta) -> Transform3D:
+func _smooth_movement(delta: float) -> Transform3D:
 	var weight := clampf(rotation_speed * delta, 0.0, 1.0)
 	return global_transform.interpolate_with(parent.global_transform, weight)
 

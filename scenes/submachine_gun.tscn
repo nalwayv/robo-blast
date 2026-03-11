@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_7q7np"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xfrr"]
+albedo_color = Color(0.581033, 0.58103293, 0.5810329, 1)
 z_clip_scale = 0.7
 fov_override = 45.0
 
@@ -34,7 +35,6 @@ material = SubResource("StandardMaterial3D_v4m1q")
 size = Vector3(0.1, 0.1, 0.1)
 
 [node name="SubmachineGun" unique_id=122189766 node_paths=PackedStringArray("weapon_model", "muzzel_flash") instance=ExtResource("1_vpl36")]
-weapon_damage = 5
 weapon_model = NodePath("Model")
 muzzel_flash = NodePath("MuzzelFlash")
 sparks = ExtResource("2_7q7np")

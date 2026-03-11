@@ -12,6 +12,8 @@ var hitpoints := max_hitpoints:
 	get:
 		return hitpoints
 	set(value):
+		value = mini(value, max_hitpoints)
+
 		if value < hitpoints:
 			damaged.emit()
 		
@@ -27,3 +29,7 @@ var hitpoints := max_hitpoints:
 
 func _ready() -> void:
 	hitpoints = max_hitpoints
+
+
+func get_ratio() -> float:
+	return hitpoints / max_hitpoints

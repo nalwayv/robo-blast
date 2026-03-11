@@ -6,8 +6,9 @@ var line_start := 16.0
 var line_end := 24.0
 var background_radius := 4.0
 var forground_radius := 3.0
-var background_width := 4.0
-var forground_width := 4.0;
+var background_width := 5.0
+
+var forground_width := 4.0
 var directions := [
 	Vector2.UP,
 	Vector2.DOWN,
@@ -29,7 +30,7 @@ func _draw_center_circle() -> void:
 
 
 func _draw_crosshair() -> void:
-	for dir in directions:
+	for dir: Vector2 in directions:
 		draw_line(
 			dir * (line_start - 1.0),
 			dir * (line_end + 1.0),

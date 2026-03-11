@@ -99,7 +99,7 @@ fill_to = Vector2(1, 1)
 font = ExtResource("8_ur7pv")
 font_size = 64
 
-[node name="PlayerController" type="CharacterBody3D" unique_id=944678354 node_paths=PackedStringArray("health") groups=["player"]]
+[node name="PlayerController" type="CharacterBody3D" unique_id=944678354 node_paths=PackedStringArray("health")]
 editor_description = "Player controles cameras Yaw"
 script = ExtResource("1_3vyb7")
 health = NodePath("Health")
@@ -166,13 +166,13 @@ script = ExtResource("2_d2wvv")
 unique_name_in_owner = true
 script = ExtResource("4_smehm")
 
-[node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889 node_paths=PackedStringArray("ammo_label", "weapon_handler", "ammo_handler")]
+[node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889 node_paths=PackedStringArray("ammo_label", "weapon_controller", "ammo_handler")]
 script = ExtResource("4_smehm_presenter")
 ammo_label = NodePath("../AmmoUI/Label")
-weapon_handler = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler")
+weapon_controller = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera/WeaponController")
 ammo_handler = NodePath("../AmmoHandler")
 
-[node name="DamageAnimation" type="AnimationPlayer" parent="." unique_id=905886058]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=905886058]
 libraries/ = SubResource("AnimationLibrary_tuyoq")
 
 [node name="WeaponSubViewport" type="SubViewportContainer" parent="." unique_id=1157993895]
@@ -194,16 +194,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 cull_mask = 2
 fov = 45.0
 
-[node name="WeaponHandler" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378 node_paths=PackedStringArray("input_handler")]
+[node name="WeaponController" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378 node_paths=PackedStringArray("input_handler")]
 script = ExtResource("3_fjrip")
 input_handler = NodePath("../../../../InputHandler")
 
-[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler") instance=ExtResource("5_fjrip")]
+[node name="SubmachineGun" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponController" unique_id=146877058 node_paths=PackedStringArray("ammo_handler", "input_handler") instance=ExtResource("5_fjrip")]
+weapon_type = 1
 ammo_handler = NodePath("../../../../../AmmoHandler")
 input_handler = NodePath("../../../../../InputHandler")
 camera_shake_bus = ExtResource("2_fulsm")
 
-[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponHandler" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler") instance=ExtResource("3_tuyoq")]
+[node name="Rifle" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponController" unique_id=669992837 node_paths=PackedStringArray("ammo_handler", "input_handler") instance=ExtResource("3_tuyoq")]
 ammo_type = 1
 ammo_handler = NodePath("../../../../../AmmoHandler")
 input_handler = NodePath("../../../../../InputHandler")

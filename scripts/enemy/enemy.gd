@@ -31,8 +31,10 @@ var current_direction := Vector3.FORWARD
 
 
 func _ready() -> void:
+	add_to_group("enemy")
+	
 	health.died.connect(queue_free)
-	health.damaged.connect(func(): provoked = true)
+	health.damaged.connect(func() -> void: provoked = true)
 
 
 func _process(_delta: float) -> void:
@@ -44,7 +46,7 @@ func _physics_process(delta: float) -> void:
 
 	if provoked:
 		var next_path_position := navigation_agent_3d.get_next_path_position()
-		var direction := global_transform.origin.direction_to(next_path_position)
+		var direction := global_position.direction_to(next_path_position)
 
 		current_direction = current_direction.lerp(direction, smooth_direction * delta)
 		var wish_direction := Vector3(current_direction.x, 0.0, current_direction.z).normalized()
@@ -57,12 +59,12 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
-	var distance := global_transform.origin.distance_to(player.global_transform.origin)
+	var distance := global_position.distance_to(player.global_position)
 	_check_player_within_range(distance)
 	_can_attack(distance)
 
 
-func _apply_gravity(delta: float):
+func _apply_gravity(delta: float) -> void:
 	if is_on_floor():
 		return
 
@@ -83,12 +85,12 @@ func attack() -> void:
 		player_health.hitpoints -= attack_damage
 
 
-func _check_player_within_range(distance: float):
+func _check_player_within_range(distance: float) -> void:
 	if distance <= detecion_radius and _is_player_within_fov_angle():
 		provoked = true
 
 
-func _can_attack(distance: float):
+func _can_attack(distance: float) -> void:
 	if provoked and distance <= attack_range:
 		animation_player.play("attack")
 
@@ -122,7 +124,7 @@ func _update_prediction_target() -> void:
 	navigation_agent_3d.target_position = target_prediction
 
 
-func _apply_friction(delta: float):
+func _apply_friction(delta: float) -> void:
 	var speed := velocity.length()
 	if is_zero_approx(speed):
 		velocity = Vector3.ZERO
@@ -137,7 +139,7 @@ func _apply_friction(delta: float):
 	velocity *= new_speed
 
 
-func _apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float):
+func _apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float) -> void:
 	var current_speed := velocity.dot(wish_dir)
 	var add_speed := max_speed - current_speed
 	
