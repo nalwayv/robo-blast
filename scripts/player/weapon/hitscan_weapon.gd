@@ -1,7 +1,7 @@
 class_name HitScanWeapon
 extends Node3D
 
-const RAY_LENGTH := 100
+# TODO: clean up
 
 @export var weapon_model: Node3D
 @export_group("settings")
@@ -9,70 +9,93 @@ const RAY_LENGTH := 100
 @export var fire_rate := 14.0
 @export var damage := 10
 @export var recoil_force := 0.1
-@export var recoil_speed := 10.0
+@export var recoil_rest_sharpness := 10.0
+@export var recoil_sharpness := 50.0
 @export var camera_shake_intensity := 2.0
 @export_group("effects")
 @export var muzzel_flash: GPUParticles3D
 @export var sparks: PackedScene
-@export_group("ammo")
+@export_group("ammo managers")
 @export var ammo_type: AmmoType.Type
-@export var ammo_handler: AmmoHandler
+@export var ammo_manager: AmmoManager
+@export var energy_manager: EnergyManager
 @export_group("components")
 @export var input_handler: InputHandler
 @export_group("resources")
 @export var camera_shake_bus: CameraShakeBus
 
-var weapon_original_position := Vector3.ZERO
-var manual_can_shot := false
+var weapon_model_original_position := Vector3.ZERO
+var accumulate_recoil := Vector3.ZERO
+var one_shot := false
 
-@onready var shoot_cast: RayCast3D = $ShootCast
 @onready var cooldown_timer: Timer = $CooldownTimer
+@onready var shoot_cast: RayCast3D = $ShootCast
 
 
 func _ready() -> void:
+	weapon_model_original_position = weapon_model.position
+
 	cooldown_timer.wait_time = 1.0 / fire_rate
 
-	weapon_original_position = weapon_model.position
-
-	input_handler.shoot_pressed.connect(func() -> void: manual_can_shot = true)
-	input_handler.shoot_released.connect(func() -> void: manual_can_shot = false)
+	input_handler.shoot_pressed.connect(func() -> void: one_shot = true)
+	input_handler.shoot_released.connect(func() -> void: one_shot = false)
 
 
 func _process(delta: float) -> void:
+	var shot_fired := false
 	var can_fire := cooldown_timer.is_stopped()
-	
-	match weapon_type:
-		WeaponType.Type.AUTOMATIC:
-			if input_handler.is_shooting and can_fire:
-				_try_shoot()
-		WeaponType.Type.MANUAL:
-			if manual_can_shot and can_fire:
-				_try_shoot()
-				manual_can_shot = false
+	var is_shooting := input_handler.is_shooting
+
+	if weapon_type == WeaponType.Type.AUTOMATIC:
+		var ammo_count := ammo_manager.count(ammo_type)
+
+		if is_shooting and can_fire and ammo_count > 0:
+			shot_fired = true
+
+			cooldown_timer.start()
+
+			ammo_manager.use_ammo(ammo_type, 1)
+
+			shoot_cast.force_raycast_update()
+	elif weapon_type == WeaponType.Type.MANUAL:
+		var ammo_count := ammo_manager.count(ammo_type)
+
+		if is_shooting and can_fire and one_shot and ammo_count > 0:
+			one_shot = false
+			shot_fired = true
+
+			cooldown_timer.start()
+
+			ammo_manager.use_ammo(ammo_type, 1)
+	elif weapon_type == WeaponType.Type.ENERGY:
+		if is_shooting and can_fire:
+			if energy_manager.consume(delta):
+				shot_fired = true
+
+				cooldown_timer.start()
+		else:
+			energy_manager.begin_regen_timer()
+
+		energy_manager.regenerate(delta)
+
+	if shot_fired:
+		muzzel_flash.restart()
+
+		camera_shake_bus.emit_shake(camera_shake_intensity)
+
+		shoot_cast.force_raycast_update()
+
+		_add_hit_effect()
+				
+		_damage_target()
+
+		_apply_recoil()
+
 
 	_update_recoil(delta)
 
 
-func _try_shoot() -> void:
-	if ammo_handler.count(ammo_type) == 0:
-		return
-		
-	ammo_handler.use_ammo(ammo_type)
-	
-	cooldown_timer.start()
-	muzzel_flash.restart()
-
-	weapon_model.position += Vector3.BACK * recoil_force
-	
-	camera_shake_bus.emit_shake(camera_shake_intensity)
-		
-	shoot_cast.force_raycast_update()
-
-	_apply_damage_to_target()
-	_instantiate_effect()
-
-
-func _instantiate_effect() -> void:
+func _add_hit_effect() -> void:
 	if not shoot_cast.is_colliding():
 		return
 
@@ -82,7 +105,7 @@ func _instantiate_effect() -> void:
 		hit_spark.global_position = shoot_cast.get_collision_point()
 
 
-func _apply_damage_to_target() -> void:
+func _damage_target() -> void:
 	if not shoot_cast.is_colliding():
 		return
 
@@ -94,8 +117,18 @@ func _apply_damage_to_target() -> void:
 
 
 func _update_recoil(delta: float) -> void:
-	if weapon_model.position.z >= weapon_original_position.z * 0.99:
+	if weapon_model.position.z <= accumulate_recoil.z * 0.99:
 		weapon_model.position = weapon_model.position.lerp(
-			weapon_original_position,
-			recoil_speed * delta)
-	
+			accumulate_recoil,
+			recoil_sharpness * delta)
+	else:
+		weapon_model.position = weapon_model.position.lerp(
+			weapon_model_original_position, 
+			recoil_rest_sharpness * delta)
+
+		accumulate_recoil = weapon_model.position
+
+
+func _apply_recoil() -> void:
+	accumulate_recoil += Vector3.BACK * recoil_force
+	accumulate_recoil = accumulate_recoil.limit_length(0.2)

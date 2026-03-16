@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bgn2tg1s6oiqn"]
+
+[sub_resource type="Curve" id="Curve_x77fm"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_og67c"]
+curve = SubResource("Curve_x77fm")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x77fm"]
+direction = Vector3(0, 0, -1)
+spread = 5.0
+initial_velocity_min = 6.0
+initial_velocity_max = 8.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_og67c")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wqliw"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 3.0
+z_clip_scale = 0.7
+fov_override = 45.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_og67c"]
+material = SubResource("StandardMaterial3D_wqliw")
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="MuzzelFlash" type="GPUParticles3D" unique_id=490162483]
+layers = 2
+emitting = false
+lifetime = 0.06999999999999999
+one_shot = true
+explosiveness = 1.0
+use_fixed_seed = true
+seed = 2222584304
+fixed_fps = 60
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_x77fm")
+draw_pass_1 = SubResource("BoxMesh_og67c")

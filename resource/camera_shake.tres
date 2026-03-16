@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="CameraShakeBus" format=3 uid="uid://bobb77whkpy1l"]
+
+[ext_resource type="Script" uid="uid://d25dgkvuwysil" path="res://scripts/resource/camera_shake_bus.gd" id="1_mihoc"]
+
+[resource]
+script = ExtResource("1_mihoc")
+metadata/_custom_type_script = "uid://d25dgkvuwysil"

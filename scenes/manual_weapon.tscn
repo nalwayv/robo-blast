@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://djaa8dy6wdkse"]
+
+[ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_l7v2r"]
+[ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_wqliw"]
+[ext_resource type="PackedScene" uid="uid://bgn2tg1s6oiqn" path="res://scenes/muzzel_flash.tscn" id="3_60ypr"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l7v2r"]
+z_clip_scale = 0.7
+fov_override = 45.0
+
+[node name="ManualWeapon" unique_id=140406710 node_paths=PackedStringArray("weapon_model", "muzzel_flash") instance=ExtResource("1_l7v2r")]
+weapon_model = NodePath("Weapon/Model")
+fire_rate = 5.0
+recoil_force = 2.0
+camera_shake_intensity = 1.2
+muzzel_flash = NodePath("MuzzelFlash")
+sparks = ExtResource("2_wqliw")
+ammo_type = 1
+
+[node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_60ypr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.20996496, -2.0464354)
+
+[node name="Weapon" type="Node3D" parent="." index="3" unique_id=2098291948]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.3, -1.2485067)
+
+[node name="Model" type="CSGBox3D" parent="Weapon" index="0" unique_id=105055006]
+layers = 2
+material_override = SubResource("StandardMaterial3D_l7v2r")
+size = Vector3(0.15, 0.35, 1.6027832)

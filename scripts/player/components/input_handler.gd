@@ -39,6 +39,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		is_jumping = true
 
 
+
 func _process(_delta: float) -> void:	
 	direction = Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	is_aiming = Input.is_action_pressed("aim")

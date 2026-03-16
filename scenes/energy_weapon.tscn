@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://c87yhbpiehprm"]
+
+[ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_vgrxv"]
+[ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_8d2me"]
+[ext_resource type="PackedScene" uid="uid://bgn2tg1s6oiqn" path="res://scenes/muzzel_flash.tscn" id="3_3yfrj"]
+
+[node name="EnergyWeapon" unique_id=588961484 node_paths=PackedStringArray("weapon_model", "muzzel_flash") instance=ExtResource("1_vgrxv")]
+weapon_model = NodePath("Weapon/Model")
+weapon_type = 2
+fire_rate = 15.0
+damage = 4
+recoil_force = 0.5
+recoil_sharpness = 15.0
+camera_shake_intensity = 0.6
+muzzel_flash = NodePath("MuzzelFlash")
+sparks = ExtResource("2_8d2me")
+ammo_type = 3
+
+[node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_3yfrj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.18140215, -2.2493174)
+
+[node name="Weapon" type="Node3D" parent="." index="3" unique_id=1545751797]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.24189457, -1.1163452)
+
+[node name="Model" type="CSGBox3D" parent="Weapon" index="0" unique_id=1655201406]
+layers = 2
+size = Vector3(0.1640625, 0.36102295, 1.3887482)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Weapon/Model" index="0" unique_id=1687519755]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06139481, -0.7885132)
+layers = 2
+size = Vector3(0.13183594, 0.09777832, 0.4450531)

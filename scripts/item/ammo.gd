@@ -7,6 +7,6 @@ extends Item
 
 
 func _collected(body: Node3D) -> void:
-	var ammo := body.get_node_or_null("%AmmoHandler") as AmmoHandler
+	var ammo := body.get_node_or_null("%AmmoManager") as AmmoManager
 	if ammo:
 		ammo.add_ammo(ammo_type, ammo_amount)

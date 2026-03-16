@@ -53,11 +53,9 @@ var average_velocity: Vector3 :
 		
 		return avg
 
-# Jump timers
-var coyote_timer := Timer.new()
-var jump_buffer_timer := Timer.new()
-var history_velocity_timer := Timer.new()
-
+@onready var coyote_timer: Timer = $CoyoteTimer
+@onready var jump_buffer_timer: Timer = $JumpBufferTimer
+@onready var history_velocity_timer: Timer = $HistoricalVelocityTimer
 @onready var animation: AnimationPlayer = $AnimationPlayer
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
 @onready var model: Node3D = $Model
@@ -78,17 +76,14 @@ func _ready() -> void:
 	# timers
 	coyote_timer.one_shot = true
 	coyote_timer.wait_time = coyote_time
-	add_child(coyote_timer)
 	
 	jump_buffer_timer.one_shot = true
 	jump_buffer_timer.wait_time = jump_buffer_time
-	add_child(jump_buffer_timer)
 	
 	history_velocity_timer.one_shot = false
 	history_velocity_timer.autostart = true
 	history_velocity_timer.wait_time = historical_time_interval
 	history_velocity_timer.timeout.connect(_on_update_historical_velocities)
-	add_child(history_velocity_timer)
 
 	# signals
 	health.died.connect(game_over_menu.game_over)

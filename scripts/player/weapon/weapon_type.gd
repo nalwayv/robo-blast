@@ -5,4 +5,5 @@ extends RefCounted
 enum Type {
     MANUAL,
     AUTOMATIC,
+    ENERGY,
 }
