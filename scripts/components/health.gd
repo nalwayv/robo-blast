@@ -8,6 +8,9 @@ signal health_changed(amount: int)
 @export var max_hitpoints := 100
 
 var is_dead := false
+var ratio: float:
+	get:
+		return float(hitpoints) / max_hitpoints
 var hitpoints := max_hitpoints:
 	get:
 		return hitpoints
@@ -29,7 +32,3 @@ var hitpoints := max_hitpoints:
 
 func _ready() -> void:
 	hitpoints = max_hitpoints
-
-
-func get_ratio() -> float:
-	return hitpoints / max_hitpoints

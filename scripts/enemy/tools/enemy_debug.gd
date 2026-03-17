@@ -1,5 +1,4 @@
 @tool
-class_name EnemyDebug
 extends Node3D
 
 @export var show_debug := false

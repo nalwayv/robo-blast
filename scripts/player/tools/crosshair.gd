@@ -1,5 +1,4 @@
 @tool
-class_name Crosshair
 extends Control
 
 var line_start := 16.0

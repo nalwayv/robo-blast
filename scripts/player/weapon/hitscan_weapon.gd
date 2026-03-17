@@ -47,9 +47,7 @@ func _process(delta: float) -> void:
 	var is_shooting := input_handler.is_shooting
 
 	if weapon_type == WeaponType.Type.AUTOMATIC:
-		var ammo_count := ammo_manager.count(ammo_type)
-
-		if is_shooting and can_fire and ammo_count > 0:
+		if is_shooting and can_fire and ammo_count() > 0:
 			shot_fired = true
 
 			cooldown_timer.start()
@@ -58,9 +56,7 @@ func _process(delta: float) -> void:
 
 			shoot_cast.force_raycast_update()
 	elif weapon_type == WeaponType.Type.MANUAL:
-		var ammo_count := ammo_manager.count(ammo_type)
-
-		if is_shooting and can_fire and one_shot and ammo_count > 0:
+		if is_shooting and can_fire and one_shot and ammo_count() > 0:
 			one_shot = false
 			shot_fired = true
 
@@ -132,3 +128,11 @@ func _update_recoil(delta: float) -> void:
 func _apply_recoil() -> void:
 	accumulate_recoil += Vector3.BACK * recoil_force
 	accumulate_recoil = accumulate_recoil.limit_length(0.2)
+
+
+func ammo_count() -> int:
+	return ammo_manager.count(ammo_type)
+
+
+func energy_ratio() -> float:
+	return energy_manager.ratio

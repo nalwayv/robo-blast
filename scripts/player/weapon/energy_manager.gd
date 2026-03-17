@@ -8,8 +8,16 @@ signal energy_updated
 @export var consumption_rate := 20.0
 @export var regen_rate := 2.0
 @export var recharge_delay := 0.5
+@export_group("bus")
+@export var ammo_bus: AmmoBus
+
 
 var can_regen := false
+var ratio: float:
+    get:
+        var denom := 1.0 if max_energy <= 0 else max_energy
+        return current_energy / denom
+
 
 @onready var current_energy := max_energy
 @onready var regen_timer: Timer = $RegenTimer
@@ -33,6 +41,8 @@ func consume(delta: float) -> bool:
     current_energy = maxf(current_energy - consumption_rate * delta, 0.0)
     energy_updated.emit()
 
+    ammo_bus.emit_energy_updated(ratio)
+
     return true
 
 
@@ -41,10 +51,7 @@ func regenerate(delta: float) -> void:
         current_energy = minf(current_energy + regen_rate * delta, max_energy)
         energy_updated.emit()
 
-
-func get_ratio() -> float:
-    var denom := 1.0 if max_energy <= 0 else max_energy
-    return current_energy / denom
+        ammo_bus.emit_energy_updated(ratio)
 
 
 func begin_regen_timer() -> void:
