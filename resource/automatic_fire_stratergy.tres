@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="AutomaticFireStrategy" format=3 uid="uid://dwln6j5jvynr3"]
+
+[ext_resource type="Script" uid="uid://0p2mpfdvodvd" path="res://scripts/player/resourse/automatic_fire_stratergy.gd" id="1_f5yes"]
+
+[resource]
+script = ExtResource("1_f5yes")
+metadata/_custom_type_script = "uid://0p2mpfdvodvd"

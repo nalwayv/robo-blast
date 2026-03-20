@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="AutomaticSwitchedStrategy" format=3 uid="uid://m23rdnvkhb51"]
+
+[ext_resource type="Script" uid="uid://clgel5dchlc88" path="res://scripts/player/resourse/automatic_switched_strategy.gd" id="1_tsv8p"]
+
+[resource]
+script = ExtResource("1_tsv8p")
+metadata/_custom_type_script = "uid://clgel5dchlc88"

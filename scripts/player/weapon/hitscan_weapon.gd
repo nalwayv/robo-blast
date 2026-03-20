@@ -1,11 +1,12 @@
 class_name HitScanWeapon
 extends Node3D
 
-# TODO: clean up
+const RECOIL_LENGTH_LIMIT := 0.2
 
-@export var weapon_model: Node3D
 @export_group("settings")
-@export var weapon_type: WeaponType.Type
+@export var weapon_model: Node3D
+@export var weapon_fire_strategy: WeaponFireStrategy
+@export var weapon_switched_strategy: WeaponSwitchedStrategy
 @export var fire_rate := 14.0
 @export var damage := 10
 @export var recoil_force := 0.1
@@ -21,12 +22,26 @@ extends Node3D
 @export var energy_manager: EnergyManager
 @export_group("components")
 @export var input_handler: InputHandler
-@export_group("resources")
+@export_group("bus")
 @export var camera_shake_bus: CameraShakeBus
+@export var ammo_bus: AmmoBus
 
 var weapon_model_original_position := Vector3.ZERO
 var accumulate_recoil := Vector3.ZERO
 var one_shot := false
+var ammo_count: int:
+	get:
+		if not ammo_manager:
+			return 0
+
+		return ammo_manager.count(ammo_type)
+var energy_ratio: float:
+	get:
+		if not energy_manager:
+			return 0.0
+
+		return energy_manager.ratio
+
 
 @onready var cooldown_timer: Timer = $CooldownTimer
 @onready var shoot_cast: RayCast3D = $ShootCast
@@ -42,53 +57,18 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	var shot_fired := false
-	var can_fire := cooldown_timer.is_stopped()
-	var is_shooting := input_handler.is_shooting
+	if weapon_fire_strategy:
+		var shot_fired := weapon_fire_strategy.shoot(self, delta)
 
-	if weapon_type == WeaponType.Type.AUTOMATIC:
-		if is_shooting and can_fire and ammo_count() > 0:
-			shot_fired = true
-
+		if shot_fired:
 			cooldown_timer.start()
+			muzzel_flash.restart()
+			camera_shake_bus.emit_shake(camera_shake_intensity)
+			_add_hit_effect()
+			_damage_target()
+			_apply_recoil()
 
-			ammo_manager.use_ammo(ammo_type, 1)
-
-			shoot_cast.force_raycast_update()
-	elif weapon_type == WeaponType.Type.MANUAL:
-		if is_shooting and can_fire and one_shot and ammo_count() > 0:
-			one_shot = false
-			shot_fired = true
-
-			cooldown_timer.start()
-
-			ammo_manager.use_ammo(ammo_type, 1)
-	elif weapon_type == WeaponType.Type.ENERGY:
-		if is_shooting and can_fire:
-			if energy_manager.consume(delta):
-				shot_fired = true
-
-				cooldown_timer.start()
-		else:
-			energy_manager.begin_regen_timer()
-
-		energy_manager.regenerate(delta)
-
-	if shot_fired:
-		muzzel_flash.restart()
-
-		camera_shake_bus.emit_shake(camera_shake_intensity)
-
-		shoot_cast.force_raycast_update()
-
-		_add_hit_effect()
-				
-		_damage_target()
-
-		_apply_recoil()
-
-
-	_update_recoil(delta)
+		_update_recoil(delta)
 
 
 func _add_hit_effect() -> void:
@@ -127,12 +107,22 @@ func _update_recoil(delta: float) -> void:
 
 func _apply_recoil() -> void:
 	accumulate_recoil += Vector3.BACK * recoil_force
-	accumulate_recoil = accumulate_recoil.limit_length(0.2)
+	accumulate_recoil = accumulate_recoil.limit_length(RECOIL_LENGTH_LIMIT)
 
 
-func ammo_count() -> int:
-	return ammo_manager.count(ammo_type)
+# region [has_method]
+
+func unequip() -> void:
+	visible = false
+	set_process(false)
 
 
-func energy_ratio() -> float:
-	return energy_manager.ratio
+func equip() -> void:
+	visible = true
+	set_process(true)
+
+
+func report_switched() -> void:
+	weapon_switched_strategy.report_switch(self)
+
+# endregion

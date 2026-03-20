@@ -3,60 +3,30 @@ extends Node
 
 @export_group("label")
 @export var ammo_label: Label
-# @export_group("componenets")
-# @export var weapon_manager: WeaponManager
-# @export var ammo_manager: AmmoManager
-# @export var energy_manager: EnergyManager
 @export_group("ammo bus")
 @export var ammo_bus: AmmoBus
-
 
 var active_weapon_ammo_type := AmmoType.Type.UNDEFINED
 
 
 func _ready() -> void:
-	# ammo_manager.ammo_updated.connect(_on_ammo_updated)
-	# energy_manager.energy_updated.connect(_on_energy_updated)
-	# weapon_manager.weapon_switched.connect(_on_weapon_switched)
 
-	ammo_bus.ammo_updated.connect(
-		func(count: int, is_active: bool) -> void:
-			if is_active:
-				ammo_label.text = str(count)
-	)
-
-	ammo_bus.energy_updated.connect(
-		func(ratio: float) -> void:
-			ammo_label.text = "%.0f" % (ratio * 100.0)
-	)
-	
-	ammo_bus.weapon_switched.connect(
-		func(count: int) -> void:
-			ammo_label.text = str(count)
-	)
-	
-	ammo_bus.energy_switched.connect(
-		func(ratio: float) -> void:
-			ammo_label.text = "%.0f" % (ratio * 100.0)
-	)
+	ammo_bus.ammo_updated.connect(_on_ammo_updated)
+	ammo_bus.energy_updated.connect(_on_energy_updated)
+	ammo_bus.weapon_switched.connect(_on_weapon_switched)
+	ammo_bus.energy_switched.connect(_on_energy_switched)
 
 
-# func _on_ammo_updated(ammo_type: AmmoType.Type) -> void:
-# 	var is_active := ammo_type == active_weapon_ammo_type
-# 	if is_active:
-# 		var amount := ammo_manager.count(ammo_type)
-# 		ammo_label.text = str(amount)
+func _on_ammo_updated(count: int, is_active: bool) -> void:
+	if is_active:
+		ammo_label.text = str(count)
+
+func _on_energy_updated(ratio: float) -> void:
+	ammo_label.text = "%.0f" % (ratio * 100.0)
 
 
-# func _on_energy_updated() -> void:
-# 	ammo_label.text = "%.0f" % (energy_manager.get_ratio() * 100.0)
+func _on_weapon_switched(count: int) -> void:
+	ammo_label.text = str(count)
 
-
-# func _on_weapon_switched(weapon_type: WeaponType.Type, ammo_type: AmmoType.Type) -> void:
-# 	if weapon_type == WeaponType.Type.ENERGY:
-# 		ammo_label.text = "%.0f" % (energy_manager.get_ratio() * 100.0)
-# 	else:
-# 		active_weapon_ammo_type = ammo_type
-		
-# 		var ammo_count := ammo_manager.count(ammo_type)
-# 		ammo_label.text = str(ammo_count)
+func _on_energy_switched(ratio: float) -> void:
+	ammo_label.text = "%.0f" % (ratio * 100.0)

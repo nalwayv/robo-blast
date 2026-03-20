@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ManualSwitchedStrategy" format=3 uid="uid://bqn1dya2la3im"]
+
+[ext_resource type="Script" uid="uid://b6bwj22y6goi8" path="res://scripts/player/resourse/manual_switched_strategy.gd" id="1_xau3s"]
+
+[resource]
+script = ExtResource("1_xau3s")
+metadata/_custom_type_script = "uid://b6bwj22y6goi8"

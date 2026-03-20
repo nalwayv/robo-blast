@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="EnergyFireStrategy" format=3 uid="uid://kplw0tq7cocl"]
+
+[ext_resource type="Script" uid="uid://dsayyvyldymvn" path="res://scripts/player/resourse/energy_fire_startergy.gd" id="1_f04cb"]
+
+[resource]
+script = ExtResource("1_f04cb")
+metadata/_custom_type_script = "uid://dsayyvyldymvn"

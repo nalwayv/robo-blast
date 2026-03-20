@@ -1,4 +1,5 @@
-class_name AmmoBus
+# TODO: rename 
+class_name AmmoBus 
 extends Resource
 
 
@@ -9,6 +10,7 @@ signal energy_switched(ratio: float)
 
 
 var active_ammo_type: AmmoType.Type = AmmoType.Type.UNDEFINED
+
 
 # region [helper functions]
 func emit_ammo_updated(type: AmmoType.Type, count: int) -> void:

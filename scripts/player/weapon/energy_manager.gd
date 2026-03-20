@@ -1,8 +1,6 @@
 class_name EnergyManager
 extends Node
 
-signal energy_updated
-
 @export_group("energy")
 @export var max_energy := 10.0
 @export var consumption_rate := 20.0
@@ -11,13 +9,11 @@ signal energy_updated
 @export_group("bus")
 @export var ammo_bus: AmmoBus
 
-
 var can_regen := false
 var ratio: float:
     get:
         var denom := 1.0 if max_energy <= 0 else max_energy
         return current_energy / denom
-
 
 @onready var current_energy := max_energy
 @onready var regen_timer: Timer = $RegenTimer
@@ -39,7 +35,6 @@ func consume(delta: float) -> bool:
     regen_timer.stop()
 
     current_energy = maxf(current_energy - consumption_rate * delta, 0.0)
-    energy_updated.emit()
 
     ammo_bus.emit_energy_updated(ratio)
 
@@ -49,7 +44,6 @@ func consume(delta: float) -> bool:
 func regenerate(delta: float) -> void:
     if can_regen and current_energy < max_energy:
         current_energy = minf(current_energy + regen_rate * delta, max_energy)
-        energy_updated.emit()
 
         ammo_bus.emit_energy_updated(ratio)
 
