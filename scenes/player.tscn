@@ -22,12 +22,9 @@
 [ext_resource type="Script" uid="uid://dyilm6kcieswb" path="res://scripts/player/weapon/energy_manager.gd" id="13_i4ail"]
 [ext_resource type="Script" uid="uid://d25dgkvuwysil" path="res://scripts/player/resourse/camera_shake_bus.gd" id="15_60mlk"]
 [ext_resource type="PackedScene" uid="uid://c87yhbpiehprm" path="res://scenes/energy_weapon.tscn" id="17_i4ail"]
-[ext_resource type="Resource" uid="uid://x6hmrrum0rmc" path="res://resource/manual_fire_strategy.tres" id="18_ke2ow"]
-[ext_resource type="Resource" uid="uid://bqn1dya2la3im" path="res://resource/manual_switched_strategy.tres" id="19_pf23h"]
-[ext_resource type="Resource" uid="uid://dwln6j5jvynr3" path="res://resource/automatic_fire_stratergy.tres" id="20_ujl30"]
-[ext_resource type="Resource" uid="uid://kplw0tq7cocl" path="res://resource/energy_fire_stratergy.tres" id="22_31cv2"]
-[ext_resource type="Resource" uid="uid://m23rdnvkhb51" path="res://resource/automatic_switched_strategy.tres" id="22_dt7fs"]
-[ext_resource type="Resource" uid="uid://bybyflg5g4gqp" path="res://resource/energy_switched_strategy.tres" id="25_wqfne"]
+[ext_resource type="Resource" uid="uid://x6hmrrum0rmc" path="res://resource/manual_strategy.tres" id="18_ke2ow"]
+[ext_resource type="Resource" uid="uid://dwln6j5jvynr3" path="res://resource/automatic_stratergy.tres" id="20_ujl30"]
+[ext_resource type="Resource" uid="uid://kplw0tq7cocl" path="res://resource/energy_stratergy.tres" id="22_31cv2"]
 
 [sub_resource type="Resource" id="Resource_i4ail"]
 script = ExtResource("15_60mlk")
@@ -164,6 +161,7 @@ player = NodePath("../..")
 mouse_capture = NodePath("../../MouseCapture")
 input_handler = NodePath("../../InputHandler")
 camera_controller = NodePath("../../CameraController")
+state_type = 1
 
 [node name="InputHandler" type="Node" parent="." unique_id=1691015048]
 script = ExtResource("2_a8ls1")
@@ -233,8 +231,7 @@ script = ExtResource("3_fjrip")
 input_handler = NodePath("../../../../InputHandler")
 
 [node name="ManualWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=140406710 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("3_tuyoq")]
-weapon_fire_strategy = ExtResource("18_ke2ow")
-weapon_switched_strategy = ExtResource("19_pf23h")
+weapon_strategy = ExtResource("18_ke2ow")
 ammo_manager = NodePath("../../../../../AmmoManager")
 energy_manager = NodePath("../../../../../EnergyManager")
 input_handler = NodePath("../../../../../InputHandler")
@@ -242,8 +239,7 @@ camera_shake_bus = ExtResource("5_i4ail")
 ammo_bus = ExtResource("13_a38lo")
 
 [node name="AutomaticWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=122189766 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("5_fjrip")]
-weapon_fire_strategy = ExtResource("20_ujl30")
-weapon_switched_strategy = ExtResource("22_dt7fs")
+weapon_strategy = ExtResource("20_ujl30")
 ammo_manager = NodePath("../../../../../AmmoManager")
 energy_manager = NodePath("../../../../../EnergyManager")
 input_handler = NodePath("../../../../../InputHandler")
@@ -251,9 +247,7 @@ camera_shake_bus = ExtResource("5_i4ail")
 ammo_bus = ExtResource("13_a38lo")
 
 [node name="EnergyWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=588961484 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("17_i4ail")]
-weapon_fire_strategy = ExtResource("22_31cv2")
-weapon_switched_strategy = ExtResource("25_wqfne")
-damage = 2
+weapon_strategy = ExtResource("22_31cv2")
 ammo_type = 2
 ammo_manager = NodePath("../../../../../AmmoManager")
 energy_manager = NodePath("../../../../../EnergyManager")

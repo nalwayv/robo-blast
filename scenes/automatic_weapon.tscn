@@ -3,19 +3,23 @@
 [ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_vpl36"]
 [ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_7q7np"]
 [ext_resource type="PackedScene" uid="uid://bgn2tg1s6oiqn" path="res://scenes/muzzel_flash.tscn" id="3_l5acl"]
+[ext_resource type="Script" uid="uid://b2kqh0d6sfbtk" path="res://scripts/player/weapon/hitscan_damage.gd" id="4_6p0ye"]
+[ext_resource type="Script" uid="uid://bcqktcdnwgjo4" path="res://scripts/player/weapon/hitscan_animation.gd" id="5_3w7as"]
+[ext_resource type="Script" uid="uid://crr6hsvwu5ed4" path="res://scripts/player/weapon/hitscan_effects.gd" id="6_u1flj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xfrr"]
 albedo_color = Color(0.581033, 0.58103293, 0.5810329, 1)
 z_clip_scale = 0.7
 fov_override = 45.0
 
-[node name="AutomaticWeapon" unique_id=122189766 node_paths=PackedStringArray("weapon_model", "muzzel_flash") instance=ExtResource("1_vpl36")]
+[node name="AutomaticWeapon" unique_id=122189766 node_paths=PackedStringArray("weapon_model", "muzzel_flash", "hitscan_damage", "hitscan_animation", "hitscan_effect") instance=ExtResource("1_vpl36")]
 weapon_model = NodePath("Weapon/Model")
-weapon_type = 1
-recoil_force = 0.5
-camera_shake_intensity = 1.0
 muzzel_flash = NodePath("MuzzelFlash")
 sparks = ExtResource("2_7q7np")
+hitscan_damage = NodePath("Damage")
+hitscan_animation = NodePath("Animation")
+hitscan_effect = NodePath("Effects")
+camera_shake_intensity = 1.0
 
 [node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_l5acl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.21309765, -1.4319963)
@@ -27,3 +31,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.3, -0.94015706)
 layers = 2
 material_override = SubResource("StandardMaterial3D_0xfrr")
 size = Vector3(0.15, 0.35, 0.986084)
+
+[node name="Damage" type="Node" parent="." index="4" unique_id=552562721]
+script = ExtResource("4_6p0ye")
+damage = 8
+
+[node name="Animation" type="Node" parent="." index="5" unique_id=1515447987 node_paths=PackedStringArray("weapon_model")]
+script = ExtResource("5_3w7as")
+weapon_model = NodePath("../Weapon/Model")
+
+[node name="Effects" type="Node" parent="." index="6" unique_id=555360339 node_paths=PackedStringArray("muzzel_flash")]
+script = ExtResource("6_u1flj")
+sparks = ExtResource("2_7q7np")
+muzzel_flash = NodePath("../MuzzelFlash")

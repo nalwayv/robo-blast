@@ -1,6 +1,8 @@
 class_name State
 extends Node
 
+@export var state_type: PlayerStates.Type
+
 @warning_ignore("unused_signal")
 signal transitioned(state: PlayerStates.Type)
 

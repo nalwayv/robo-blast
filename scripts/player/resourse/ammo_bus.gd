@@ -1,4 +1,3 @@
-# TODO: rename 
 class_name AmmoBus 
 extends Resource
 

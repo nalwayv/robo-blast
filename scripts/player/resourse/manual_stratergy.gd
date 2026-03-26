@@ -1,5 +1,6 @@
 class_name ManualFireStrategy
-extends WeaponFireStrategy
+extends WeaponStrategy
+
 
 ## This strategy allows the weapon to fire only once per shoot button press, and requires ammo to shoot.
 func shoot(weapon: HitScanWeapon, _delta: float) -> bool:
@@ -13,3 +14,9 @@ func shoot(weapon: HitScanWeapon, _delta: float) -> bool:
 		return true
 
 	return false
+
+
+func on_switched(weapon: HitScanWeapon) -> void:
+	if not weapon.ammo_bus:
+		return
+	weapon.ammo_bus.emit_weapon_switch(weapon.ammo_type, weapon.ammo_count)

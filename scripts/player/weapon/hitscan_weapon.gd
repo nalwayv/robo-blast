@@ -1,18 +1,11 @@
 class_name HitScanWeapon
 extends Node3D
 
-const RECOIL_LENGTH_LIMIT := 0.2
 
 @export_group("settings")
 @export var weapon_model: Node3D
-@export var weapon_fire_strategy: WeaponFireStrategy
-@export var weapon_switched_strategy: WeaponSwitchedStrategy
+@export var weapon_strategy: WeaponStrategy
 @export var fire_rate := 14.0
-@export var damage := 10
-@export var recoil_force := 0.1
-@export var recoil_rest_sharpness := 10.0
-@export var recoil_sharpness := 50.0
-@export var camera_shake_intensity := 2.0
 @export_group("effects")
 @export var muzzel_flash: GPUParticles3D
 @export var sparks: PackedScene
@@ -22,9 +15,14 @@ const RECOIL_LENGTH_LIMIT := 0.2
 @export var energy_manager: EnergyManager
 @export_group("components")
 @export var input_handler: InputHandler
+@export var hitscan_damage: HitScanDamageTarget
+@export var hitscan_animation: HitScanAnimation
+@export var hitscan_effect: HitScanEffects
 @export_group("bus")
 @export var camera_shake_bus: CameraShakeBus
 @export var ammo_bus: AmmoBus
+@export_subgroup("camera shake intensity")
+@export var camera_shake_intensity := 2.0
 
 var weapon_model_original_position := Vector3.ZERO
 var accumulate_recoil := Vector3.ZERO
@@ -42,7 +40,6 @@ var energy_ratio: float:
 
 		return energy_manager.ratio
 
-
 @onready var cooldown_timer: Timer = $CooldownTimer
 @onready var shoot_cast: RayCast3D = $ShootCast
 
@@ -57,18 +54,21 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if weapon_fire_strategy:
-		var shot_fired := weapon_fire_strategy.shoot(self, delta)
+	if weapon_strategy:
+		var shot_fired := weapon_strategy.shoot(self, delta)
 
 		if shot_fired:
-			cooldown_timer.start()
-			muzzel_flash.restart()
-			camera_shake_bus.emit_shake(camera_shake_intensity)
-			_add_hit_effect()
-			_damage_target()
-			_apply_recoil()
+			shoot_cast.force_raycast_update()
 
-		_update_recoil(delta)
+			cooldown_timer.start()
+			camera_shake_bus.emit_shake(camera_shake_intensity)
+
+			hitscan_effect.restart_muzzel_flash()
+			hitscan_animation.apply_recoil_animation()
+
+			if shoot_cast.is_colliding():
+				hitscan_effect.add_hit_effect(shoot_cast.get_collision_point())
+				hitscan_damage.apply_damage_to_target(shoot_cast.get_collider())
 
 
 func _add_hit_effect() -> void:
@@ -79,35 +79,6 @@ func _add_hit_effect() -> void:
 	if hit_spark:
 		get_tree().current_scene.add_child(hit_spark)
 		hit_spark.global_position = shoot_cast.get_collision_point()
-
-
-func _damage_target() -> void:
-	if not shoot_cast.is_colliding():
-		return
-
-	var collider := shoot_cast.get_collider()
-	if collider is CharacterBody3D:
-		var health := collider.get_node_or_null("%Health") as Health
-		if health:
-			health.hitpoints -= damage
-
-
-func _update_recoil(delta: float) -> void:
-	if weapon_model.position.z <= accumulate_recoil.z * 0.99:
-		weapon_model.position = weapon_model.position.lerp(
-			accumulate_recoil,
-			recoil_sharpness * delta)
-	else:
-		weapon_model.position = weapon_model.position.lerp(
-			weapon_model_original_position, 
-			recoil_rest_sharpness * delta)
-
-		accumulate_recoil = weapon_model.position
-
-
-func _apply_recoil() -> void:
-	accumulate_recoil += Vector3.BACK * recoil_force
-	accumulate_recoil = accumulate_recoil.limit_length(RECOIL_LENGTH_LIMIT)
 
 
 # region [has_method]
@@ -123,6 +94,6 @@ func equip() -> void:
 
 
 func report_switched() -> void:
-	weapon_switched_strategy.report_switch(self)
+	weapon_strategy.on_switched(self)
 
 # endregion

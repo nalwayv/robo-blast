@@ -1,6 +1,7 @@
 class_name Ammo
 extends Item
 
+
 @export_category("ammo")
 @export var ammo_amount := 0
 @export var ammo_type: AmmoType.Type

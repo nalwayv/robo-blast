@@ -35,7 +35,6 @@ func _physics_update(delta: float) -> void:
 	player.move_and_slide()
 
 	_handle_jump_buffering()
-	
 	_transition_to_grounded()
 
 

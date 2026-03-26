@@ -2,11 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/item/ammo.gd" id="1_ieo5p"]
 
-[sub_resource type="Curve" id="Curve_ieo5p"]
-_limits = [-1.0, 1.0, 0.0, 1.0]
-_data = [Vector2(0, -1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
 [sub_resource type="BoxMesh" id="BoxMesh_jrhku"]
 size = Vector3(0.5, 0.5, 0.5)
 
@@ -17,7 +12,6 @@ radius = 1.0
 
 [node name="AmmoPickup" type="Area3D" unique_id=1552331146]
 script = ExtResource("1_ieo5p")
-input_curve = SubResource("Curve_ieo5p")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=1628967609]
 mesh = SubResource("BoxMesh_jrhku")

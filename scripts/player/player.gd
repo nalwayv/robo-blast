@@ -228,6 +228,7 @@ func _update_model(delta: float) -> void:
 
 func _on_damage_taken() -> void:
 	animation.stop()
+	
 	if animation.has_animation("take_damage"):
 		animation.play("take_damage")
 		

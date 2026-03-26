@@ -63,13 +63,13 @@ func zoom_out(delta: float) -> void:
 func rotate_camera(mouse_motion: Vector2, delta: float) -> void:
 	target_rotation += Vector2(mouse_motion.y, mouse_motion.x) * radians_per_count
 	target_rotation.x = clampf(
-		target_rotation.x, 
+		target_rotation.x,
 		deg_to_rad(MIN_X_ROTATION), 
 		deg_to_rad(MAX_X_ROTATION)
 	)
 	
-	var t := 1.0 - exp(-smoothing_weight * delta)
-	current_rotation = current_rotation.lerp(target_rotation, t)
+	var weight := 1.0 - exp(-smoothing_weight * delta)
+	current_rotation = current_rotation.lerp(target_rotation, weight)
 	
 	basis = Basis.from_euler(Vector3(current_rotation.x, 0.0, 0.0))
 

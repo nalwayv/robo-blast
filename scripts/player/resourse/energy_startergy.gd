@@ -1,5 +1,5 @@
-class_name EnergyFireStrategy
-extends WeaponFireStrategy
+class_name EnergyStrategy
+extends WeaponStrategy
 
 
 ## This strategy consumes energy to shoot, and regenerates energy when not shooting.
@@ -16,3 +16,10 @@ func shoot(weapon: HitScanWeapon, delta: float) -> bool:
 
 	weapon.energy_manager.regenerate(delta)
 	return false
+
+
+func on_switched(weapon: HitScanWeapon) -> void:
+	if not weapon.ammo_bus:
+		return
+	
+	weapon.ammo_bus.emit_energy_switched(weapon.energy_ratio)

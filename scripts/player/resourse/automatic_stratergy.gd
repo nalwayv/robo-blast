@@ -1,5 +1,5 @@
 class_name AutomaticFireStrategy
-extends WeaponFireStrategy
+extends WeaponStrategy
 
 
 ## This strategy allows the weapon to fire continuously as long as the shoot button is held down, and there is ammo available.
@@ -13,3 +13,9 @@ func shoot(weapon: HitScanWeapon, _delta: float) -> bool:
 		return true
 
 	return false
+
+
+func on_switched(weapon: HitScanWeapon) -> void:
+	if not weapon.ammo_bus:
+		return
+	weapon.ammo_bus.emit_weapon_switch(weapon.ammo_type, weapon.ammo_count)
