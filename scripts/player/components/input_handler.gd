@@ -10,7 +10,6 @@ signal equip_previous
 var direction := Vector2.ZERO
 var is_jumping := false
 var is_aiming := false
-var is_foobar := false
 var is_shooting := false
 
 

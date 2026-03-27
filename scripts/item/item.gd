@@ -5,11 +5,9 @@ extends Area3D
 @export var spring_frequency := 4.0
 @export var spring_nudge := 0.8
 @export var rotation_speed := 1.5
+@export var model: Node3D
 
-var time := 0.0
 var spring := Vector3DampedSpring.new()
-
-@onready var mesh: MeshInstance3D = $Mesh
 
 
 func _ready() -> void:
@@ -26,7 +24,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	spring.step(delta)
 	position = spring.position
-	mesh.rotate_y(rotation_speed * delta)
+	model.rotate_y(rotation_speed * delta)
 
 
 func on_body_entered(body: Node3D) -> void:

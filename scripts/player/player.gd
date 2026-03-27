@@ -66,9 +66,9 @@ func _ready() -> void:
 	add_to_group("player")
 
 	# kinematic jump settings
-	jump_velocity = (2.0 * jump_height) / jump_time_to_peak
-	jump_gravity = (-2.0 * jump_height) / (jump_time_to_peak * jump_time_to_peak)
-	fall_gravity = (-2.0 * jump_height) / (jump_time_to_decent * jump_time_to_decent)
+	jump_velocity = 2.0 * jump_height / jump_time_to_peak
+	jump_gravity = -2.0 * jump_height / pow(jump_time_to_peak, 2.0)
+	fall_gravity = -2.0 * jump_height / pow(jump_time_to_decent, 2.0)
 	
 	# historical velocities
 	historical_velocities.resize(max_historical_size)
@@ -153,7 +153,7 @@ func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float) ->
 
 	if add_speed <= 0.0:
 		return
-	
+		
 	var accel_speed := minf(air_acceleration * wish_speed * delta, add_speed)
 	velocity += wish_dir * accel_speed
 
