@@ -1,6 +1,6 @@
 using Godot;
 
-namespace RoboBlast.UI;
+namespace RoboBlast.scripts.ui;
 
 public partial class GameOverMenu : Control
 {

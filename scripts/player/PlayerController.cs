@@ -1,9 +1,9 @@
 using Godot;
 using Godot.Collections;
-using RoboBlast.Components;
-using RoboBlast.Player.Resourse;
+using RoboBlast.scripts.components;
+using RoboBlast.scripts.player.resourse;
 
-namespace RoboBlast.Player;
+namespace RoboBlast.scripts.player;
 
 public partial class PlayerController : CharacterBody3D
 {
@@ -35,25 +35,23 @@ public partial class PlayerController : CharacterBody3D
     [ExportGroup("Misc")]
     [Export] private Node3D _model;
     [Export] private float _modelRotationSpeed = 50f;
-        
-        
+    
     private float _jumpVelocity;
     private float _jumpGravity;
     private float _fallGravity;
 
     private Array<Vector3> _historicalVelocities;
 
-    public Timer CoyoteTimer => _coyoteTimer;
-    public Timer JumpBufferTimer => _jumpBufferTimer;
-    
+    public Timer CoyoteTimer { get; private set; }
+    public Timer JumpBufferTimer { get; private set; }
+
     #region @OnReady
-    private Timer _coyoteTimer;
-    private Timer _jumpBufferTimer;
     private Timer _historicalVelocityTimer;
     private RayCast3D _edgeRayCast;
     private AnimationPlayer _animation;
     private Health _health;
     #endregion
+    
     /// <summary>
     /// Average velocity over time.
     /// </summary>
@@ -81,12 +79,12 @@ public partial class PlayerController : CharacterBody3D
     {
         AddToGroup("player");
             
-        _coyoteTimer = GetNode<Timer>("CoyoteTimer");
-        _jumpBufferTimer = GetNode<Timer>("JumpBufferTimer");
+        CoyoteTimer = GetNode<Timer>("CoyoteTimer");
+        JumpBufferTimer = GetNode<Timer>("JumpBufferTimer");
         _historicalVelocityTimer = GetNode<Timer>("HistoricalVelocityTimer");
-        _edgeRayCast = GetNode<RayCast3D>("EdgeRayCast");
+        _edgeRayCast = GetNode<RayCast3D>("NearEdgeRayCast");
         _animation = GetNode<AnimationPlayer>("AnimationPlayer");
-        _health = GetNode<Health>("Health");
+        _health = GetNode<Health>("%Health");
             
         _jumpVelocity = 2f * _maxJumpHeight / _timeToPeak;
         _jumpGravity = -2f * _maxJumpHeight / Mathf.Pow(_timeToPeak, 2f);
@@ -96,11 +94,11 @@ public partial class PlayerController : CharacterBody3D
         _historicalVelocities.Resize(MaxVelocityHistory);
             
         // Timers
-        _coyoteTimer.OneShot = true;
-        _coyoteTimer.WaitTime = _coyoteTime;
+        CoyoteTimer.OneShot = true;
+        CoyoteTimer.WaitTime = _coyoteTime;
             
-        _jumpBufferTimer.OneShot = true;
-        _jumpBufferTimer.WaitTime = _jumpBufferTime;
+        JumpBufferTimer.OneShot = true;
+        JumpBufferTimer.WaitTime = _jumpBufferTime;
             
         _historicalVelocityTimer.OneShot = false;
         _historicalVelocityTimer.WaitTime = HistoricalVelocityTimerInterval;

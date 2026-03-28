@@ -1,7 +1,7 @@
 using Godot;
-using RoboBlast.Player.Weapon;
+using RoboBlast.scripts.player.weapon;
 
-namespace RoboBlast.Player.Resourse;
+namespace RoboBlast.scripts.player.resourse;
 
 public partial class WeaponStrategy : Resource
 {

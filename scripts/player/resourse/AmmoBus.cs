@@ -1,8 +1,8 @@
 using Godot;
 using System;
-using RoboBlast.Item;
+using RoboBlast.scripts.item;
 
-namespace RoboBlast.Player.Resourse;
+namespace RoboBlast.scripts.player.resourse;
 
 public partial class AmmoBus : Resource
 {

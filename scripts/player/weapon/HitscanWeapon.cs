@@ -1,9 +1,10 @@
 using Godot;
-using RoboBlast.Item;
-using RoboBlast.Player.Components;
-using RoboBlast.Player.Resourse;
+using RoboBlast.scripts.item;
+using RoboBlast.scripts.player.components;
+using RoboBlast.scripts.player.resourse;
 
-namespace RoboBlast.Player.Weapon;
+namespace RoboBlast.scripts.player.weapon;
+
 
 public partial class HitscanWeapon : Node3D, IEquipable, ISwitchable
 {

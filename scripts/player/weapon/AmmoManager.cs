@@ -1,9 +1,9 @@
 using Godot;
 using Godot.Collections;
-using RoboBlast.Item;
-using RoboBlast.Player.Resourse;
+using RoboBlast.scripts.item;
+using RoboBlast.scripts.player.resourse;
 
-namespace RoboBlast.Player.Weapon;
+namespace RoboBlast.scripts.player.weapon;
 
 public partial class AmmoManager : Node
 {

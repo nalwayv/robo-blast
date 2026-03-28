@@ -1,7 +1,8 @@
 using Godot;
 using System;
 
-namespace RoboBlast.Player.States;
+namespace RoboBlast.scripts.player.states;
+
 
 public partial class State : Node
 {

@@ -1,7 +1,7 @@
 using Godot;
-using RoboBlast.Utils;
+using RoboBlast.scripts.utils;
 
-namespace RoboBlast.Item;
+namespace RoboBlast.scripts.item;
 
 public partial class Item : Area3D
 {

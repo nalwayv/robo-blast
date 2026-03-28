@@ -1,7 +1,7 @@
 using Godot;
-using System;
 
-namespace RoboBlast.Player.Weapon;
+namespace RoboBlast.scripts.player.weapon;
+
 
 public partial class WeaponAnimation : Node
 {

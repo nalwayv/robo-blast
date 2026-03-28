@@ -1,7 +1,8 @@
 using Godot;
 using System;
 
-namespace RoboBlast.Player.Resourse;
+namespace RoboBlast.scripts.player.resourse;
+
 
 public partial class CameraBus : Resource
 {

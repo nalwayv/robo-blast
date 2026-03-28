@@ -1,6 +1,7 @@
 using Godot;
 
-namespace RoboBlast.Player.States;
+namespace RoboBlast.scripts.player.states;
+
 
 public partial class StateMachine : Node
 {

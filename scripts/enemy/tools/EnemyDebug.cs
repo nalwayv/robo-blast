@@ -1,6 +1,6 @@
 using Godot;
 
-namespace RoboBlast.Enemy.Tools;
+namespace RoboBlast.scripts.enemy.tools;
 
 [Tool]
 public partial class EnemyDebug : Node3D

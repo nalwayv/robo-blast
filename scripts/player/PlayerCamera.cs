@@ -1,8 +1,10 @@
 using Godot;
-using RoboBlast.Utils;
-using RoboBlast.Player.Resourse;
+using RoboBlast.scripts.player.resourse;
+using RoboBlast.scripts.utils;
 
-namespace RoboBlast.Player;
+
+namespace RoboBlast.scripts.player;
+
 
 public partial class PlayerCamera : Camera3D
 {

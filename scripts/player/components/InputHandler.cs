@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-namespace RoboBlast.Player.Components;
+namespace RoboBlast.scripts.player.components;
 
 public partial class InputHandler : Node
 {

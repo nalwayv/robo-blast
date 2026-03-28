@@ -1,6 +1,6 @@
 using Godot;
 
- namespace RoboBlast.Player;
+namespace RoboBlast.scripts.player;
  
 public partial class CameraController : Node3D
 {

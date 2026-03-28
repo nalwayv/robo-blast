@@ -1,7 +1,7 @@
 using Godot;
 using Godot.Collections;
 
-namespace RoboBlast.Player.Tools;
+namespace RoboBlast.scripts.player.tools;
 
 [Tool]
 public partial class Crosshair : Control

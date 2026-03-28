@@ -1,4 +1,4 @@
-namespace RoboBlast.Item;
+namespace RoboBlast.scripts.item;
 
 public enum AmmoTypes
 {

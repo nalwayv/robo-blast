@@ -1,4 +1,5 @@
-namespace RoboBlast.Player.Weapon;
+namespace RoboBlast.scripts.player.weapon;
+
 
 public interface IEquipable
 {

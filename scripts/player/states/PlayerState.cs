@@ -1,4 +1,5 @@
-namespace RoboBlast.Player.States;
+namespace RoboBlast.scripts.player.states;
+
 
 public enum PlayerState
 {

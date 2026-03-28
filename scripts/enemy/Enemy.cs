@@ -1,8 +1,8 @@
 using Godot;
-using RoboBlast.Components;
-using RoboBlast.Player;
+using RoboBlast.scripts.components;
+using RoboBlast.scripts.player;
 
-namespace RoboBlast.Enemy;
+namespace RoboBlast.scripts.enemy;
 
 public partial class Enemy : CharacterBody3D
 {

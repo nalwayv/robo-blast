@@ -1,6 +1,7 @@
 using Godot;
 
-namespace RoboBlast.Player.Components;
+namespace RoboBlast.scripts.player.components;
+
 
 public partial class MouseHandler : Node
 {

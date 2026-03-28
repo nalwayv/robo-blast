@@ -1,7 +1,8 @@
 using Godot;
-using RoboBlast.Player.Resourse;
+using RoboBlast.scripts.player.resourse;
 
-namespace RoboBlast.Player.Weapon;
+namespace RoboBlast.scripts.player.weapon;
+
 
 public partial class AmmoPresenter : Node
 {

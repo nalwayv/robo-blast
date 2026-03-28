@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 
-namespace RoboBlast.Components;
+namespace RoboBlast.scripts.components;
 
 public partial class Health : Node
 {

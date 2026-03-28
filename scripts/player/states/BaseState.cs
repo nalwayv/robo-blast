@@ -1,8 +1,8 @@
 using Godot;
-using System;
-using RoboBlast.Player.Components;
+using RoboBlast.scripts.player.components;
 
-namespace RoboBlast.Player.States;
+namespace RoboBlast.scripts.player.states;
+
 
 public partial class BaseState : State
 {

@@ -1,6 +1,8 @@
 using Godot;
+using RoboBlast.scripts.player.weapon;
 
-namespace RoboBlast.Item;
+
+namespace RoboBlast.scripts.item;
 
 public partial class AmmoItem : Item
 {

@@ -1,7 +1,8 @@
 using Godot;
-using RoboBlast.Player.Components;
+using RoboBlast.scripts.player.components;
 
-namespace RoboBlast.Player.Weapon;
+namespace RoboBlast.scripts.player.weapon;
+
 
 public partial class WeaponManager : Node
 {

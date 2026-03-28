@@ -1,6 +1,8 @@
-using RoboBlast.Player.Weapon;
 
-namespace RoboBlast.Player.Resourse;
+
+using RoboBlast.scripts.player.weapon;
+
+namespace RoboBlast.scripts.player.resourse;
 
 public partial class ManualWeaponStrategy : WeaponStrategy
 {
