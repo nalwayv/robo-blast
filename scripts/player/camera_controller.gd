@@ -9,7 +9,7 @@ const MAX_X_ROTATION := 70.0
 @export var weapon_camera: Camera3D
 @export_group("smoothing")
 @export var smoothing_weight := 20.0
-@export var base_sensitivity := 0.001
+@export var base_sensitivity := 0.001 # remove
 @export_group("sensitivity")
 # How far you move mouse for a full 360 turn
 @export var inches_per_360 := 12.0 

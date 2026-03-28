@@ -24,8 +24,8 @@ extends Node3D
 @export_subgroup("camera shake intensity")
 @export var camera_shake_intensity := 2.0
 
-var weapon_model_original_position := Vector3.ZERO
-var accumulate_recoil := Vector3.ZERO
+#var weapon_model_original_position := Vector3.ZERO
+#var accumulate_recoil := Vector3.ZERO
 var one_shot := false
 var ammo_count: int:
 	get:
@@ -71,14 +71,14 @@ func _process(delta: float) -> void:
 				hitscan_damage.apply_damage_to_target(shoot_cast.get_collider())
 
 
-func _add_hit_effect() -> void:
-	if not shoot_cast.is_colliding():
-		return
-
-	var hit_spark := sparks.instantiate() as GPUParticles3D
-	if hit_spark:
-		get_tree().current_scene.add_child(hit_spark)
-		hit_spark.global_position = shoot_cast.get_collision_point()
+#func _add_hit_effect() -> void:
+#	if not shoot_cast.is_colliding():
+#		return
+#
+#	var hit_spark := sparks.instantiate() as GPUParticles3D
+#	if hit_spark:
+#		get_tree().current_scene.add_child(hit_spark)
+#		hit_spark.global_position = shoot_cast.get_collision_point()
 
 
 # region [has_method]
