@@ -8,15 +8,15 @@
 [ext_resource type="Script" uid="uid://crr6hsvwu5ed4" path="res://scripts/player/weapon/hitscan_effects.gd" id="6_j1spj"]
 
 [node name="EnergyWeapon" unique_id=588961484 node_paths=PackedStringArray("weapon_model", "muzzel_flash", "hitscan_damage", "hitscan_animation", "hitscan_effect") instance=ExtResource("1_vgrxv")]
-weapon_model = NodePath("Weapon/Model")
 fire_rate = 15.0
-muzzel_flash = NodePath("MuzzelFlash")
 sparks = ExtResource("2_8d2me")
 ammo_type = 3
+camera_shake_intensity = 0.6
+weapon_model = NodePath("Weapon/Model")
+muzzel_flash = NodePath("MuzzelFlash")
 hitscan_damage = NodePath("Damage")
 hitscan_animation = NodePath("Animation")
 hitscan_effect = NodePath("Effects")
-camera_shake_intensity = 0.6
 
 [node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_3yfrj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.18140215, -2.2493174)

@@ -7,8 +7,8 @@ namespace RoboBlast.Components;
 public partial class Health : Node
 {
     public event Action<int> HealthChanged;
-    public event Action OnDamaged;
-    public event Action OnDead;
+    public event Action Damaged;
+    public event Action Dead;
         
     [Export] private int _maxHealthPoints = 100;
         
@@ -26,7 +26,7 @@ public partial class Health : Node
                 
             if (clampedValue < _healthPointsPoints)
             {
-                OnDamaged?.Invoke();
+                Damaged?.Invoke();
             }
                 
             _healthPointsPoints = clampedValue;
@@ -39,7 +39,7 @@ public partial class Health : Node
             if (_healthPointsPoints <= 0)
             {
                 _dead = true;
-                OnDead?.Invoke();
+                Dead?.Invoke();
             }
         }
     }

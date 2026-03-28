@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using RoboBlast.Item;
 using RoboBlast.Player.Components;
 using RoboBlast.Player.Resourse;
@@ -14,6 +13,7 @@ public partial class HitscanWeapon : Node3D, IEquipable, ISwitchable
     [ExportGroup("Ammo")]
     [Export] private AmmoTypes _ammoType;
     [Export] private AmmoManager _ammoManager;
+    [Export] private EnergyManager _energyManager;
     [ExportGroup("Components")]
     [Export] private InputHandler _inputHandler;
     [ExportGroup("Resources")]
@@ -21,41 +21,43 @@ public partial class HitscanWeapon : Node3D, IEquipable, ISwitchable
     [Export] private AmmoBus _ammoBus;
     [ExportSubgroup("Camera Shake")]
     [Export] private float _cameraShakeIntensity = 2f;
-
-    // private Vector3 _modelOrigin;
-    private bool _isShooting;
     
+    #region @OnReady
     private Timer _cooldownTimer;
-    private Node3D _model;
-    private GpuParticles3D _muzzleFlash;
     private RayCast3D _shootRayCast;
     private WeaponDamage _damage;
     private WeaponEffects _effects;
     private WeaponAnimation _animation;
-
+    #endregion
+    
+    public bool ManualShot { get; set; }
     public int AmmoCount => _ammoManager?.AmmoCount(_ammoType) ?? 0;
+    public float EnergyRatio => _energyManager?.EnergyRatio ?? 0;
+    public bool IsShooting => _inputHandler.IsShooting;
+    public bool CanShoot => _cooldownTimer.IsStopped();
+    public EnergyManager EnergyManager => _energyManager;
+    public Timer CoolDownTimer => _cooldownTimer;
+    public AmmoManager AmmoManager => _ammoManager;
+    public AmmoTypes AmmoType => _ammoType;
 
+    
     public override void _Ready()
     {
         _cooldownTimer = GetNode<Timer>("CooldownTimer");
-        _model = GetNode<Node3D>("Model");
-        _muzzleFlash = GetNode<GpuParticles3D>("MuzzleFlash");
         _shootRayCast = GetNode<RayCast3D>("ShootCast");
         _damage = GetNode<WeaponDamage>("WeaponDamage");
         _effects = GetNode<WeaponEffects>("WeaponEffects");
         _animation = GetNode<WeaponAnimation>("WeaponAnimation");
 
         _cooldownTimer.WaitTime = 1f / _fireRate;
-        // _modelOrigin = _model.Position;
         
-        _inputHandler.FireWeaponPressed += () => _isShooting = true;
-        _inputHandler.FireWeaponReleased += () => _isShooting = false;
+        _inputHandler.FireWeaponPressed += () => ManualShot = true;
+        _inputHandler.FireWeaponReleased += () => ManualShot = false;
     }
 
     public override void _Process(double delta)
     {
-        var shotFired = _strategy.FireWeapon(this, delta);
-        if (shotFired)
+        if (_strategy.FireWeapon(this, delta))
         {
             _shootRayCast.ForceRaycastUpdate();
             _cooldownTimer.Start();

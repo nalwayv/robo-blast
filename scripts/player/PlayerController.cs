@@ -28,8 +28,6 @@ public partial class PlayerController : CharacterBody3D
     [ExportGroup("Timers")]
     [Export] private float _coyoteTime = 0.15f;
     [Export] private float _jumpBufferTime = 0.15f;
-    [ExportGroup("Components")]
-    [Export] private Health _health;
     [ExportGroup("Resources")]
     [Export] private CameraBus _cameraBus;
     [ExportSubgroup("Camera Shake")]
@@ -44,13 +42,18 @@ public partial class PlayerController : CharacterBody3D
     private float _fallGravity;
 
     private Array<Vector3> _historicalVelocities;
-        
+
+    public Timer CoyoteTimer => _coyoteTimer;
+    public Timer JumpBufferTimer => _jumpBufferTimer;
+    
+    #region @OnReady
     private Timer _coyoteTimer;
     private Timer _jumpBufferTimer;
     private Timer _historicalVelocityTimer;
     private RayCast3D _edgeRayCast;
     private AnimationPlayer _animation;
-        
+    private Health _health;
+    #endregion
     /// <summary>
     /// Average velocity over time.
     /// </summary>
@@ -83,6 +86,7 @@ public partial class PlayerController : CharacterBody3D
         _historicalVelocityTimer = GetNode<Timer>("HistoricalVelocityTimer");
         _edgeRayCast = GetNode<RayCast3D>("EdgeRayCast");
         _animation = GetNode<AnimationPlayer>("AnimationPlayer");
+        _health = GetNode<Health>("Health");
             
         _jumpVelocity = 2f * _maxJumpHeight / _timeToPeak;
         _jumpGravity = -2f * _maxJumpHeight / Mathf.Pow(_timeToPeak, 2f);
@@ -102,8 +106,8 @@ public partial class PlayerController : CharacterBody3D
         _historicalVelocityTimer.WaitTime = HistoricalVelocityTimerInterval;
         _historicalVelocityTimer.Timeout += OnHistoricalVelocityTimerOnTimeout;
 
-        _health.OnDead += OnDied;
-        _health.OnDamaged += OnDamageTaken;
+        _health.Dead += Died;
+        _health.Damaged += DamageTaken;
     }
         
 
@@ -301,7 +305,7 @@ public partial class PlayerController : CharacterBody3D
         _historicalVelocities.Add(Velocity);
     }
         
-    private void OnDamageTaken()
+    private void DamageTaken()
     {
         _animation.Stop();
         if (_animation.HasAnimation("takeDamage"))
@@ -311,7 +315,7 @@ public partial class PlayerController : CharacterBody3D
         }
     }
 
-    private void OnDied()
+    private void Died()
     {
         //TODO: add game over scene
         GD.Print("Game Over");

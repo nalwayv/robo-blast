@@ -20,7 +20,7 @@ public partial class EnergyManager : Node
     private Timer _rechargeTimer;
     #endregion
     
-    public float EnergyPercentage
+    public float EnergyRatio
     {
         get
         {
@@ -50,7 +50,7 @@ public partial class EnergyManager : Node
         _rechargeTimer.Start();
         
         _currentEnergy = Mathf.Max(0f, _currentEnergy - _energyDrainRate * (float)delta);
-        _ammoBus.InvokeEnergyChanged(EnergyPercentage);
+        _ammoBus.InvokeEnergyChanged(EnergyRatio);
         
         return true;
     }
@@ -63,7 +63,7 @@ public partial class EnergyManager : Node
         }
         
         _currentEnergy = Mathf.Min(_maxEnergy, _currentEnergy + _energyRegenRate * (float)delta);
-        _ammoBus.InvokeEnergyChanged(EnergyPercentage);
+        _ammoBus.InvokeEnergyChanged(EnergyRatio);
     }
     
     

@@ -8,7 +8,7 @@ public partial class AmmoBus : Resource
 {
     public event Action<int, bool> AmmoChanged;
     public event Action<float> EnergyChanged;
-    public event Action<int> AmmoTypeSwitched;
+    public event Action<int> WeaponSwitched;
     public event Action<float> EnergySwitched;
     
     private AmmoTypes _currentAmmoType = AmmoTypes.Default;
@@ -19,15 +19,15 @@ public partial class AmmoBus : Resource
         AmmoChanged?.Invoke(ammoCount, isCurrentAmmo);
     }
     
-    public void InvokeEnergyChanged(float energyPercent)
+    public void InvokeEnergyChanged(float energyRatio)
     {
-        EnergyChanged?.Invoke(energyPercent);
+        EnergyChanged?.Invoke(energyRatio);
     }
     
-    public void InvokeAmmoSwitched(AmmoTypes ammo, int ammoCount)
+    public void InvokeWeaponSwitched(AmmoTypes ammo, int ammoCount)
     {
         _currentAmmoType = ammo;
-        AmmoTypeSwitched?.Invoke(ammoCount);
+        WeaponSwitched?.Invoke(ammoCount);
     }
     
     public void InvokeEnergySwitched(float energyPercent)

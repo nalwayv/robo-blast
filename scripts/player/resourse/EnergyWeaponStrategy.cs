@@ -1,17 +1,31 @@
 using Godot;
-using System;
+using RoboBlast.Player.Weapon;
 
 namespace RoboBlast.Player.Resourse;
 
-public partial class EnergyWeaponStrategy : Resource, IWeaponStrategy
+public partial class EnergyWeaponStrategy : WeaponStrategy
 {
-    public void FireWeapon(HitscanWeapon weapon, double delta)
+    public override bool FireWeapon(HitscanWeapon weapon, double delta)
     {
-        throw new NotImplementedException();
+        if (weapon.IsShooting && weapon.CanShoot)
+        {
+            if (weapon.EnergyManager.ConsumeEnergy(delta))
+            {
+                weapon.CoolDownTimer.Start();
+                return true;
+            }
+        }
+        else
+        {
+            weapon.EnergyManager.StartRechargeTimer();            
+        }
+        
+        weapon.EnergyManager.RechargeEnergy(delta);
+        return false;
     }
 
-    public void SwitchWeapon(HitscanWeapon weapon)
+    public override void SwitchWeapon(HitscanWeapon weapon)
     {
-        throw new NotImplementedException();
+        AmmoBus.InvokeEnergySwitched(weapon.EnergyRatio);
     }
 }

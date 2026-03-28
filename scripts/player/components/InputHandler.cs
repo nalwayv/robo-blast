@@ -12,9 +12,13 @@ public partial class InputHandler : Node
     public event Action EquipPreviousWeapon;
         
     private Vector2 _direction = Vector2.Zero;
-    private bool _isJumping;
     private bool _isAiming;
     private bool _isShooting;
+
+    public bool IsAiming => _isAiming;
+    public bool IsShooting => _isShooting;
+    public Vector2 Direction => _direction;
+    public bool  IsJumping { get; set; }
 
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -52,7 +56,7 @@ public partial class InputHandler : Node
             
         if (@event.IsActionPressed("jump"))
         {
-            _isJumping = true;
+            IsJumping = true;
         }
     }
 
