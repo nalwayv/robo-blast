@@ -1,4 +1,4 @@
-class_name CameraShakeBus
+class_name CameraBus
 extends Resource
 
 

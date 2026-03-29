@@ -1,53 +1,53 @@
 class_name EnergyManager
 extends Node
 
-@export_group("energy")
 @export var max_energy := 10.0
 @export var consumption_rate := 20.0
 @export var regen_rate := 2.0
 @export var recharge_delay := 0.5
-@export_group("bus")
+@export_group("resource")
 @export var ammo_bus: AmmoBus
 
-var can_regen := false
-var ratio: float:
+var can_recharge: bool
+var current_energy: float
+var energy_ratio: float:
     get:
         var denom := 1.0 if max_energy <= 0 else max_energy
         return current_energy / denom
 
-@onready var current_energy := max_energy
-@onready var regen_timer: Timer = $RegenTimer
+@onready var recharge_timer: Timer = $RechargeTimer
 
 
 func _ready() -> void:
-    regen_timer.one_shot = true
-    regen_timer.wait_time = recharge_delay
-    regen_timer.timeout.connect(func() -> void: can_regen = true)
+    recharge_timer.one_shot = true
+    recharge_timer.wait_time = recharge_delay
+    recharge_timer.timeout.connect(func() -> void: can_recharge = true)
 
-    
-func consume(delta: float) -> bool:
+    current_energy = max_energy
+
+
+func consume_energy(delta: float) -> bool:
     if current_energy <= 0.0:
-        regen_timer.stop()
-        can_regen = false
+        recharge_timer.stop()
+        can_recharge = false
         return false
 
-    can_regen = false
-    regen_timer.stop()
+    can_recharge = false
+    recharge_timer.stop()
 
-    current_energy = maxf(current_energy - consumption_rate * delta, 0.0)
+    current_energy = maxf(0.0, current_energy - consumption_rate * delta)
 
-    ammo_bus.emit_energy_updated(ratio)
+    ammo_bus.emit_energy_updated(energy_ratio)
 
     return true
 
 
-func regenerate(delta: float) -> void:
-    if can_regen and current_energy < max_energy:
-        current_energy = minf(current_energy + regen_rate * delta, max_energy)
+func recharge_energy(delta: float) -> void:
+    if can_recharge and current_energy < max_energy:
+        current_energy = minf(max_energy, current_energy + regen_rate * delta)
+        ammo_bus.emit_energy_updated(energy_ratio)
 
-        ammo_bus.emit_energy_updated(ratio)
 
-
-func begin_regen_timer() -> void:
-    if regen_timer.is_stopped() and not can_regen:
-        regen_timer.start()
+func start_recharge_timer() -> void:
+    if recharge_timer.is_stopped() and not can_recharge:
+        recharge_timer.start()

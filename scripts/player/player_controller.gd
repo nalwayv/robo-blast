@@ -1,44 +1,41 @@
 class_name PlayerController
 extends CharacterBody3D
 
+const MAX_HISTORICAL_VELCITIES := 10
+const HISTORICAL_TIMER_INTERVAL := 0.1
+const MAX_EDGE_FRICTION := 2.0
+const MAX_STEP_HEIGHT := 2.0
+const MAX_STEP_DISTANCE := 0.25
+
 @export_group("movement")
 @export var max_speed := 7.0
 @export var stop_speed := 3.0
 @export var acceleration := 10.0 
 @export var friction := 6.0
 @export var air_cap := 0.9
-@export_subgroup("jumping")
-@export var jump_height := 1.0
+@export_group("jumping")
+@export var max_jump_height := 1.0
 @export var jump_time_to_peak := 0.45
 @export var jump_time_to_decent := 0.35
 @export var air_acceleration := 100.0
-@export_group("model movement")
-@export var model_rotation_speed := 50.0
 @export_group("timers")
 @export var coyote_time := 0.15
 @export var jump_buffer_time := 0.15
-@export_group("componenets")
-@export var health: Health
 @export_group("resources")
-@export var camera_shake_bus: CameraShakeBus
+@export var camera_bus: CameraBus
+@export_subgroup("camera shake")
 @export var shake_intensity:= 0.7
+@export_group("misc")
+@export var model_rotation_speed := 50.0
 
 # kinematic jump.
-var jump_velocity := 0.0
-var jump_gravity := 0.0
-var fall_gravity := 0.0
+var jump_velocity: float
+var jump_gravity: float
+var fall_gravity: float
 
-# Increate players current friction to prevent flying of edge.
-var edge_friction := 2.0
-# Step over height and distance for Physics test body motion.
-var max_step_height := 0.25
-var max_step_distance := 0.25
-
-# Record past velocities for enemy nav-agent.
-var max_historical_size := 10
-var historical_time_interval := 0.1
+# Record average velocity over time.
 var historical_velocities: Array[Vector3] = []
-var average_velocity: Vector3 :
+var average_velocity: Vector3:
 	get:
 		if historical_velocities.is_empty():
 			return Vector3.ZERO
@@ -46,12 +43,9 @@ var average_velocity: Vector3 :
 		var avg := Vector3.ZERO
 		for vec: Vector3 in historical_velocities:
 			avg += vec
-
 		avg.y = 0.0
 		
-		avg /= historical_velocities.size()
-		
-		return avg
+		return avg / historical_velocities.size()
 
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
@@ -59,19 +53,19 @@ var average_velocity: Vector3 :
 @onready var animation: AnimationPlayer = $AnimationPlayer
 @onready var game_over_menu: GameOverMenu = $GameOverMenu
 @onready var model: Node3D = $Model
-@onready var near_edge_cast: RayCast3D = $NearEdgeCast
-
+@onready var edge_raycast: RayCast3D = $NearEdgeCast
+@onready var health: Health = $Health
 
 func _ready() -> void:
 	add_to_group("player")
 
 	# kinematic jump settings
-	jump_velocity = 2.0 * jump_height / jump_time_to_peak
-	jump_gravity = -2.0 * jump_height / pow(jump_time_to_peak, 2.0)
-	fall_gravity = -2.0 * jump_height / pow(jump_time_to_decent, 2.0)
+	jump_velocity = 2.0 * max_jump_height / jump_time_to_peak
+	jump_gravity = -2.0 * max_jump_height / pow(jump_time_to_peak, 2.0)
+	fall_gravity = -2.0 * max_jump_height / pow(jump_time_to_decent, 2.0)
 	
 	# historical velocities
-	historical_velocities.resize(max_historical_size)
+	historical_velocities.resize(MAX_HISTORICAL_VELCITIES)
 
 	# timers
 	coyote_timer.one_shot = true
@@ -82,7 +76,7 @@ func _ready() -> void:
 	
 	history_velocity_timer.one_shot = false
 	history_velocity_timer.autostart = true
-	history_velocity_timer.wait_time = historical_time_interval
+	history_velocity_timer.wait_time = HISTORICAL_TIMER_INTERVAL
 	history_velocity_timer.timeout.connect(_on_update_historical_velocities)
 
 	# signals
@@ -98,8 +92,8 @@ func apply_gravity(delta: float) -> void:
 	if is_on_floor():
 		return
 
-	var gavity_value := fall_gravity if velocity.y < 0.0 else jump_gravity
-	velocity += Vector3(0.0, gavity_value, 0.0) * delta
+	var gravity := fall_gravity if velocity.y < 0.0 else jump_gravity
+	velocity += Vector3.UP * gravity * delta
 
 
 func jump() -> void:
@@ -114,7 +108,7 @@ func apply_friction(delta: float) -> void:
 	
 	var friction_amount := friction
 	if _is_near_edge():
-		friction_amount *= edge_friction
+		friction_amount *= MAX_EDGE_FRICTION
 	
 	var control := maxf(speed, stop_speed)
 	var new_speed := maxf(0.0, speed - control * friction_amount * delta)
@@ -131,8 +125,8 @@ func _is_near_edge() -> bool:
 	if horizontal_velocity.length() < 0.1:
 		return false
 
-	near_edge_cast.force_raycast_update()
-	return not near_edge_cast.is_colliding()
+	edge_raycast.force_raycast_update()
+	return not edge_raycast.is_colliding()
 
 
 func apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float) -> void:
@@ -158,8 +152,8 @@ func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float) ->
 	velocity += wish_dir * accel_speed
 
 
-func get_wish_velocity(input: Vector2) -> Vector3:
-	return global_basis * Vector3(input.x, 0.0, input.y)
+func direction_to_world(input_direction: Vector2) -> Vector3:
+	return global_basis * Vector3(input_direction.x, 0.0, input_direction.y)
 
 
 func _test_body_motion(from: Transform3D, motion: Vector3, result: PhysicsTestMotionResult3D) -> bool:
@@ -179,46 +173,45 @@ func try_to_step_over() -> void:
 	if is_zero_approx(horizontal_velocity.length()):
 		return
 
-	var movement_direction := horizontal_velocity.normalized()
-	var distance := movement_direction * max_step_distance
+	var direction := horizontal_velocity.normalized()
+	var distance := direction * MAX_STEP_DISTANCE
+	var elevation_change := MAX_STEP_HEIGHT
 
 	# forward probe
-	var forward_result := PhysicsTestMotionResult3D.new()
-	if not _test_body_motion(global_transform, distance, forward_result):
+	var test_forward := PhysicsTestMotionResult3D.new()
+	if not _test_body_motion(global_transform, distance, test_forward):
 		return
 
-	# slope
-	var slope := forward_result.get_collision_normal().y
-	if slope > 0.7:
+	# ground normal is sloped, so we can't step up
+	if test_forward.get_collision_normal().y > 0.7:
 		return
 
-	# up probe
-	var upward_result := PhysicsTestMotionResult3D.new()
-	var upward_travel_distance := max_step_height;
-	if _test_body_motion( global_transform, Vector3(0, max_step_height, 0),upward_result):
-		upward_travel_distance = upward_result.get_travel().y
-		if is_zero_approx(upward_travel_distance):
+	# check if we can step up
+	var test_upwards := PhysicsTestMotionResult3D.new()
+	if _test_body_motion( global_transform, Vector3.UP * MAX_STEP_HEIGHT, test_upwards):
+		elevation_change = test_upwards.get_travel().y
+		if is_zero_approx(elevation_change):
 			return
 
-	# forward from raised probe
-	var raised := global_transform.translated(Vector3(0, upward_travel_distance,0))
-	var raised_forward_result := PhysicsTestMotionResult3D.new()
-	if _test_body_motion(raised, distance, raised_forward_result):
+	# check forward from the raised position
+	var raised := global_transform.translated(Vector3.UP * elevation_change)
+	var test_forward_raised := PhysicsTestMotionResult3D.new()
+	if _test_body_motion(raised, distance, test_forward_raised):
 		return
 
-	# down from raised probe
+	# check down from the raised position
 	var raised_forward := raised.translated(distance)
-	var down_result := PhysicsTestMotionResult3D.new()
-	if not _test_body_motion(raised_forward, Vector3(0.0, -upward_travel_distance, 0), down_result):
+	var test_down_from_forward_raised := PhysicsTestMotionResult3D.new()
+	if not _test_body_motion(raised_forward, Vector3.DOWN * elevation_change, test_down_from_forward_raised):
 		return
 
-	var downward_travel_distance := down_result.get_travel().y
-	var step := upward_travel_distance + downward_travel_distance
-	if step <= 0.0 or step > max_step_height:
+	var deceleration_change := test_down_from_forward_raised.get_travel().y
+	var total_elevation := elevation_change + deceleration_change
+	if total_elevation <= 0.0 or total_elevation > MAX_STEP_HEIGHT:
 		return
 
-	global_position.y += step
-	velocity.y = maxf(0, velocity.y)
+	global_position.y += total_elevation
+	velocity.y = 0.0
 
 
 func _update_model(delta: float) -> void:
@@ -232,12 +225,12 @@ func _on_damage_taken() -> void:
 	if animation.has_animation("take_damage"):
 		animation.play("take_damage")
 		
-		if camera_shake_bus:
-			camera_shake_bus.emit_shake(shake_intensity)
+		if camera_bus:
+			camera_bus.emit_shake(shake_intensity)
 
 
 func _on_update_historical_velocities() -> void:
-	if historical_velocities.size() == max_historical_size:
+	if historical_velocities.size() == MAX_HISTORICAL_VELCITIES:
 		historical_velocities.pop_front()
 
 	historical_velocities.push_back(velocity)

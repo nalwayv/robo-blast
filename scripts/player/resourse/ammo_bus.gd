@@ -1,7 +1,6 @@
 class_name AmmoBus 
 extends Resource
 
-
 signal ammo_updated(count: int, is_active: bool)
 signal energy_updated(ratio: float)
 signal weapon_switched(count: int)

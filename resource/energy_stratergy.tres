@@ -1,7 +1,9 @@
-[gd_resource type="Resource" script_class="EnergyFireStrategy" format=3 uid="uid://kplw0tq7cocl"]
+[gd_resource type="Resource" script_class="EnergyStrategy" format=3 uid="uid://kplw0tq7cocl"]
 
+[ext_resource type="Resource" uid="uid://djny3b31ecj4v" path="res://resource/ammo_bus.tres" id="1_4vfrc"]
 [ext_resource type="Script" uid="uid://dsayyvyldymvn" path="res://scripts/player/resourse/energy_startergy.gd" id="1_f04cb"]
 
 [resource]
 script = ExtResource("1_f04cb")
+ammo_bus = ExtResource("1_4vfrc")
 metadata/_custom_type_script = "uid://dsayyvyldymvn"

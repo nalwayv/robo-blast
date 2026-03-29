@@ -2,6 +2,11 @@ class_name MouseCapture
 extends Node
 
 var _motion := Vector2.ZERO
+var motion: Vector2:
+	get:
+		var result := _motion
+		_motion = Vector2.ZERO
+		return result
 
 
 func _ready() -> void:
@@ -15,9 +20,3 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 	if event.is_action_pressed("escape"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-
-
-func get_motion() -> Vector2:
-	var result := _motion
-	_motion = Vector2.ZERO
-	return result

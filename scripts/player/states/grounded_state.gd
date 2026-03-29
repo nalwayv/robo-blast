@@ -3,17 +3,17 @@ extends PlayerBaseState
 
 
 func _update(delta: float) -> void:
-	camera_controller.rotate_camera(mouse_capture.get_motion(), delta)
+	camera_controller.rotate_camera(mouse_capture.motion, delta)
 	
 	if input_handler.is_aiming:
 		camera_controller.zoom_in(delta)
 	else:
 		camera_controller.zoom_out(delta)
-	player.global_basis = camera_controller.get_horizontal_rotation()
+	player.global_basis = camera_controller.horizontal_rotation()
 
 
 func _physics_update(delta: float) -> void:
-	var wish_velocity := player.get_wish_velocity(input_handler.direction)
+	var wish_velocity := player.direction_to_world(input_handler.direction)
 	var wish_direction := wish_velocity.normalized()
 	var wish_speed := wish_velocity.length() * player.max_speed
 

@@ -4,7 +4,7 @@ extends Node3D
 @export_group("components")
 @export var input_handler: InputHandler
 
-var current_equiped := 0
+var current_equiped: int
 
 
 func _ready() -> void:
@@ -14,7 +14,7 @@ func _ready() -> void:
 
 	_equip_weapon(current_equiped)
 	
-	input_handler.equip_preessed.connect(_equip_weapon)
+	input_handler.equip_pressed.connect(_equip_weapon)
 	input_handler.equip_next.connect(_equip_next)
 	input_handler.equip_previous.connect(_equip_previous)
 	
@@ -37,8 +37,8 @@ func _equip_weapon(weapon_index: int) -> void:
 	if new_weapon.has_method("equip"):
 		new_weapon.equip()
 
-	if new_weapon.has_method("report_switched"):
-		new_weapon.report_switched()
+	if new_weapon.has_method("switched"):
+		new_weapon.switched()
 
 
 func _equip_previous() -> void:

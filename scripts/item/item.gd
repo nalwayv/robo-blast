@@ -7,7 +7,7 @@ extends Area3D
 @export var rotation_speed := 1.5
 @export var model: Node3D
 
-var spring := Vector3DampedSpring.new()
+var spring := DampedSpring.new()
 
 
 func _ready() -> void:

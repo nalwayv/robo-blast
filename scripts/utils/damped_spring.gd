@@ -1,4 +1,4 @@
-class_name Vector3DampedSpring
+class_name DampedSpring
 extends RefCounted
 
 ## A utility class that simulates a damped spring for 3D vectors.
@@ -10,7 +10,7 @@ extends RefCounted
 ##
 ## [b]Quick start:[/b]
 ## [codeblock]
-## var spring := Vector3DampedSpring.new()
+## var spring := DampedSpring.new()
 ## spring.frequency = 10.0   # how fast it moves
 ## spring.damping   = 0.8    # 1.0 = no overshoot, <1.0 = bouncy
 ## spring.goal      = target_position
@@ -45,11 +45,11 @@ var damping := 0.5:
 		_last_delta = -1.0
 
 ## Current position of the spring.
-var position := Vector3.ZERO
+var position: Vector3
 ## Current velocity of the spring.
-var velocity := Vector3.ZERO
+var velocity: Vector3
 ## Target position the spring is trying to reach.
-var goal := Vector3.ZERO
+var goal: Vector3
 
 var _pp := 1.0
 var _pv := 0.0

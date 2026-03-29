@@ -1,16 +1,12 @@
 class_name AmmoPresenter
 extends Node
 
-@export_group("label")
 @export var ammo_label: Label
-@export_group("ammo bus")
+@export_group("resource")
 @export var ammo_bus: AmmoBus
-
-var active_weapon_ammo_type := AmmoType.Type.UNDEFINED
 
 
 func _ready() -> void:
-
 	ammo_bus.ammo_updated.connect(_on_ammo_updated)
 	ammo_bus.energy_updated.connect(_on_energy_updated)
 	ammo_bus.weapon_switched.connect(_on_weapon_switched)
@@ -27,6 +23,7 @@ func _on_energy_updated(ratio: float) -> void:
 
 func _on_weapon_switched(count: int) -> void:
 	ammo_label.text = str(count)
+
 
 func _on_energy_switched(ratio: float) -> void:
 	ammo_label.text = "%.0f" % (ratio * 100.0)

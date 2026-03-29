@@ -3,7 +3,7 @@ extends Node
 
 signal shoot_pressed
 signal shoot_released
-signal equip_preessed(index: int)
+signal equip_pressed(index: int)
 signal equip_next
 signal equip_previous
 
@@ -23,10 +23,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		shoot_released.emit()
 
 	if event.is_action_pressed("equip_first"):
-		equip_preessed.emit(0)
+		equip_pressed.emit(0)
 		
 	if event.is_action_pressed("equip_second"):
-		equip_preessed.emit(1)
+		equip_pressed.emit(1)
 	
 	if event.is_action_pressed("equip_next"):
 		equip_next.emit()

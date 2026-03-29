@@ -1,7 +1,9 @@
 [gd_resource type="Resource" script_class="ManualFireStrategy" format=3 uid="uid://x6hmrrum0rmc"]
 
 [ext_resource type="Script" uid="uid://t61bt5x0xgbb" path="res://scripts/player/resourse/manual_stratergy.gd" id="1_a34vn"]
+[ext_resource type="Resource" uid="uid://djny3b31ecj4v" path="res://resource/ammo_bus.tres" id="1_jlu3y"]
 
 [resource]
 script = ExtResource("1_a34vn")
+ammo_bus = ExtResource("1_jlu3y")
 metadata/_custom_type_script = "uid://t61bt5x0xgbb"
