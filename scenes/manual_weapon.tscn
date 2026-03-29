@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://djaa8dy6wdkse"]
 
-[ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_l7v2r"]
+[ext_resource type="Script" uid="uid://c4xmb7jqob23q" path="res://scripts/player/weapon/hitscan_weapon.gd" id="1_4qeyg"]
 [ext_resource type="Resource" uid="uid://x6hmrrum0rmc" path="res://resource/manual_strategy.tres" id="2_e8xj4"]
 [ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_wqliw"]
 [ext_resource type="Resource" uid="uid://bobb77whkpy1l" path="res://resource/camera_bus.tres" id="3_4qeyg"]
@@ -13,35 +13,40 @@
 z_clip_scale = 0.7
 fov_override = 45.0
 
-[node name="ManualWeapon" unique_id=140406710 node_paths=PackedStringArray("weapon_model", "weapon_damage", "weapon_animation", "weapon_effects") instance=ExtResource("1_l7v2r")]
-weapon_model = NodePath("Weapon/Model")
+[node name="ManualWeapon" type="Node3D" unique_id=140406710]
+script = ExtResource("1_4qeyg")
 weapon_strategy = ExtResource("2_e8xj4")
 fire_rate = 5.0
 ammo_type = 1
-weapon_damage = NodePath("Damage")
-weapon_animation = NodePath("Animation")
-weapon_effects = NodePath("Effects")
 camera_bus = ExtResource("3_4qeyg")
 
-[node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_60ypr")]
+[node name="CooldownTimer" type="Timer" parent="." unique_id=1240829031]
+one_shot = true
+
+[node name="ShootCast" type="RayCast3D" parent="." unique_id=145100690]
+target_position = Vector3(0, 0, -100)
+collision_mask = 3
+
+[node name="MuzzelFlash" parent="." unique_id=490162483 instance=ExtResource("3_60ypr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.20996496, -2.0464354)
 
-[node name="Weapon" type="Node3D" parent="." index="3" unique_id=2098291948]
+[node name="Weapon" type="Node3D" parent="." unique_id=2098291948]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.3, -1.2485067)
 
-[node name="Model" type="CSGBox3D" parent="Weapon" index="0" unique_id=105055006]
+[node name="Model" type="CSGBox3D" parent="Weapon" unique_id=105055006]
 layers = 2
 material_override = SubResource("StandardMaterial3D_l7v2r")
 size = Vector3(0.15, 0.35, 1.6027832)
 
-[node name="Damage" type="Node" parent="." index="4" unique_id=155676406]
+[node name="Damage" type="Node" parent="." unique_id=155676406]
 script = ExtResource("4_330d7")
+damage_amount = 15
 
-[node name="Animation" type="Node" parent="." index="5" unique_id=1230527767 node_paths=PackedStringArray("weapon_model")]
+[node name="Animation" type="Node" parent="." unique_id=1230527767 node_paths=PackedStringArray("weapon_model")]
 script = ExtResource("5_35nub")
 weapon_model = NodePath("../Weapon/Model")
 
-[node name="Effects" type="Node" parent="." index="6" unique_id=1127055800 node_paths=PackedStringArray("muzzel_particles")]
+[node name="Effects" type="Node" parent="." unique_id=1127055800 node_paths=PackedStringArray("muzzel_particles")]
 script = ExtResource("6_81j4t")
 sparks_scene = ExtResource("2_wqliw")
 muzzel_particles = NodePath("../MuzzelFlash")

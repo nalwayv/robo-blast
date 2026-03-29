@@ -15,7 +15,7 @@ const MAX_X_ROTATION := 70.0
 @export var dpi := 800.0 
 @export var sensitivity := 1.0
 @export_group("field of view")
-@export var fov_percentage := 0.7
+@export var zoom_in_ratio := 0.7
 @export var transition_in_speed := 20.0
 @export var transition_out_speed := 30.0
 
@@ -36,12 +36,12 @@ func _ready() -> void:
 func zoom_in(delta: float) -> void:
 	main_camera.fov = lerpf(
 		main_camera.fov,
-		main_camera_fov * fov_percentage,
+		main_camera_fov * zoom_in_ratio,
 		transition_in_speed * delta)
 	
 	second_camera.fov = lerpf(
 		second_camera.fov,
-		second_camera_fov * fov_percentage,
+		second_camera_fov * zoom_in_ratio,
 		transition_in_speed * delta)
 
 

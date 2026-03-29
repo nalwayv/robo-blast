@@ -4,7 +4,7 @@ extends CharacterBody3D
 const MAX_HISTORICAL_VELCITIES := 10
 const HISTORICAL_TIMER_INTERVAL := 0.1
 const MAX_EDGE_FRICTION := 2.0
-const MAX_STEP_HEIGHT := 2.0
+const MAX_STEP_HEIGHT := 0.25
 const MAX_STEP_DISTANCE := 0.25
 
 @export_group("movement")
@@ -182,6 +182,11 @@ func try_to_step_over() -> void:
 	if not _test_body_motion(global_transform, distance, test_forward):
 		return
 
+	# simple check to prevent step over trying to step over things it can't
+	var collider := test_forward.get_collider() as Node
+	if collider and collider.is_in_group("enemy"):
+		return
+
 	# ground normal is sloped, so we can't step up
 	if test_forward.get_collision_normal().y > 0.7:
 		return
@@ -211,6 +216,9 @@ func try_to_step_over() -> void:
 		return
 
 	global_position.y += total_elevation
+	# var nudge := direction * 0.5
+	# global_position += nudge
+
 	velocity.y = 0.0
 
 

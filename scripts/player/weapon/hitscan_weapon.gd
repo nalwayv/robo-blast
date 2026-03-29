@@ -2,7 +2,6 @@ class_name HitScanWeapon
 extends Node3D
 
 @export_group("settings")
-@export var weapon_model: Node3D
 @export var weapon_strategy: WeaponStrategy
 @export var fire_rate := 14.0
 @export_group("ammo managers")
@@ -11,9 +10,6 @@ extends Node3D
 @export var energy_manager: EnergyManager
 @export_group("components")
 @export var input_handler: InputHandler
-@export var weapon_damage: WeaponDamage
-@export var weapon_animation: WeaponAnimation
-@export var weapon_effects: WeaponEffects
 @export_group("resource")
 @export var camera_bus: CameraBus
 @export_subgroup("camera shake")
@@ -35,6 +31,10 @@ var energy_ratio: float:
 
 @onready var cooldown_timer: Timer = $CooldownTimer
 @onready var shoot_cast: RayCast3D = $ShootCast
+@onready var weapon_damage: WeaponDamage = $Damage
+@onready var weapon_animation: WeaponAnimation = $Animation
+@onready var weapon_effects: WeaponEffects = $Effects
+@onready var weapon_model: Node3D = $Weapon
 
 
 func _ready() -> void:

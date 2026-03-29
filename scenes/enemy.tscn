@@ -48,6 +48,8 @@ _data = {
 }
 
 [node name="EnemyController" type="CharacterBody3D" unique_id=226968340 node_paths=PackedStringArray("health")]
+collision_layer = 2
+collision_mask = 5
 script = ExtResource("1_7p1mj")
 health = NodePath("Health")
 
@@ -62,7 +64,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.367)
 mesh = SubResource("ArrayMesh_7p1mj")
 
 [node name="Health" type="Node" parent="." unique_id=1469167002]
-unique_name_in_owner = true
 editor_description = "Health component"
 script = ExtResource("3_4ra3w")
 

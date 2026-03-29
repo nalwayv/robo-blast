@@ -1,12 +1,11 @@
 [gd_scene format=3 uid="uid://dffqg0px71had"]
 
-[ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_vpl36"]
+[ext_resource type="Script" uid="uid://c4xmb7jqob23q" path="res://scripts/player/weapon/hitscan_weapon.gd" id="1_u1flj"]
 [ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_7q7np"]
 [ext_resource type="Resource" uid="uid://dwln6j5jvynr3" path="res://resource/automatic_stratergy.tres" id="2_icfxb"]
 [ext_resource type="PackedScene" uid="uid://bgn2tg1s6oiqn" path="res://scenes/muzzel_flash.tscn" id="3_l5acl"]
 [ext_resource type="Resource" uid="uid://bobb77whkpy1l" path="res://resource/camera_bus.tres" id="3_u1flj"]
-[ext_resource type="Script" path="res://scripts/player/weapon/weapon_damage.gd" id="4_6p0ye"]
-[ext_resource type="Resource" uid="uid://djny3b31ecj4v" path="res://resource/ammo_bus.tres" id="4_icfxb"]
+[ext_resource type="Script" uid="uid://b2kqh0d6sfbtk" path="res://scripts/player/weapon/weapon_damage.gd" id="4_6p0ye"]
 [ext_resource type="Script" uid="uid://bcqktcdnwgjo4" path="res://scripts/player/weapon/weapon_animation.gd" id="5_3w7as"]
 [ext_resource type="Script" uid="uid://crr6hsvwu5ed4" path="res://scripts/player/weapon/weapon_effects.gd" id="6_u1flj"]
 
@@ -15,36 +14,38 @@ albedo_color = Color(0.581033, 0.58103293, 0.5810329, 1)
 z_clip_scale = 0.7
 fov_override = 45.0
 
-[node name="AutomaticWeapon" unique_id=122189766 node_paths=PackedStringArray("weapon_model", "muzzel_flash", "weapon_damage", "weapon_animation", "weapon_effects") instance=ExtResource("1_vpl36")]
-weapon_model = NodePath("Weapon/Model")
+[node name="AutomaticWeapon" type="Node3D" unique_id=122189766]
+script = ExtResource("1_u1flj")
 weapon_strategy = ExtResource("2_icfxb")
-muzzel_flash = NodePath("MuzzelFlash")
-sparks = ExtResource("2_7q7np")
-weapon_damage = NodePath("Damage")
-weapon_animation = NodePath("Animation")
-weapon_effects = NodePath("Effects")
 camera_bus = ExtResource("3_u1flj")
-ammo_bus = ExtResource("4_icfxb")
 
-[node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_l5acl")]
+[node name="CooldownTimer" type="Timer" parent="." unique_id=1240829031]
+one_shot = true
+
+[node name="ShootCast" type="RayCast3D" parent="." unique_id=145100690]
+target_position = Vector3(0, 0, -100)
+collision_mask = 3
+
+[node name="MuzzelFlash" parent="." unique_id=490162483 instance=ExtResource("3_l5acl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.21309765, -1.4319963)
 
-[node name="Weapon" type="Node3D" parent="." index="3" unique_id=352748168]
+[node name="Weapon" type="Node3D" parent="." unique_id=352748168]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.3, -0.94015706)
 
-[node name="Model" type="CSGBox3D" parent="Weapon" index="0" unique_id=514974302]
+[node name="Model" type="CSGBox3D" parent="Weapon" unique_id=514974302]
 layers = 2
 material_override = SubResource("StandardMaterial3D_0xfrr")
 size = Vector3(0.15, 0.35, 0.986084)
 
-[node name="Damage" type="Node" parent="." index="4" unique_id=552562721]
+[node name="Damage" type="Node" parent="." unique_id=552562721]
 script = ExtResource("4_6p0ye")
+damage_amount = 5
 
-[node name="Animation" type="Node" parent="." index="5" unique_id=1515447987 node_paths=PackedStringArray("weapon_model")]
+[node name="Animation" type="Node" parent="." unique_id=1515447987 node_paths=PackedStringArray("weapon_model")]
 script = ExtResource("5_3w7as")
 weapon_model = NodePath("../Weapon/Model")
 
-[node name="Effects" type="Node" parent="." index="6" unique_id=555360339 node_paths=PackedStringArray("muzzel_particles")]
+[node name="Effects" type="Node" parent="." unique_id=555360339 node_paths=PackedStringArray("muzzel_particles")]
 script = ExtResource("6_u1flj")
 sparks_scene = ExtResource("2_7q7np")
 muzzel_particles = NodePath("../MuzzelFlash")

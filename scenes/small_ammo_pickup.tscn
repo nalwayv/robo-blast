@@ -1,10 +1,13 @@
 [gd_scene format=3 uid="uid://cl5wh042l3ld6"]
 
-[ext_resource type="PackedScene" uid="uid://d2ht6tw7yma6l" path="res://scenes/ammo_pickup.tscn" id="1_on4ha"]
+[ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/item/ammo.gd" id="1_v828t"]
 [ext_resource type="Shader" uid="uid://dr2s768xffa15" path="res://assets/fresnel.gdshader" id="2_v828t"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v828t"]
 albedo_color = Color(0.28211892, 0.5774483, 0.89470804, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jrhku"]
+size = Vector3(0.5, 0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6obw2"]
 render_priority = 0
@@ -15,17 +18,31 @@ shader_parameter/fresnel_color = Color(0.28235295, 0.5764706, 0.89411765, 1)
 shader_parameter/fresnel_intensity = 2.0000000475
 shader_parameter/fresnel_power = 2.000000095
 
-[node name="SmallAmmoPickup" unique_id=621068877 instance=ExtResource("1_on4ha")]
+[sub_resource type="SphereMesh" id="SphereMesh_ieo5p"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_c710o"]
+radius = 1.0
+
+[node name="SmallAmmoPickup" type="Area3D" unique_id=621068877 node_paths=PackedStringArray("model")]
+collision_mask = 4
+script = ExtResource("1_v828t")
 ammo_amount = 50
 ammo_type = 1
+model = NodePath("Mesh")
 
-[node name="Mesh" parent="." index="0" unique_id=1628967609]
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=1628967609]
 material_override = SubResource("StandardMaterial3D_v828t")
+mesh = SubResource("BoxMesh_jrhku")
 
-[node name="EffectMesh" parent="." index="1" unique_id=1362845292]
+[node name="EffectMesh" type="MeshInstance3D" parent="." unique_id=1362845292]
+editor_description = "Base scene for an ammo pickup."
 material_override = SubResource("ShaderMaterial_6obw2")
+mesh = SubResource("SphereMesh_ieo5p")
 
-[node name="Label3D" type="Label3D" parent="." index="3" unique_id=1577656242]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=442826753]
+shape = SubResource("SphereShape3D_c710o")
+
+[node name="Label3D" type="Label3D" parent="." unique_id=1577656242]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 billboard = 1
 text = "small ammo"

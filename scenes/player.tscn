@@ -20,15 +20,7 @@
 [ext_resource type="Script" uid="uid://lajw57okowxf" path="res://scripts/player/states/airborn_state.gd" id="12_fulsm"]
 [ext_resource type="Resource" uid="uid://djny3b31ecj4v" path="res://resource/ammo_bus.tres" id="13_a38lo"]
 [ext_resource type="Script" uid="uid://dyilm6kcieswb" path="res://scripts/player/weapon/energy_manager.gd" id="13_i4ail"]
-[ext_resource type="Script" uid="uid://d25dgkvuwysil" path="res://scripts/player/resourse/camera_bus.gd" id="15_60mlk"]
 [ext_resource type="PackedScene" uid="uid://c87yhbpiehprm" path="res://scenes/energy_weapon.tscn" id="17_i4ail"]
-[ext_resource type="Resource" uid="uid://x6hmrrum0rmc" path="res://resource/manual_strategy.tres" id="18_ke2ow"]
-[ext_resource type="Resource" uid="uid://dwln6j5jvynr3" path="res://resource/automatic_stratergy.tres" id="20_ujl30"]
-[ext_resource type="Resource" uid="uid://kplw0tq7cocl" path="res://resource/energy_stratergy.tres" id="22_31cv2"]
-
-[sub_resource type="Resource" id="Resource_i4ail"]
-script = ExtResource("15_60mlk")
-metadata/_custom_type_script = "uid://d25dgkvuwysil"
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3v2ag"]
 
@@ -112,8 +104,10 @@ font_size = 64
 
 [node name="PlayerController" type="CharacterBody3D" unique_id=944678354]
 editor_description = "Player controles cameras Yaw"
+collision_layer = 4
+collision_mask = 3
 script = ExtResource("1_3vyb7")
-camera_shake_bus = SubResource("Resource_i4ail")
+camera_bus = ExtResource("5_i4ail")
 
 [node name="Model" type="Node3D" parent="." unique_id=1335922153]
 editor_description = "Set to top level for smooth movement and help prevent jittering."
@@ -229,28 +223,19 @@ script = ExtResource("3_fjrip")
 input_handler = NodePath("../../../../InputHandler")
 
 [node name="ManualWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=140406710 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("3_tuyoq")]
-weapon_strategy = ExtResource("18_ke2ow")
-camera_shake_bus = ExtResource("5_i4ail")
-ammo_bus = ExtResource("13_a38lo")
 ammo_manager = NodePath("../../../../../AmmoManager")
 energy_manager = NodePath("../../../../../EnergyManager")
 input_handler = NodePath("../../../../../InputHandler")
 
 [node name="AutomaticWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=122189766 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("5_fjrip")]
-weapon_strategy = ExtResource("20_ujl30")
 fire_rate = null
 ammo_type = null
-camera_shake_bus = ExtResource("5_i4ail")
-ammo_bus = ExtResource("13_a38lo")
 ammo_manager = NodePath("../../../../../AmmoManager")
 energy_manager = NodePath("../../../../../EnergyManager")
 input_handler = NodePath("../../../../../InputHandler")
 
 [node name="EnergyWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=588961484 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("17_i4ail")]
 ammo_type = 2
-weapon_strategy = ExtResource("22_31cv2")
-camera_shake_bus = ExtResource("5_i4ail")
-ammo_bus = ExtResource("13_a38lo")
 ammo_manager = NodePath("../../../../../AmmoManager")
 energy_manager = NodePath("../../../../../EnergyManager")
 input_handler = NodePath("../../../../../InputHandler")

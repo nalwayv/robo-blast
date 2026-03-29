@@ -80,9 +80,10 @@ func _apply_rotation(direction: Vector3, delta: float) -> void:
 
 # called from within animation player
 func attack() -> void:
-	var player_health := player.get_node_or_null("%Health") as Health
+	var player_health := player.get_node_or_null("Health") as Health
 	if player_health:
 		player_health.hitpoints -= attack_damage
+	
 
 
 ## Checks if the player is within the enemy's detection radius and field of view angle. 
@@ -99,6 +100,9 @@ func _check_player_within_proximity() -> void:
 ## Checks if the player is within attack range. 
 ## If so, plays the attack animation.
 func _can_perform_attack() -> void:
+	if not provoked:
+		return 
+		
 	if global_position.distance_to(player.global_position) > attack_range:
 		return
 

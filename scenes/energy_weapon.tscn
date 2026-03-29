@@ -1,51 +1,52 @@
 [gd_scene format=3 uid="uid://c87yhbpiehprm"]
 
-[ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_vgrxv"]
+[ext_resource type="Script" uid="uid://c4xmb7jqob23q" path="res://scripts/player/weapon/hitscan_weapon.gd" id="1_j1spj"]
 [ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_8d2me"]
 [ext_resource type="Resource" uid="uid://kplw0tq7cocl" path="res://resource/energy_stratergy.tres" id="2_o7efd"]
 [ext_resource type="PackedScene" uid="uid://bgn2tg1s6oiqn" path="res://scenes/muzzel_flash.tscn" id="3_3yfrj"]
 [ext_resource type="Resource" uid="uid://bobb77whkpy1l" path="res://resource/camera_bus.tres" id="3_j1spj"]
-[ext_resource type="Script" path="res://scripts/player/weapon/weapon_damage.gd" id="4_cy8oh"]
-[ext_resource type="Resource" uid="uid://djny3b31ecj4v" path="res://resource/ammo_bus.tres" id="4_o7efd"]
+[ext_resource type="Script" uid="uid://b2kqh0d6sfbtk" path="res://scripts/player/weapon/weapon_damage.gd" id="4_cy8oh"]
 [ext_resource type="Script" uid="uid://bcqktcdnwgjo4" path="res://scripts/player/weapon/weapon_animation.gd" id="5_3ihp4"]
 [ext_resource type="Script" uid="uid://crr6hsvwu5ed4" path="res://scripts/player/weapon/weapon_effects.gd" id="6_j1spj"]
 
-[node name="EnergyWeapon" unique_id=588961484 node_paths=PackedStringArray("weapon_model", "muzzel_flash", "weapon_damage", "weapon_animation", "weapon_effects") instance=ExtResource("1_vgrxv")]
-weapon_model = NodePath("Weapon/Model")
+[node name="EnergyWeapon" type="Node3D" unique_id=588961484]
+script = ExtResource("1_j1spj")
 weapon_strategy = ExtResource("2_o7efd")
 fire_rate = 15.0
-muzzel_flash = NodePath("MuzzelFlash")
-sparks = ExtResource("2_8d2me")
 ammo_type = 3
-weapon_damage = NodePath("Damage")
-weapon_animation = NodePath("Animation")
-weapon_effects = NodePath("Effects")
 camera_bus = ExtResource("3_j1spj")
-ammo_bus = ExtResource("4_o7efd")
 
-[node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_3yfrj")]
+[node name="CooldownTimer" type="Timer" parent="." unique_id=1240829031]
+one_shot = true
+
+[node name="ShootCast" type="RayCast3D" parent="." unique_id=145100690]
+target_position = Vector3(0, 0, -100)
+collision_mask = 3
+
+[node name="MuzzelFlash" parent="." unique_id=490162483 instance=ExtResource("3_3yfrj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.18140215, -2.2493174)
 
-[node name="Weapon" type="Node3D" parent="." index="3" unique_id=1545751797]
+[node name="Weapon" type="Node3D" parent="." unique_id=1545751797]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.24189457, -1.1163452)
 
-[node name="Model" type="CSGBox3D" parent="Weapon" index="0" unique_id=1655201406]
+[node name="Model" type="CSGBox3D" parent="Weapon" unique_id=1655201406]
 layers = 2
 size = Vector3(0.1640625, 0.36102295, 1.3887482)
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Weapon/Model" index="0" unique_id=1687519755]
+[node name="CSGBox3D" type="CSGBox3D" parent="Weapon/Model" unique_id=1687519755]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06139481, -0.7885132)
 layers = 2
 size = Vector3(0.13183594, 0.09777832, 0.4450531)
 
-[node name="Damage" type="Node" parent="." index="4" unique_id=519149773]
+[node name="Damage" type="Node" parent="." unique_id=519149773]
 script = ExtResource("4_cy8oh")
+damage_amount = 2
 
-[node name="Animation" type="Node" parent="." index="5" unique_id=573635156 node_paths=PackedStringArray("weapon_model")]
+[node name="Animation" type="Node" parent="." unique_id=573635156 node_paths=PackedStringArray("weapon_model")]
 script = ExtResource("5_3ihp4")
 weapon_model = NodePath("../Weapon/Model")
 
-[node name="Effects" type="Node" parent="." index="6" unique_id=1426693191 node_paths=PackedStringArray("muzzel_particles")]
+[node name="Effects" type="Node" parent="." unique_id=1426693191 node_paths=PackedStringArray("muzzel_particles")]
 script = ExtResource("6_j1spj")
 sparks_scene = ExtResource("2_8d2me")
 muzzel_particles = NodePath("../MuzzelFlash")
