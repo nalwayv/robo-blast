@@ -41,7 +41,7 @@ shadow_enabled = true
 environment = SubResource("Environment_rgld7")
 
 [node name="PlayerController" parent="." unique_id=944678354 instance=ExtResource("1_2ddto")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
 
 [node name="Enemy" parent="." unique_id=1125067069 instance=ExtResource("2_a8pr3")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -14, 3, -14)
