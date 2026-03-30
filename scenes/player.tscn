@@ -195,13 +195,10 @@ fov = 45.0
 script = ExtResource("13_jc3p3")
 
 [node name="ManualWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=140406710 instance=ExtResource("3_tuyoq")]
-script = null
 
 [node name="AutomaticWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=122189766 instance=ExtResource("5_fjrip")]
-script = null
 
 [node name="EnergyWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=588961484 instance=ExtResource("17_i4ail")]
-script = null
 
 [node name="CrosshairContainer" type="CenterContainer" parent="." unique_id=2031583331]
 anchors_preset = 15
