@@ -1,7 +1,7 @@
 class_name MouseCapture
 extends Node
 
-var _motion := Vector2.ZERO
+var _motion: Vector2
 var motion: Vector2:
 	get:
 		var result := _motion

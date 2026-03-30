@@ -7,10 +7,10 @@ signal equip_pressed(index: int)
 signal equip_next
 signal equip_previous
 
-var direction := Vector2.ZERO
-var is_jumping := false
-var is_aiming := false
-var is_shooting := false
+var direction: Vector2
+var is_jumping: bool
+var is_aiming: bool
+var is_shooting: bool
 
 
 func _unhandled_input(event: InputEvent) -> void:
