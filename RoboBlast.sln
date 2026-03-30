@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboBlast", "RoboBlast.csproj", "{7DB2E2E0-535C-4A3E-8788-F16339CAF14D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoboBlast", "RoboBlast.csproj", "{B60AB366-9D92-4B22-B8F6-16ADF2A5A46F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,11 +9,11 @@ Global
 	ExportRelease|Any CPU = ExportRelease|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7DB2E2E0-535C-4A3E-8788-F16339CAF14D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DB2E2E0-535C-4A3E-8788-F16339CAF14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DB2E2E0-535C-4A3E-8788-F16339CAF14D}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
-		{7DB2E2E0-535C-4A3E-8788-F16339CAF14D}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
-		{7DB2E2E0-535C-4A3E-8788-F16339CAF14D}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
-		{7DB2E2E0-535C-4A3E-8788-F16339CAF14D}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{B60AB366-9D92-4B22-B8F6-16ADF2A5A46F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B60AB366-9D92-4B22-B8F6-16ADF2A5A46F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B60AB366-9D92-4B22-B8F6-16ADF2A5A46F}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{B60AB366-9D92-4B22-B8F6-16ADF2A5A46F}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{B60AB366-9D92-4B22-B8F6-16ADF2A5A46F}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{B60AB366-9D92-4B22-B8F6-16ADF2A5A46F}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
 	EndGlobalSection
 EndGlobal
