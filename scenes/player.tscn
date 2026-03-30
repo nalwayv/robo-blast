@@ -228,8 +228,6 @@ energy_manager = NodePath("../../../../../EnergyManager")
 input_handler = NodePath("../../../../../InputHandler")
 
 [node name="AutomaticWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=122189766 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("5_fjrip")]
-fire_rate = null
-ammo_type = null
 ammo_manager = NodePath("../../../../../AmmoManager")
 energy_manager = NodePath("../../../../../EnergyManager")
 input_handler = NodePath("../../../../../InputHandler")
