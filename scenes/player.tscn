@@ -1,29 +1,24 @@
 [gd_scene format=3 uid="uid://dpw0ap4168r3r"]
 
 [ext_resource type="Script" uid="uid://cpm0mrd4vbsh3" path="res://scripts/player/PlayerController.cs" id="1_l71n6"]
-[ext_resource type="Script" uid="uid://chudfqujwjkhl" path="res://scripts/player/components/input_handler.gd" id="2_a8ls1"]
-[ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/components/health.gd" id="2_d2wvv"]
-[ext_resource type="Script" uid="uid://c0q7tkqr7sls6" path="res://scripts/player/weapon/weapon_manager.gd" id="3_fjrip"]
-[ext_resource type="Script" uid="uid://bhkxq62whfx8w" path="res://scripts/player/player_camera.gd" id="3_jej6c"]
-[ext_resource type="Script" uid="uid://caxydu7plo1s6" path="res://scripts/player/tools/crosshair.gd" id="3_qhqgy"]
+[ext_resource type="Script" uid="uid://w6m3m4ywmlh1" path="res://scripts/player/CameraController.cs" id="2_ke2ow"]
 [ext_resource type="PackedScene" uid="uid://djaa8dy6wdkse" path="res://scenes/manual_weapon.tscn" id="3_tuyoq"]
-[ext_resource type="Script" uid="uid://b57i01rnvv3ap" path="res://scripts/player/weapon/ammo_manager.gd" id="4_smehm"]
-[ext_resource type="Script" uid="uid://bcxfbd7msjs2k" path="res://scripts/player/weapon/ammo_presenter.gd" id="4_smehm_presenter"]
+[ext_resource type="Script" uid="uid://dskbmf0uipk0y" path="res://scripts/player/PlayerCamera.cs" id="3_ujl30"]
+[ext_resource type="Script" uid="uid://ckgodwwt2ue0o" path="res://scripts/player/states/StateMachine.cs" id="4_31cv2"]
 [ext_resource type="PackedScene" uid="uid://dffqg0px71had" path="res://scenes/automatic_weapon.tscn" id="5_fjrip"]
-[ext_resource type="Resource" uid="uid://bobb77whkpy1l" path="res://resource/camera_shake_bus.tres" id="5_i4ail"]
+[ext_resource type="Script" uid="uid://sbsp4cfgoixy" path="res://scripts/player/states/GroundedState.cs" id="5_pf23h"]
 [ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
-[ext_resource type="Script" uid="uid://d0gwaflnqyk5t" path="res://scripts/player/camera_controller.gd" id="7_f1ej7"]
-[ext_resource type="Script" uid="uid://rkyc8ouda5mh" path="res://scripts/player/components/mouse_capture.gd" id="8_oprun"]
+[ext_resource type="Script" uid="uid://os674toly3k1" path="res://scripts/player/states/AirborneState.cs" id="6_dt7fs"]
+[ext_resource type="Script" uid="uid://dstqnce66vp3e" path="res://scripts/player/components/InputHandler.cs" id="7_wqfne"]
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
-[ext_resource type="Script" uid="uid://bnfkklxobhv20" path="res://scripts/player/states/state_machine.gd" id="9_oprun"]
-[ext_resource type="Script" uid="uid://rbj0hif2c7cc" path="res://scripts/player/states/grounded_state.gd" id="11_qfm1y"]
-[ext_resource type="Script" uid="uid://lajw57okowxf" path="res://scripts/player/states/airborn_state.gd" id="12_fulsm"]
-[ext_resource type="Resource" uid="uid://djny3b31ecj4v" path="res://resource/ammo_bus.tres" id="13_a38lo"]
-[ext_resource type="Script" uid="uid://dyilm6kcieswb" path="res://scripts/player/weapon/energy_manager.gd" id="13_i4ail"]
+[ext_resource type="Script" uid="uid://0aqmct4dnexl" path="res://scripts/player/components/MouseHandler.cs" id="8_wnwbv"]
+[ext_resource type="Script" uid="uid://12djv5h64kq2" path="res://scripts/components/Health.cs" id="9_gl8cc"]
+[ext_resource type="Script" uid="uid://d2cd2v06n7xli" path="res://scripts/player/weapon/AmmoPresenter.cs" id="10_487ah"]
+[ext_resource type="Script" uid="uid://di4aqdb4b5t1b" path="res://scripts/player/weapon/AmmoManager.cs" id="11_md1ol"]
+[ext_resource type="Script" uid="uid://c0khf5menyk1h" path="res://scripts/player/weapon/EnergyManager.cs" id="12_bj30b"]
+[ext_resource type="Script" uid="uid://b1kw7n8wc1xsw" path="res://scripts/player/weapon/WeaponManager.cs" id="13_jc3p3"]
 [ext_resource type="PackedScene" uid="uid://c87yhbpiehprm" path="res://scenes/energy_weapon.tscn" id="17_i4ail"]
-[ext_resource type="Resource" uid="uid://x6hmrrum0rmc" path="res://resource/manual_strategy.tres" id="18_ke2ow"]
-[ext_resource type="Resource" uid="uid://dwln6j5jvynr3" path="res://resource/automatic_stratergy.tres" id="20_ujl30"]
-[ext_resource type="Resource" uid="uid://kplw0tq7cocl" path="res://resource/energy_stratergy.tres" id="22_31cv2"]
+[ext_resource type="Script" uid="uid://cjfu52ajtg3i1" path="res://scripts/player/tools/Crosshair.cs" id="23_ke2ow"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3v2ag"]
 
@@ -120,16 +115,13 @@ skeleton = NodePath("../..")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1816839160]
 shape = SubResource("CapsuleShape3D_3vyb7")
 
-[node name="CameraController" type="Node3D" parent="." unique_id=1061473629 node_paths=PackedStringArray("player_camera", "weapon_camera")]
+[node name="CameraController" type="Node3D" parent="." unique_id=1061473629]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-script = ExtResource("7_f1ej7")
-player_camera = NodePath("PlayerCamera")
-weapon_camera = NodePath("../WeaponSubViewport/SubViewport/WeaponCamera")
+script = ExtResource("2_ke2ow")
 
 [node name="PlayerCamera" type="Camera3D" parent="CameraController" unique_id=1122465746]
 cull_mask = 1048573
-script = ExtResource("3_jej6c")
-camera_shake_bus = ExtResource("5_i4ail")
+script = ExtResource("3_ujl30")
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraController/PlayerCamera" unique_id=1010528068]
 remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
@@ -139,54 +131,34 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -0.5)
 
 [node name="StateMachine" type="Node" parent="." unique_id=735036328]
 editor_description = "Testing out a simple state machine for the player"
-script = ExtResource("9_oprun")
+script = ExtResource("4_31cv2")
 
-[node name="Grounded" type="Node" parent="StateMachine" unique_id=77062762 node_paths=PackedStringArray("player", "mouse_capture", "input_handler", "camera_controller")]
-script = ExtResource("11_qfm1y")
-player = NodePath("../..")
-mouse_capture = NodePath("../../MouseCapture")
-input_handler = NodePath("../../InputHandler")
-camera_controller = NodePath("../../CameraController")
+[node name="Grounded" type="Node" parent="StateMachine" unique_id=77062762]
+script = ExtResource("5_pf23h")
 
-[node name="Airborne" type="Node" parent="StateMachine" unique_id=1876274156 node_paths=PackedStringArray("player", "mouse_capture", "input_handler", "camera_controller")]
-script = ExtResource("12_fulsm")
-player = NodePath("../..")
-mouse_capture = NodePath("../../MouseCapture")
-input_handler = NodePath("../../InputHandler")
-camera_controller = NodePath("../../CameraController")
-state_type = 1
+[node name="Airborne" type="Node" parent="StateMachine" unique_id=1876274156]
+script = ExtResource("6_dt7fs")
 
 [node name="InputHandler" type="Node" parent="." unique_id=1691015048]
-script = ExtResource("2_a8ls1")
+script = ExtResource("7_wqfne")
 
 [node name="MouseCapture" type="Node" parent="." unique_id=1492553876]
-script = ExtResource("8_oprun")
+script = ExtResource("8_wnwbv")
 
 [node name="Health" type="Node" parent="." unique_id=189041108]
 unique_name_in_owner = true
 editor_description = "Health component"
-script = ExtResource("2_d2wvv")
+script = ExtResource("9_gl8cc")
 
-[node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889 node_paths=PackedStringArray("ammo_label")]
-script = ExtResource("4_smehm_presenter")
-ammo_label = NodePath("../AmmoUI/Label")
-ammo_bus = ExtResource("13_a38lo")
+[node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889]
+script = ExtResource("10_487ah")
 
 [node name="AmmoManager" type="Node" parent="." unique_id=1605748613]
 unique_name_in_owner = true
-script = ExtResource("4_smehm")
-ammo_storage = Dictionary[int, int]({
-0: 25,
-1: 5
-})
-ammo_bus = ExtResource("13_a38lo")
+script = ExtResource("11_md1ol")
 
 [node name="EnergyManager" type="Node" parent="." unique_id=1101804379]
-script = ExtResource("13_i4ail")
-consumption_rate = 30.0
-regen_rate = 0.95
-recharge_delay = 1.5
-ammo_bus = ExtResource("13_a38lo")
+script = ExtResource("12_bj30b")
 
 [node name="RegenTimer" type="Timer" parent="EnergyManager" unique_id=1041205695]
 one_shot = true
@@ -219,34 +191,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 cull_mask = 2
 fov = 45.0
 
-[node name="WeaponManager" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378 node_paths=PackedStringArray("input_handler")]
-script = ExtResource("3_fjrip")
-input_handler = NodePath("../../../../InputHandler")
+[node name="WeaponManager" type="Node3D" parent="WeaponSubViewport/SubViewport/WeaponCamera" unique_id=2132674378]
+script = ExtResource("13_jc3p3")
 
-[node name="ManualWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=140406710 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("3_tuyoq")]
-weapon_strategy = ExtResource("18_ke2ow")
-ammo_manager = NodePath("../../../../../AmmoManager")
-energy_manager = NodePath("../../../../../EnergyManager")
-input_handler = NodePath("../../../../../InputHandler")
-camera_shake_bus = ExtResource("5_i4ail")
-ammo_bus = ExtResource("13_a38lo")
+[node name="ManualWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=140406710 instance=ExtResource("3_tuyoq")]
+script = null
 
-[node name="AutomaticWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=122189766 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("5_fjrip")]
-weapon_strategy = ExtResource("20_ujl30")
-ammo_manager = NodePath("../../../../../AmmoManager")
-energy_manager = NodePath("../../../../../EnergyManager")
-input_handler = NodePath("../../../../../InputHandler")
-camera_shake_bus = ExtResource("5_i4ail")
-ammo_bus = ExtResource("13_a38lo")
+[node name="AutomaticWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=122189766 instance=ExtResource("5_fjrip")]
+script = null
 
-[node name="EnergyWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=588961484 node_paths=PackedStringArray("ammo_manager", "energy_manager", "input_handler") instance=ExtResource("17_i4ail")]
-weapon_strategy = ExtResource("22_31cv2")
-ammo_type = 2
-ammo_manager = NodePath("../../../../../AmmoManager")
-energy_manager = NodePath("../../../../../EnergyManager")
-input_handler = NodePath("../../../../../InputHandler")
-camera_shake_bus = ExtResource("5_i4ail")
-ammo_bus = ExtResource("13_a38lo")
+[node name="EnergyWeapon" parent="WeaponSubViewport/SubViewport/WeaponCamera/WeaponManager" unique_id=588961484 instance=ExtResource("17_i4ail")]
+script = null
 
 [node name="CrosshairContainer" type="CenterContainer" parent="." unique_id=2031583331]
 anchors_preset = 15
@@ -258,7 +213,7 @@ mouse_filter = 2
 
 [node name="Crosshair" type="Control" parent="CrosshairContainer" unique_id=958928721]
 layout_mode = 2
-script = ExtResource("3_qhqgy")
+script = ExtResource("23_ke2ow")
 
 [node name="DamageTexture" type="TextureRect" parent="." unique_id=1012273844]
 modulate = Color(1, 1, 1, 0)

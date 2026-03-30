@@ -1,8 +1,8 @@
 [gd_scene format=4 uid="uid://c0fv2li0eheot"]
 
-[ext_resource type="Script" uid="uid://ttuvrqc8yxcl" path="res://scripts/enemy/enemy.gd" id="1_7p1mj"]
-[ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/components/health.gd" id="3_4ra3w"]
-[ext_resource type="Script" uid="uid://dg1x0sec8c7v5" path="res://scripts/enemy/tools/enemy_debug.gd" id="3_5uy6h"]
+[ext_resource type="Script" uid="uid://c7ibsji77pqws" path="res://scripts/enemy/Enemy.cs" id="1_4ra3w"]
+[ext_resource type="Script" uid="uid://12djv5h64kq2" path="res://scripts/components/Health.cs" id="2_5uy6h"]
+[ext_resource type="Script" uid="uid://b11bfp70t8dnn" path="res://scripts/enemy/tools/EnemyDebug.cs" id="3_c4w8v"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8tegq"]
 
@@ -47,9 +47,8 @@ _data = {
 &"attack": SubResource("Animation_7p1mj")
 }
 
-[node name="EnemyController" type="CharacterBody3D" unique_id=226968340 node_paths=PackedStringArray("health")]
-script = ExtResource("1_7p1mj")
-health = NodePath("Health")
+[node name="EnemyController" type="CharacterBody3D" unique_id=226968340]
+script = ExtResource("1_4ra3w")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=535933570]
 mesh = SubResource("CapsuleMesh_8tegq")
@@ -64,7 +63,7 @@ mesh = SubResource("ArrayMesh_7p1mj")
 [node name="Health" type="Node" parent="." unique_id=1469167002]
 unique_name_in_owner = true
 editor_description = "Health component"
-script = ExtResource("3_4ra3w")
+script = ExtResource("2_5uy6h")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1423746893]
 libraries/ = SubResource("AnimationLibrary_md0e3")
@@ -72,4 +71,4 @@ libraries/ = SubResource("AnimationLibrary_md0e3")
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1671771318]
 
 [node name="Debug" type="Node3D" parent="." unique_id=1243207024]
-script = ExtResource("3_5uy6h")
+script = ExtResource("3_c4w8v")

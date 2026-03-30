@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="CameraShakeBus" format=3 uid="uid://bobb77whkpy1l"]
+[gd_resource type="Resource" format=3 uid="uid://bobb77whkpy1l"]
 
-[ext_resource type="Script" uid="uid://d25dgkvuwysil" path="res://scripts/player/resourse/camera_shake_bus.gd" id="1_mihoc"]
+[ext_resource type="Script" uid="uid://dq3lbjeuf5kmv" path="res://scripts/player/resourse/CameraBus.cs" id="1_16h4e"]
 
 [resource]
-script = ExtResource("1_mihoc")
+script = ExtResource("1_16h4e")
 metadata/_custom_type_script = "uid://d25dgkvuwysil"

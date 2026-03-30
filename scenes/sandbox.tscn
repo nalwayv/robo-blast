@@ -42,34 +42,33 @@ environment = SubResource("Environment_rgld7")
 
 [node name="Player" parent="." unique_id=1840628585 instance=ExtResource("1_2ddto")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = null
 
 [node name="Enemy" parent="." unique_id=1125067069 instance=ExtResource("2_a8pr3")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -14, 3, -14)
+script = null
 
 [node name="Enemy2" parent="." unique_id=226968340 instance=ExtResource("2_a8pr3")]
 transform = Transform3D(0.70710677, 0, 0.70710677, 0, 1, 0, -0.70710677, 0, 0.70710677, 15, 3, 16)
+script = null
 
 [node name="Pickups" type="Node3D" parent="." unique_id=2092107993]
 
 [node name="LargeAmmoPickup" parent="Pickups" unique_id=1591982341 instance=ExtResource("4_tpt06")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 1, -8)
-ammo_amount = 5
-ammo_type = 1
+script = null
 
 [node name="LargeAmmoPickup2" parent="Pickups" unique_id=2094064908 instance=ExtResource("4_tpt06")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1, 9)
-ammo_amount = 5
-ammo_type = 1
+script = null
 
 [node name="SmallAmmoPickup" parent="Pickups" unique_id=2073387576 instance=ExtResource("5_16ffl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1, -10)
-ammo_amount = 25
-ammo_type = 0
+script = null
 
 [node name="SmallAmmoPickup2" parent="Pickups" unique_id=621068877 instance=ExtResource("5_16ffl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1, 11)
-ammo_amount = 25
-ammo_type = 0
+script = null
 
 [node name="NavigationRegion" type="NavigationRegion3D" parent="." unique_id=746795617]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.19371319, -0.041765213, 0.012216568)

@@ -3,9 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_vgrxv"]
 [ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_8d2me"]
 [ext_resource type="PackedScene" uid="uid://bgn2tg1s6oiqn" path="res://scenes/muzzel_flash.tscn" id="3_3yfrj"]
-[ext_resource type="Script" uid="uid://b2kqh0d6sfbtk" path="res://scripts/player/weapon/hitscan_damage.gd" id="4_cy8oh"]
-[ext_resource type="Script" uid="uid://bcqktcdnwgjo4" path="res://scripts/player/weapon/hitscan_animation.gd" id="5_3ihp4"]
-[ext_resource type="Script" uid="uid://crr6hsvwu5ed4" path="res://scripts/player/weapon/hitscan_effects.gd" id="6_j1spj"]
+[ext_resource type="Script" uid="uid://c8rpm1bgnha5c" path="res://scripts/player/weapon/WeaponDamage.cs" id="4_cy8oh"]
+[ext_resource type="Script" uid="uid://dfya7s0vd3fse" path="res://scripts/player/weapon/WeaponAnimation.cs" id="5_3ihp4"]
+[ext_resource type="Script" uid="uid://b3gtbl35psqhx" path="res://scripts/player/weapon/WeaponEffects.cs" id="6_j1spj"]
 
 [node name="EnergyWeapon" unique_id=588961484 node_paths=PackedStringArray("weapon_model", "muzzel_flash", "hitscan_damage", "hitscan_animation", "hitscan_effect") instance=ExtResource("1_vgrxv")]
 fire_rate = 15.0
@@ -35,13 +35,9 @@ size = Vector3(0.13183594, 0.09777832, 0.4450531)
 
 [node name="Damage" type="Node" parent="." index="4" unique_id=519149773]
 script = ExtResource("4_cy8oh")
-damage = 2
 
-[node name="Animation" type="Node" parent="." index="5" unique_id=573635156 node_paths=PackedStringArray("weapon_model")]
+[node name="Animation" type="Node" parent="." index="5" unique_id=573635156]
 script = ExtResource("5_3ihp4")
-weapon_model = NodePath("../Weapon/Model")
 
-[node name="Effects" type="Node" parent="." index="6" unique_id=1426693191 node_paths=PackedStringArray("muzzel_flash")]
+[node name="Effects" type="Node" parent="." index="6" unique_id=1426693191]
 script = ExtResource("6_j1spj")
-sparks = ExtResource("2_8d2me")
-muzzel_flash = NodePath("../MuzzelFlash")

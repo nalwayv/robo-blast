@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d2ht6tw7yma6l"]
 
-[ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/item/ammo.gd" id="1_ieo5p"]
+[ext_resource type="Script" uid="uid://ms7o2e2cxkqw" path="res://scripts/item/AmmoItem.cs" id="1_ieo5p"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_jrhku"]
 size = Vector3(0.5, 0.5, 0.5)
@@ -10,9 +10,8 @@ size = Vector3(0.5, 0.5, 0.5)
 [sub_resource type="SphereShape3D" id="SphereShape3D_c710o"]
 radius = 1.0
 
-[node name="AmmoPickup" type="Area3D" unique_id=1552331146 node_paths=PackedStringArray("model")]
+[node name="AmmoPickup" type="Area3D" unique_id=1552331146]
 script = ExtResource("1_ieo5p")
-model = NodePath("Mesh")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=1628967609]
 mesh = SubResource("BoxMesh_jrhku")
