@@ -4,8 +4,7 @@ extends CharacterBody3D
 const MAX_HISTORICAL_VELCITIES := 10
 const HISTORICAL_TIMER_INTERVAL := 0.1
 const MAX_EDGE_FRICTION := 2.0
-const MAX_STEP_HEIGHT := 0.25
-const MAX_STEP_DISTANCE := 0.25
+const MAX_STEP_HEIGHT := 0.3
 
 @export_group("movement")
 @export var max_speed := 7.0
@@ -21,6 +20,8 @@ const MAX_STEP_DISTANCE := 0.25
 @export_group("timers")
 @export var coyote_time := 0.15
 @export var jump_buffer_time := 0.15
+@export_group("components")
+@export var input_handler: InputHandler
 @export_group("resources")
 @export var camera_bus: CameraBus
 @export_subgroup("camera shake")
@@ -28,10 +29,25 @@ const MAX_STEP_DISTANCE := 0.25
 @export_group("misc")
 @export var model_rotation_speed := 50.0
 
+var was_on_floor: bool
+var wish_direction: Vector3
+var wish_speed: float
+var is_stepping_up: bool
+var is_jumping: bool: 
+	get:
+		return input_handler.is_jumping
+	set(value):
+		input_handler.is_jumping = value
+
+var is_aiming: bool:
+	get:
+		return input_handler.is_aiming
+
 # kinematic jump.
 var jump_velocity: float
 var jump_gravity: float
 var fall_gravity: float
+
 
 # Record average velocity over time.
 var historical_velocities: Array[Vector3] = []
@@ -88,13 +104,20 @@ func _process(delta: float) -> void:
 	_update_model(delta)
 
 
+func update_movement_parameters() -> void:
+	var direciton := direction_to_world(input_handler.direction)
+	wish_direction = direciton.normalized()
+	wish_speed = direciton.length() * max_speed
+
+
 func apply_gravity(delta: float) -> void:
 	if is_on_floor():
+		if velocity.y < 0.0:
+			velocity.y = 0.0
 		return
 
 	var gravity := fall_gravity if velocity.y < 0.0 else jump_gravity
 	velocity += Vector3.UP * gravity * delta
-
 
 func jump() -> void:
 	velocity.y = jump_velocity
@@ -129,27 +152,27 @@ func _is_near_edge() -> bool:
 	return not edge_raycast.is_colliding()
 
 
-func apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float) -> void:
-	var current_speed := velocity.dot(wish_dir)
+func apply_accelerate(delta: float) -> void:
+	var current_speed := velocity.dot(wish_direction)
 	var add_speed := max_speed - current_speed
 	
 	if add_speed <= 0.0:
 		return
 	
 	var accel_speed := minf(acceleration * delta * wish_speed, add_speed)
-	velocity += wish_dir * accel_speed
+	velocity += wish_direction * accel_speed
 
 
-func apply_air_accelerate(wish_dir: Vector3, wish_speed: float, delta: float) -> void:
+func apply_air_accelerate(delta: float) -> void:
 	var wish_speed_cap := minf(wish_speed, air_cap)
-	var current_speed := velocity.dot(wish_dir)
+	var current_speed := velocity.dot(wish_direction)
 	var add_speed := wish_speed_cap - current_speed
 
 	if add_speed <= 0.0:
 		return
 		
 	var accel_speed := minf(air_acceleration * wish_speed * delta, add_speed)
-	velocity += wish_dir * accel_speed
+	velocity += wish_direction * accel_speed
 
 
 func direction_to_world(input_direction: Vector2) -> Vector3:
@@ -167,59 +190,73 @@ func _test_body_motion(from: Transform3D, motion: Vector3, result: PhysicsTestMo
 	return PhysicsServer3D.body_test_motion(get_rid(), params, result)
 
 
-## check if the player model can step over objects of a determined hight and how to react.
-func try_to_step_over() -> void:
+func _get_step_height() -> float:
 	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
 	if is_zero_approx(horizontal_velocity.length()):
-		return
+		return 0.0
 
 	var direction := horizontal_velocity.normalized()
-	var distance := direction * MAX_STEP_DISTANCE
-	var elevation_change := MAX_STEP_HEIGHT
+	var probe_dist := 0.4
+	var result := PhysicsTestMotionResult3D.new()
 
-	# forward probe
-	var test_forward := PhysicsTestMotionResult3D.new()
-	if not _test_body_motion(global_transform, distance, test_forward):
+	# current transform
+	if not _test_body_motion(global_transform, direction * probe_dist, result):
+		return 0.0
+
+	# slope
+	# slope if more then 45 deg
+	if result.get_collision_normal().y > 0.7:
+		return 0.0
+
+	# lifted from current transform
+	var lifted := global_transform.translated(Vector3.UP * MAX_STEP_HEIGHT)
+	if _test_body_motion(lifted, direction * probe_dist, result):
+		return 0.0
+	
+	# forward from lifted transform
+	var forward := lifted.translated(direction * probe_dist)
+	if not _test_body_motion(forward, Vector3.DOWN * MAX_STEP_HEIGHT, result):
+		return 0.0
+
+	return MAX_STEP_HEIGHT - absf(result.get_travel().y)
+	
+
+func step_up() -> void:
+	is_stepping_up = false
+
+	if not was_on_floor:
 		return
 
-	# simple check to prevent step over trying to step over things it can't
-	var collider := test_forward.get_collider() as Node
-	if collider and collider.is_in_group("enemy"):
+	var step_height := _get_step_height()
+	if step_height > 0.01:
+		global_position.y += step_height
+		velocity.y = 0.0
+		is_stepping_up = true
+
+
+func _get_step_drop() -> float:
+	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
+	if is_zero_approx(horizontal_velocity.length()):
+		return 0.0
+
+	var result := PhysicsTestMotionResult3D.new()
+	var probe_dist := MAX_STEP_HEIGHT + 0.05
+
+	if not _test_body_motion(global_transform, Vector3.DOWN * probe_dist, result):
+		return 0.0
+
+	return absf(result.get_travel().y)
+
+
+func step_down() -> void:
+	if is_stepping_up:
 		return
 
-	# ground normal is sloped, so we can't step up
-	if test_forward.get_collision_normal().y > 0.7:
-		return
-
-	# check if we can step up
-	var test_upwards := PhysicsTestMotionResult3D.new()
-	if _test_body_motion( global_transform, Vector3.UP * MAX_STEP_HEIGHT, test_upwards):
-		elevation_change = test_upwards.get_travel().y
-		if is_zero_approx(elevation_change):
-			return
-
-	# check forward from the raised position
-	var raised := global_transform.translated(Vector3.UP * elevation_change)
-	var test_forward_raised := PhysicsTestMotionResult3D.new()
-	if _test_body_motion(raised, distance, test_forward_raised):
-		return
-
-	# check down from the raised position
-	var raised_forward := raised.translated(distance)
-	var test_down_from_forward_raised := PhysicsTestMotionResult3D.new()
-	if not _test_body_motion(raised_forward, Vector3.DOWN * elevation_change, test_down_from_forward_raised):
-		return
-
-	var deceleration_change := test_down_from_forward_raised.get_travel().y
-	var total_elevation := elevation_change + deceleration_change
-	if total_elevation <= 0.0 or total_elevation > MAX_STEP_HEIGHT:
-		return
-
-	global_position.y += total_elevation
-	# var nudge := direction * 0.5
-	# global_position += nudge
-
-	velocity.y = 0.0
+	if was_on_floor and not is_on_floor() and not is_jumping:
+		var drop := _get_step_drop()
+		if drop > 0.01:
+			global_position.y -= drop
+			velocity.y = 0
 
 
 func _update_model(delta: float) -> void:
