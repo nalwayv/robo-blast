@@ -11,20 +11,25 @@ const MAX_EDGE_FRICTION := 2.0
 @export var acceleration := 10.0 
 @export var friction := 6.0
 @export var air_cap := 0.9
+
 @export_group("jumping")
 @export var max_jump_height := 1.0
 @export var jump_time_to_peak := 0.45
 @export var jump_time_to_decent := 0.35
 @export var air_acceleration := 100.0
+
 @export_group("timers")
 @export var coyote_time := 0.15
 @export var jump_buffer_time := 0.15
+
 @export_group("components")
 @export var input_handler: InputHandler
+
 @export_group("resources")
 @export var camera_bus: CameraBus
 @export_subgroup("camera shake")
 @export var shake_intensity:= 0.7
+
 @export_group("misc")
 @export var model_rotation_speed := 50.0
 
@@ -55,10 +60,6 @@ var average_velocity: Vector3:
 		avg.y = 0.0
 		
 		return avg / historical_velocities.size()
-
-
-var step_result := PhysicsTestMotionResult3D.new()
-var step_params := PhysicsTestMotionParameters3D.new()
 
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
