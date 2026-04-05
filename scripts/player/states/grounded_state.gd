@@ -9,6 +9,7 @@ func _update(delta: float) -> void:
 		camera_controller.zoom_in(delta)
 	else:
 		camera_controller.zoom_out(delta)
+
 	player.global_basis = camera_controller.horizontal_rotation()
 
 
@@ -19,13 +20,7 @@ func _physics_update(delta: float) -> void:
 	player.apply_friction(delta)
 	player.apply_accelerate(delta)
 	
-	player.step_up()
-	
 	player.move_and_slide()
-
-	player.step_down()
-
-	player.was_on_floor = player.is_on_floor()
 
 	_transition_to_airborn_from_jump()
 	_transition_to_airborn()

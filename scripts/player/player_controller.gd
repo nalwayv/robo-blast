@@ -4,7 +4,6 @@ extends CharacterBody3D
 const MAX_HISTORICAL_VELCITIES := 10
 const HISTORICAL_TIMER_INTERVAL := 0.1
 const MAX_EDGE_FRICTION := 2.0
-const MAX_STEP_HEIGHT := 0.3
 
 @export_group("movement")
 @export var max_speed := 7.0
@@ -29,25 +28,19 @@ const MAX_STEP_HEIGHT := 0.3
 @export_group("misc")
 @export var model_rotation_speed := 50.0
 
-var was_on_floor: bool
 var wish_direction: Vector3
 var wish_speed: float
-var is_stepping_up: bool
 var is_jumping: bool: 
 	get:
 		return input_handler.is_jumping
 	set(value):
 		input_handler.is_jumping = value
-
 var is_aiming: bool:
 	get:
 		return input_handler.is_aiming
-
-# kinematic jump.
 var jump_velocity: float
 var jump_gravity: float
 var fall_gravity: float
-
 
 # Record average velocity over time.
 var historical_velocities: Array[Vector3] = []
@@ -63,6 +56,10 @@ var average_velocity: Vector3:
 		
 		return avg / historical_velocities.size()
 
+
+var step_result := PhysicsTestMotionResult3D.new()
+var step_params := PhysicsTestMotionParameters3D.new()
+
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var jump_buffer_timer: Timer = $JumpBufferTimer
 @onready var history_velocity_timer: Timer = $HistoricalVelocityTimer
@@ -71,6 +68,7 @@ var average_velocity: Vector3:
 @onready var model: Node3D = $Model
 @onready var edge_raycast: RayCast3D = $NearEdgeCast
 @onready var health: Health = $Health
+
 
 func _ready() -> void:
 	add_to_group("player")
@@ -177,86 +175,6 @@ func apply_air_accelerate(delta: float) -> void:
 
 func direction_to_world(input_direction: Vector2) -> Vector3:
 	return global_basis * Vector3(input_direction.x, 0.0, input_direction.y)
-
-
-func _test_body_motion(from: Transform3D, motion: Vector3, result: PhysicsTestMotionResult3D) -> bool:
-	if not result:
-		result = PhysicsTestMotionResult3D.new()
-
-	var params := PhysicsTestMotionParameters3D.new()
-	params.from = from
-	params.motion = motion
-	params.max_collisions = 1
-	return PhysicsServer3D.body_test_motion(get_rid(), params, result)
-
-
-func _get_step_height() -> float:
-	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
-	if is_zero_approx(horizontal_velocity.length()):
-		return 0.0
-
-	var direction := horizontal_velocity.normalized()
-	var probe_dist := 0.4
-	var result := PhysicsTestMotionResult3D.new()
-
-	# current transform
-	if not _test_body_motion(global_transform, direction * probe_dist, result):
-		return 0.0
-
-	# slope
-	# slope if more then 45 deg
-	if result.get_collision_normal().y > 0.7:
-		return 0.0
-
-	# lifted from current transform
-	var lifted := global_transform.translated(Vector3.UP * MAX_STEP_HEIGHT)
-	if _test_body_motion(lifted, direction * probe_dist, result):
-		return 0.0
-	
-	# forward from lifted transform
-	var forward := lifted.translated(direction * probe_dist)
-	if not _test_body_motion(forward, Vector3.DOWN * MAX_STEP_HEIGHT, result):
-		return 0.0
-
-	return MAX_STEP_HEIGHT - absf(result.get_travel().y)
-	
-
-func step_up() -> void:
-	is_stepping_up = false
-
-	if not was_on_floor:
-		return
-
-	var step_height := _get_step_height()
-	if step_height > 0.01:
-		global_position.y += step_height
-		velocity.y = 0.0
-		is_stepping_up = true
-
-
-func _get_step_drop() -> float:
-	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
-	if is_zero_approx(horizontal_velocity.length()):
-		return 0.0
-
-	var result := PhysicsTestMotionResult3D.new()
-	var probe_dist := MAX_STEP_HEIGHT + 0.05
-
-	if not _test_body_motion(global_transform, Vector3.DOWN * probe_dist, result):
-		return 0.0
-
-	return absf(result.get_travel().y)
-
-
-func step_down() -> void:
-	if is_stepping_up:
-		return
-
-	if was_on_floor and not is_on_floor() and not is_jumping:
-		var drop := _get_step_drop()
-		if drop > 0.01:
-			global_position.y -= drop
-			velocity.y = 0
 
 
 func _update_model(delta: float) -> void:

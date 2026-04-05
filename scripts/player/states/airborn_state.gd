@@ -18,6 +18,7 @@ func _update(delta: float) -> void:
 		camera_controller.zoom_in(delta)
 	else:
 		camera_controller.zoom_out(delta)
+
 	player.global_basis = camera_controller.horizontal_rotation()
 
 
@@ -29,6 +30,7 @@ func _physics_update(delta: float) -> void:
 
 	_handle_jump_input()
 
+	
 	player.move_and_slide()
 
 	_handle_jump_buffering()
