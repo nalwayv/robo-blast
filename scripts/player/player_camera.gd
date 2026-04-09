@@ -3,9 +3,11 @@ extends Camera3D
 
 @export_group("camera smoothing")
 @export var rotation_speed := 50.0
+
 @export_group("camera shake")
 @export var frequency := 22.0
 @export var damping := 0.5
+
 @export_group("resources")
 @export var camera_bus: CameraBus
 

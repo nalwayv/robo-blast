@@ -7,13 +7,16 @@ const MAX_X_ROTATION := 70.0
 @export_group("cameras")
 @export var main_camera: Camera3D
 @export var second_camera: Camera3D
+
 @export_group("smoothing")
 @export var smoothing_weight := 20.0
 @export var base_sensitivity := 0.001
+
 @export_group("sensitivity")
 @export var inches_per_360 := 12.0 
 @export var dpi := 800.0 
 @export var sensitivity := 1.0
+
 @export_group("field of view")
 @export var zoom_in_ratio := 0.7
 @export var transition_in_speed := 20.0

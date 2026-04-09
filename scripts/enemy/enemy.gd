@@ -12,12 +12,15 @@ const PREDICTION_THRESHOLD := 0.33
 @export var min_turn_speed := 5.0
 @export var max_turn_speed := 15.0
 @export var smooth_direction := 10.0
+
 @export_group("field of view")
 @export var detecion_radius := 5.0
 @export var detection_angle := 90.0
+
 @export_group("attack")
 @export var attack_range := 2.0
 @export var attack_damage := 20
+
 @export_group("components")
 @export var health: Health
 
@@ -48,12 +51,12 @@ func _physics_process(delta: float) -> void:
 	if provoked:
 		var next_path_position := navigation_agent_3d.get_next_path_position()
 		var direction := global_position.direction_to(next_path_position)
-
 		current_direction = current_direction.lerp(direction, smooth_direction * delta)
 		var wish_direction := Vector3(current_direction.x, 0.0, current_direction.z).normalized()
+		var wish_speed := max_speed
 
 		_apply_friction(delta)
-		_apply_accelerate(wish_direction, max_speed, delta)
+		_apply_accelerate(wish_direction, wish_speed, delta)
 		_apply_rotation(direction, delta)
 	else:
 		_apply_friction(delta)

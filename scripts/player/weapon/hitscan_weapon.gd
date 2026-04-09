@@ -4,14 +4,18 @@ extends Node3D
 @export_group("settings")
 @export var weapon_strategy: WeaponStrategy
 @export var fire_rate := 14.0
+
 @export_group("ammo managers")
 @export var ammo_type: AmmoType.Type
 @export var ammo_manager: AmmoManager
 @export var energy_manager: EnergyManager
+
 @export_group("components")
 @export var input_handler: InputHandler
+
 @export_group("resource")
 @export var camera_bus: CameraBus
+
 @export_subgroup("camera shake")
 @export var camera_shake := 2.0
 

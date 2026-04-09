@@ -2,6 +2,7 @@ class_name AmmoPresenter
 extends Node
 
 @export var ammo_label: Label
+
 @export_group("resource")
 @export var ammo_bus: AmmoBus
 

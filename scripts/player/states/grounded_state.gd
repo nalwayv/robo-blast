@@ -5,7 +5,7 @@ extends PlayerBaseState
 func _update(delta: float) -> void:
 	camera_controller.rotate_camera(mouse_capture.motion, delta)
 	
-	if player.is_aiming:
+	if input_handler.is_aiming:
 		camera_controller.zoom_in(delta)
 	else:
 		camera_controller.zoom_out(delta)
@@ -14,12 +14,17 @@ func _update(delta: float) -> void:
 
 
 func _physics_update(delta: float) -> void:
-	player.apply_gravity(delta)
+	var input_direction := input_handler.direction
+	var wish_direction := player.direction_to_world(input_direction)
+	var wish_speed := input_direction.length() * player.max_speed
 
-	player.update_movement_parameters()
+	player.apply_gravity(delta)
 	player.apply_friction(delta)
-	player.apply_accelerate(delta)
-	
+	player.apply_accelerate(wish_direction, wish_speed, delta)
+
+	# player.test_step()
+	player.try_step_up()
+
 	player.move_and_slide()
 
 	_transition_to_airborn_from_jump()
@@ -27,7 +32,7 @@ func _physics_update(delta: float) -> void:
 
 
 func _transition_to_airborn_from_jump() -> void:
-	if not player.is_jumping:
+	if not input_handler.is_jumping:
 		return
 	
 	player.jump()

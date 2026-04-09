@@ -5,7 +5,7 @@ extends Node3D
 @export var fov_angle_degrees := 90.0
 @export var detecion_radius := 10.0
 
-var circumference_segments:= 64
+var circumference_segments := 64
 
 
 func _process(_delta: float) -> void:

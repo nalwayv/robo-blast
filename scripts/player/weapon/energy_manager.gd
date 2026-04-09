@@ -5,6 +5,7 @@ extends Node
 @export var consumption_rate := 20.0
 @export var regen_rate := 2.0
 @export var recharge_delay := 0.5
+
 @export_group("resource")
 @export var ammo_bus: AmmoBus
 

@@ -22,9 +22,6 @@ const MAX_EDGE_FRICTION := 2.0
 @export var coyote_time := 0.15
 @export var jump_buffer_time := 0.15
 
-@export_group("components")
-@export var input_handler: InputHandler
-
 @export_group("resources")
 @export var camera_bus: CameraBus
 @export_subgroup("camera shake")
@@ -33,16 +30,9 @@ const MAX_EDGE_FRICTION := 2.0
 @export_group("misc")
 @export var model_rotation_speed := 50.0
 
-var wish_direction: Vector3
-var wish_speed: float
-var is_jumping: bool: 
-	get:
-		return input_handler.is_jumping
-	set(value):
-		input_handler.is_jumping = value
-var is_aiming: bool:
-	get:
-		return input_handler.is_aiming
+var step_height := 0.3
+var step_check_distance := 0.2
+
 var jump_velocity: float
 var jump_gravity: float
 var fall_gravity: float
@@ -69,15 +59,15 @@ var average_velocity: Vector3:
 @onready var model: Node3D = $Model
 @onready var edge_raycast: RayCast3D = $NearEdgeCast
 @onready var health: Health = $Health
-
+@onready var direction_pivot: Node3D = $DirectionPivot
 
 func _ready() -> void:
 	add_to_group("player")
 
 	# kinematic jump settings
 	jump_velocity = 2.0 * max_jump_height / jump_time_to_peak
-	jump_gravity = -2.0 * max_jump_height / pow(jump_time_to_peak, 2.0)
-	fall_gravity = -2.0 * max_jump_height / pow(jump_time_to_decent, 2.0)
+	jump_gravity = -2.0 * max_jump_height / (jump_time_to_peak * jump_time_to_peak)
+	fall_gravity = -2.0 * max_jump_height / (jump_time_to_decent * jump_time_to_decent)
 	
 	# historical velocities
 	historical_velocities.resize(MAX_HISTORICAL_VELCITIES)
@@ -102,11 +92,11 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_update_model(delta)
 
-
-func update_movement_parameters() -> void:
-	var direciton := direction_to_world(input_handler.direction)
-	wish_direction = direciton.normalized()
-	wish_speed = direciton.length() * max_speed
+	# just a simple way to see current horizontal direction of the player for debugging
+	var horizontal_velocity := Vector3(velocity.x, 0, velocity.z)
+	if not horizontal_velocity.is_zero_approx():
+		var local_dir := (global_basis.inverse() * horizontal_velocity).normalized()
+		direction_pivot.rotation.y = atan2(-local_dir.x, -local_dir.z)
 
 
 func apply_gravity(delta: float) -> void:
@@ -117,6 +107,7 @@ func apply_gravity(delta: float) -> void:
 
 	var gravity := fall_gravity if velocity.y < 0.0 else jump_gravity
 	velocity += Vector3.UP * gravity * delta
+
 
 func jump() -> void:
 	velocity.y = jump_velocity
@@ -144,14 +135,14 @@ func _is_near_edge() -> bool:
 		return false
 
 	var horizontal_velocity := Vector2(velocity.x, velocity.z)
-	if horizontal_velocity.length() < 0.1:
+	if horizontal_velocity.is_zero_approx():
 		return false
 
 	edge_raycast.force_raycast_update()
 	return not edge_raycast.is_colliding()
 
 
-func apply_accelerate(delta: float) -> void:
+func apply_accelerate(wish_direction: Vector3, wish_speed: float, delta: float) -> void:
 	var current_speed := velocity.dot(wish_direction)
 	var add_speed := max_speed - current_speed
 	
@@ -162,7 +153,7 @@ func apply_accelerate(delta: float) -> void:
 	velocity += wish_direction * accel_speed
 
 
-func apply_air_accelerate(delta: float) -> void:
+func apply_air_accelerate(wish_direction: Vector3, wish_speed: float, delta: float) -> void:
 	var wish_speed_cap := minf(wish_speed, air_cap)
 	var current_speed := velocity.dot(wish_direction)
 	var add_speed := wish_speed_cap - current_speed
@@ -198,3 +189,44 @@ func _on_update_historical_velocities() -> void:
 		historical_velocities.pop_front()
 
 	historical_velocities.push_back(velocity)
+
+
+# region [Testing step up]
+
+
+func try_step_up() -> void:
+	var horizontal_direction := Vector3(velocity.x, 0, velocity.z)
+	if horizontal_direction.is_zero_approx():
+		return
+
+	var direction := horizontal_direction.normalized()
+	var params := PhysicsTestMotionParameters3D.new()
+	var result := PhysicsTestMotionResult3D.new()
+
+	# check forward if nothing is blocking return
+	params.from = global_transform
+	params.motion = direction * step_check_distance
+	if not PhysicsServer3D.body_test_motion(get_rid(), params, result):
+		return
+
+	# check height is clear
+	var raised := global_transform.translated(Vector3.UP * step_height)
+	params.from = raised
+	params.motion = direction * step_check_distance
+	if PhysicsServer3D.body_test_motion(get_rid(), params, result):
+		return
+
+	# check down if there is something to land on
+	params.from = raised.translated(direction * step_check_distance)
+	params.motion = Vector3.DOWN * step_height
+	if not PhysicsServer3D.body_test_motion(get_rid(), params, result):
+		return
+
+	# step up
+	var step_amount := step_height - result.get_travel().length()
+	if step_amount > 0.01:
+		global_position.y += step_amount
+		global_position += direction * 0.05
+
+
+# endregion

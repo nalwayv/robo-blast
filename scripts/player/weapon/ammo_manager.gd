@@ -4,6 +4,7 @@ extends Node
 
 @export_group("settings")
 @export var ammo_storage: Dictionary[AmmoType.Type, int] = {}
+
 @export_group("resource")
 @export var ammo_bus: AmmoBus
 

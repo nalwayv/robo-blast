@@ -14,7 +14,7 @@ func _exit() -> void:
 func _update(delta: float) -> void:
 	camera_controller.rotate_camera(mouse_capture.motion, delta)
 	
-	if player.is_aiming:
+	if input_handler.is_aiming:
 		camera_controller.zoom_in(delta)
 	else:
 		camera_controller.zoom_out(delta)
@@ -23,13 +23,14 @@ func _update(delta: float) -> void:
 
 
 func _physics_update(delta: float) -> void:
+	var input_direction := input_handler.direction
+	var wish_direction := player.direction_to_world(input_direction)
+	var wish_speed := input_direction.length() * player.max_speed
+
 	player.apply_gravity(delta)
-	
-	player.update_movement_parameters()
-	player.apply_air_accelerate(delta)
+	player.apply_air_accelerate(wish_direction, wish_speed, delta)
 
 	_handle_jump_input()
-
 	
 	player.move_and_slide()
 
@@ -38,16 +39,16 @@ func _physics_update(delta: float) -> void:
 
 
 func _handle_jump_input() -> void:
-	if not player.is_jumping:
+	if not input_handler.is_jumping:
 		return
 
 	if player.is_on_floor() or not player.coyote_timer.is_stopped():
 		player.jump()
 		player.coyote_timer.stop()
-		player.is_jumping = false
+		input_handler.is_jumping = false
 	else:
 		player.jump_buffer_timer.start()
-		player.is_jumping = false
+		input_handler.is_jumping = false
 
 
 func _handle_jump_buffering() -> void:

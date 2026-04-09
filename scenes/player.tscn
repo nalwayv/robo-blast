@@ -26,6 +26,9 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3vyb7"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i4ail"]
+albedo_color = Color(1, 0, 0, 1)
+
 [sub_resource type="Animation" id="Animation_qlg0r"]
 length = 0.4
 step = 0.1
@@ -102,12 +105,11 @@ fill_to = Vector2(1, 1)
 font = ExtResource("8_ur7pv")
 font_size = 64
 
-[node name="PlayerController" type="CharacterBody3D" unique_id=944678354 node_paths=PackedStringArray("input_handler")]
+[node name="PlayerController" type="CharacterBody3D" unique_id=944678354]
 editor_description = "Player controles cameras Yaw"
 collision_layer = 4
 collision_mask = 3
 script = ExtResource("1_3vyb7")
-input_handler = NodePath("InputHandler")
 camera_bus = ExtResource("5_i4ail")
 
 [node name="Model" type="Node3D" parent="." unique_id=1335922153]
@@ -138,19 +140,36 @@ remote_path = NodePath("../../../WeaponSubViewport/SubViewport/WeaponCamera")
 [node name="NearEdgeCast" type="RayCast3D" parent="." unique_id=807837531]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -0.5)
 
+[node name="DirectionPivot" type="Node3D" parent="." unique_id=1293423395]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.71152174, 0)
+visible = false
+
+[node name="Arrow" type="CSGBox3D" parent="DirectionPivot" unique_id=2116975974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05517578, -0.035981297, -0.87204915)
+material_override = SubResource("StandardMaterial3D_i4ail")
+size = Vector3(0.11230469, 0.12109375, 0.3656555)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="DirectionPivot/Arrow" unique_id=2142424899]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, -0.46051157)
+radius = 0.149
+height = 0.58644867
+cone = true
+
 [node name="StateMachine" type="Node" parent="." unique_id=735036328]
 editor_description = "Testing out a simple state machine for the player"
 script = ExtResource("9_oprun")
 
-[node name="Grounded" type="Node" parent="StateMachine" unique_id=77062762 node_paths=PackedStringArray("player", "mouse_capture", "camera_controller")]
+[node name="Grounded" type="Node" parent="StateMachine" unique_id=77062762 node_paths=PackedStringArray("player", "input_handler", "mouse_capture", "camera_controller")]
 script = ExtResource("11_qfm1y")
 player = NodePath("../..")
+input_handler = NodePath("../../InputHandler")
 mouse_capture = NodePath("../../MouseCapture")
 camera_controller = NodePath("../../CameraController")
 
-[node name="Airborne" type="Node" parent="StateMachine" unique_id=1876274156 node_paths=PackedStringArray("player", "mouse_capture", "camera_controller")]
+[node name="Airborne" type="Node" parent="StateMachine" unique_id=1876274156 node_paths=PackedStringArray("player", "input_handler", "mouse_capture", "camera_controller")]
 script = ExtResource("12_fulsm")
 player = NodePath("../..")
+input_handler = NodePath("../../InputHandler")
 mouse_capture = NodePath("../../MouseCapture")
 camera_controller = NodePath("../../CameraController")
 state_type = 1
