@@ -1,6 +1,9 @@
 class_name CameraController 
 extends Node3D
 
+## A component that controls the player's camera. 
+## [br]It handles the camera's rotation, zooming, and smoothing.
+
 const MIN_X_ROTATION := -89.0
 const MAX_X_ROTATION := 70.0
 
@@ -36,6 +39,7 @@ func _ready() -> void:
 	radians_per_count = TAU / (inches_per_360 * dpi * sensitivity)
 
 
+## Make the camera zoom in by reducing its field of view.
 func zoom_in(delta: float) -> void:
 	main_camera.fov = lerpf(
 		main_camera.fov,
@@ -48,6 +52,7 @@ func zoom_in(delta: float) -> void:
 		transition_in_speed * delta)
 
 
+## Make the camera zoom out to its default field of view.
 func zoom_out(delta: float) -> void:
 	main_camera.fov = lerpf(
 		main_camera.fov,
@@ -59,7 +64,8 @@ func zoom_out(delta: float) -> void:
 		second_camera_fov,
 		transition_out_speed * delta)
 
-
+## Rotate the camera based on the mouse movement.
+## [br]The rotation is smoothed using an exponential moving average.
 func rotate_camera(mouse_motion: Vector2, delta: float) -> void:
 	target_rotation += Vector2(mouse_motion.y, mouse_motion.x) * radians_per_count
 	target_rotation.x = clampf(
@@ -73,5 +79,6 @@ func rotate_camera(mouse_motion: Vector2, delta: float) -> void:
 	basis = Basis.from_euler(Vector3.RIGHT * current_rotation.x)
 
 
+## get the horizontal rotation of the camera.
 func horizontal_rotation() -> Basis:
 	return Basis.from_euler(Vector3.UP * current_rotation.y)

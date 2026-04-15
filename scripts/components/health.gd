@@ -1,6 +1,9 @@
 class_name Health
 extends Node
 
+## A component that manages the health of an entity.
+## [br]It emits signals when the entity takes damage, dies, or when the health changes.
+
 signal died
 signal damaged
 signal health_changed(amount: int)

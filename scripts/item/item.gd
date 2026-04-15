@@ -1,6 +1,11 @@
 class_name Item
 extends Area3D
 
+## A base class for all items in the game.
+## [br]Items are collected by the player when they enter their area.
+## [br]They have a simple spring animation that makes them [bounce] up and down, 
+## and [rotate].
+
 @export_group("animation")
 @export var spring_frequency := 4.0
 @export var spring_nudge := 0.8

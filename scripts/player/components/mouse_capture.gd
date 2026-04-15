@@ -1,6 +1,8 @@
 class_name MouseCapture
 extends Node
 
+## A component that captures the mouse movement.
+
 var _motion: Vector2
 var motion: Vector2:
 	get:

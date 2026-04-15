@@ -1,6 +1,10 @@
 class_name PlayerCamera
 extends Camera3D
 
+## A Helper node that handles the players camera movement and shake effects.
+## camera bus is used to receive shake requests from the player controller and 
+## apply them to the camera using a damped spring for smooth movement.
+
 @export_group("camera smoothing")
 @export var rotation_speed := 50.0
 

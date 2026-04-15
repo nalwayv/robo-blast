@@ -1,8 +1,13 @@
 class_name EnemyController
 extends CharacterBody3D
 
+## A controller for the enemy.
+## The enemy has a simple AI that allows it to navigate towards the player, 
+## attack, and react to being damaged.
+
 const MAX_TURN_ANGLE := 60.0
 const PREDICTION_THRESHOLD := 0.33
+const NAVIGATION_INTERVAL := 0.1
 
 @export_group("movement")
 @export var max_speed := 2.5
@@ -27,6 +32,7 @@ const PREDICTION_THRESHOLD := 0.33
 var provoked: bool
 var player: PlayerController
 var current_direction := Vector3.FORWARD
+var navigation_delay := 0.0
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
@@ -41,23 +47,37 @@ func _ready() -> void:
 	health.damaged.connect(func() -> void: provoked = true)
 
 
-func _process(_delta: float) -> void:
-	_update_prediction_target()
+func _process(delta: float) -> void:
+	navigation_delay -= delta
+	if navigation_delay <= 0:
+		navigation_agent_3d.target_position = _update_prediction_target()
+		navigation_delay = NAVIGATION_INTERVAL
 
 
 func _physics_process(delta: float) -> void:
 	_apply_gravity(delta)
 
 	if provoked:
-		var next_path_position := navigation_agent_3d.get_next_path_position()
-		var direction := global_position.direction_to(next_path_position)
-		current_direction = current_direction.lerp(direction, smooth_direction * delta)
-		var wish_direction := Vector3(current_direction.x, 0.0, current_direction.z).normalized()
-		var wish_speed := max_speed
+		if not navigation_agent_3d.is_navigation_finished():
+			var next_path_position := navigation_agent_3d.get_next_path_position()
+			var direction := global_position.direction_to(next_path_position)
+			current_direction = current_direction.lerp(direction, smooth_direction * delta)
 
-		_apply_friction(delta)
-		_apply_accelerate(wish_direction, wish_speed, delta)
-		_apply_rotation(direction, delta)
+			var wish_direction := Vector3(current_direction.x, 0.0, current_direction.z).normalized()
+			var wish_speed := max_speed
+
+			_apply_friction(delta)
+			_apply_accelerate(wish_direction, wish_speed, delta)
+			_apply_rotation(wish_direction, delta)
+		else:
+			# just look at player
+			var direction := global_position.direction_to(player.global_position)
+			current_direction = current_direction.lerp(direction, smooth_direction * delta)
+			var wish_direction := Vector3(current_direction.x, 0.0, current_direction.z).normalized()
+
+			_apply_rotation(wish_direction, delta)
+			_apply_friction(delta)
+
 	else:
 		_apply_friction(delta)
 
@@ -120,9 +140,9 @@ func _is_player_within_fov_angle() -> bool:
 	return forward.dot(direction_to) > cos(half_fov)
 
 
-func _update_prediction_target() -> void:
+func _update_prediction_target() -> Vector3:
 	if not provoked:
-		return
+		return Vector3.ZERO
 
 	# calculate time to reach player based on current distance and max speed
 	var distance_to_player := global_position.distance_to(player.global_position)
@@ -137,7 +157,7 @@ func _update_prediction_target() -> void:
 	if direction_to_player.dot(direction_to_target) < PREDICTION_THRESHOLD:
 		target_prediction = player.global_position
 
-	navigation_agent_3d.target_position = target_prediction
+	return target_prediction
 
 
 func _apply_friction(delta: float) -> void:

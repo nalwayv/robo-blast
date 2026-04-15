@@ -1,6 +1,11 @@
 class_name HitScanWeapon
 extends Node3D
 
+## A weapon that uses raycasts to apply damage to targets instantly when the player shoots.
+## Weapons use a [WeaponStrategy] to determine how to shoot, 
+## A [AmmoManager] to check if it has enough ammo to shoot.
+## Also weapon has a [CameraBus] to shake the camera when shooting.
+
 @export_group("settings")
 @export var weapon_strategy: WeaponStrategy
 @export var fire_rate := 14.0
@@ -20,6 +25,7 @@ extends Node3D
 @export var camera_shake := 2.0
 
 var one_shot: bool
+var is_shooting: bool
 var ammo_count: int:
 	get:
 		if not ammo_manager:
@@ -44,8 +50,12 @@ var energy_ratio: float:
 func _ready() -> void:
 	cooldown_timer.wait_time = 1.0 / fire_rate
 
-	input_handler.shoot_pressed.connect(func() -> void: one_shot = true)
-	input_handler.shoot_released.connect(func() -> void: one_shot = false)
+	input_handler.shoot_pressed.connect(func() -> void:
+		is_shooting = true
+		one_shot = true)
+	input_handler.shoot_released.connect(func() -> void: 
+		is_shooting = false
+		one_shot = false)
 
 
 func _process(delta: float) -> void:

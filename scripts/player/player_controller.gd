@@ -1,6 +1,11 @@
 class_name PlayerController
 extends CharacterBody3D
 
+## The main player controller that handles movement and jumping similar to a standard first person controller, 
+## but with some extra features like coyote time, jump buffering and step up.
+## [br]**NOTE**: Step up is not perfect and is just a simple implementation that uses gdots physics test motion 
+## to check if the player can step up.
+
 const MAX_HISTORICAL_VELCITIES := 10
 const HISTORICAL_TIMER_INTERVAL := 0.1
 const MAX_EDGE_FRICTION := 2.0
@@ -37,7 +42,9 @@ var jump_velocity: float
 var jump_gravity: float
 var fall_gravity: float
 
-# Record average velocity over time.
+var is_zoomed_in: bool
+
+# Record average velocity over time
 var historical_velocities: Array[Vector3] = []
 var average_velocity: Vector3:
 	get:
@@ -99,6 +106,7 @@ func _process(delta: float) -> void:
 		direction_pivot.rotation.y = atan2(-local_dir.x, -local_dir.z)
 
 
+## Applies gravity to the player
 func apply_gravity(delta: float) -> void:
 	if is_on_floor():
 		if velocity.y < 0.0:
@@ -109,10 +117,13 @@ func apply_gravity(delta: float) -> void:
 	velocity += Vector3.UP * gravity * delta
 
 
+## Applies an instant vertical velocity to the player to make it jump.
 func jump() -> void:
 	velocity.y = jump_velocity
 
 
+## Applies friction to the player when grounded. if near an edge friction is increased 
+## to prevent the player from sliding off the edge.
 func apply_friction(delta: float) -> void:
 	var speed := velocity.length()
 	if speed < 0.01:
@@ -142,6 +153,7 @@ func _is_near_edge() -> bool:
 	return not edge_raycast.is_colliding()
 
 
+## Applies acceleration to the player when grounded based on players wish direction.
 func apply_accelerate(wish_direction: Vector3, wish_speed: float, delta: float) -> void:
 	var current_speed := velocity.dot(wish_direction)
 	var add_speed := max_speed - current_speed
@@ -153,6 +165,7 @@ func apply_accelerate(wish_direction: Vector3, wish_speed: float, delta: float) 
 	velocity += wish_direction * accel_speed
 
 
+## Applies acceleration to the player when airborn based on players wish direction.
 func apply_air_accelerate(wish_direction: Vector3, wish_speed: float, delta: float) -> void:
 	var wish_speed_cap := minf(wish_speed, air_cap)
 	var current_speed := velocity.dot(wish_direction)
@@ -165,6 +178,7 @@ func apply_air_accelerate(wish_direction: Vector3, wish_speed: float, delta: flo
 	velocity += wish_direction * accel_speed
 
 
+## Converts a 2D input direction to a 3D world direction based on the players current orientation
 func direction_to_world(input_direction: Vector2) -> Vector3:
 	return global_basis * Vector3(input_direction.x, 0.0, input_direction.y)
 
@@ -191,9 +205,9 @@ func _on_update_historical_velocities() -> void:
 	historical_velocities.push_back(velocity)
 
 
-# region [Testing step up]
-
-
+## A step mechanic that tries to step up small obstacles using godots physics test motion.
+## The step currently has a predefined height and distance that it checks for,
+## to prevent the player from stepping up too high or too far.
 func try_step_up() -> void:
 	var horizontal_direction := Vector3(velocity.x, 0, velocity.z)
 	if horizontal_direction.is_zero_approx():
@@ -227,6 +241,3 @@ func try_step_up() -> void:
 	if step_amount > 0.01:
 		global_position.y += step_amount
 		global_position += direction * 0.05
-
-
-# endregion

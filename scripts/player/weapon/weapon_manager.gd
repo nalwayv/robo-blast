@@ -1,6 +1,12 @@
 class_name WeaponManager
 extends Node3D
 
+## A manager that loops over its children and activated / deactivates them based on player input.
+## The children are expected to be weapons, but the manager doesn't enforce this.
+## instead it uses duck typing like an interface to check if the child has the expected methods before calling them.
+## [equip], [unequip] and [switched] are the expected methods that a child weapon should have, 
+## but the manager will not throw an error if they are missing.
+
 @export_group("components")
 @export var input_handler: InputHandler
 

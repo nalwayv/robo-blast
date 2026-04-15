@@ -1,6 +1,8 @@
 class_name State
 extends Node
 
+## A base class for states that the player can be in.
+
 @export var state_type: PlayerStates.Type
 
 @warning_ignore("unused_signal")

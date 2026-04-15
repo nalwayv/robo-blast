@@ -1,6 +1,10 @@
 class_name StateMachine
 extends Node
 
+## A state machine that manages the players states.
+## states are added as child nodes that extend the [State] class. 
+## The state machine listens for their transition signals and handles the state switching logic.
+
 
 var current_state: State
 var states: Dictionary[PlayerStates.Type, State] = {}
