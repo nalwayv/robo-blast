@@ -1,25 +1,19 @@
 [gd_scene format=3 uid="uid://dffqg0px71had"]
 
 [ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_vpl36"]
-[ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_7q7np"]
+[ext_resource type="Script" uid="uid://bls7idcpwltb1" path="res://scripts/HitscanWeapon.cs" id="2_6p0ye"]
 [ext_resource type="PackedScene" uid="uid://bgn2tg1s6oiqn" path="res://scenes/muzzel_flash.tscn" id="3_l5acl"]
-[ext_resource type="Script" uid="uid://c8rpm1bgnha5c" path="res://scripts/player/weapon/WeaponDamage.cs" id="4_6p0ye"]
-[ext_resource type="Script" uid="uid://dfya7s0vd3fse" path="res://scripts/player/weapon/WeaponAnimation.cs" id="5_3w7as"]
-[ext_resource type="Script" uid="uid://b3gtbl35psqhx" path="res://scripts/player/weapon/WeaponEffects.cs" id="6_u1flj"]
+[ext_resource type="Script" uid="uid://fn2i6a8g3e6k" path="res://scripts/WeaponDamage.cs" id="4_6p0ye"]
+[ext_resource type="Script" uid="uid://57v0odtvy8qb" path="res://scripts/WeaponAnimation.cs" id="5_3w7as"]
+[ext_resource type="Script" uid="uid://c77py3yyqy67n" path="res://scripts/WeaponEffects.cs" id="6_u1flj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xfrr"]
 albedo_color = Color(0.581033, 0.58103293, 0.5810329, 1)
 z_clip_scale = 0.7
 fov_override = 45.0
 
-[node name="AutomaticWeapon" unique_id=122189766 node_paths=PackedStringArray("weapon_model", "muzzel_flash", "hitscan_damage", "hitscan_animation", "hitscan_effect") instance=ExtResource("1_vpl36")]
-sparks = ExtResource("2_7q7np")
-camera_shake_intensity = 1.0
-weapon_model = NodePath("Weapon/Model")
-muzzel_flash = NodePath("MuzzelFlash")
-hitscan_damage = NodePath("Damage")
-hitscan_animation = NodePath("Animation")
-hitscan_effect = NodePath("Effects")
+[node name="AutomaticWeapon" unique_id=122189766 instance=ExtResource("1_vpl36")]
+script = ExtResource("2_6p0ye")
 
 [node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_l5acl")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.21309765, -1.4319963)

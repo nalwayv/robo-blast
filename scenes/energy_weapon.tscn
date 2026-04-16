@@ -1,22 +1,14 @@
 [gd_scene format=3 uid="uid://c87yhbpiehprm"]
 
 [ext_resource type="PackedScene" uid="uid://co4138kr28e4p" path="res://scenes/hitscan_weapon.tscn" id="1_vgrxv"]
-[ext_resource type="PackedScene" uid="uid://dgqvuvf6lya44" path="res://scenes/sparks.tscn" id="2_8d2me"]
+[ext_resource type="Script" uid="uid://bls7idcpwltb1" path="res://scripts/HitscanWeapon.cs" id="2_cy8oh"]
 [ext_resource type="PackedScene" uid="uid://bgn2tg1s6oiqn" path="res://scenes/muzzel_flash.tscn" id="3_3yfrj"]
-[ext_resource type="Script" uid="uid://c8rpm1bgnha5c" path="res://scripts/player/weapon/WeaponDamage.cs" id="4_cy8oh"]
-[ext_resource type="Script" uid="uid://dfya7s0vd3fse" path="res://scripts/player/weapon/WeaponAnimation.cs" id="5_3ihp4"]
-[ext_resource type="Script" uid="uid://b3gtbl35psqhx" path="res://scripts/player/weapon/WeaponEffects.cs" id="6_j1spj"]
+[ext_resource type="Script" uid="uid://fn2i6a8g3e6k" path="res://scripts/WeaponDamage.cs" id="4_cy8oh"]
+[ext_resource type="Script" uid="uid://57v0odtvy8qb" path="res://scripts/WeaponAnimation.cs" id="5_3ihp4"]
+[ext_resource type="Script" uid="uid://c77py3yyqy67n" path="res://scripts/WeaponEffects.cs" id="6_j1spj"]
 
-[node name="EnergyWeapon" unique_id=588961484 node_paths=PackedStringArray("weapon_model", "muzzel_flash", "hitscan_damage", "hitscan_animation", "hitscan_effect") instance=ExtResource("1_vgrxv")]
-fire_rate = 15.0
-sparks = ExtResource("2_8d2me")
-ammo_type = 3
-camera_shake_intensity = 0.6
-weapon_model = NodePath("Weapon/Model")
-muzzel_flash = NodePath("MuzzelFlash")
-hitscan_damage = NodePath("Damage")
-hitscan_animation = NodePath("Animation")
-hitscan_effect = NodePath("Effects")
+[node name="EnergyWeapon" unique_id=588961484 instance=ExtResource("1_vgrxv")]
+script = ExtResource("2_cy8oh")
 
 [node name="MuzzelFlash" parent="." index="2" unique_id=490162483 instance=ExtResource("3_3yfrj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.18140215, -2.2493174)

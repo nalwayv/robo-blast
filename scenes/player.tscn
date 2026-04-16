@@ -1,24 +1,24 @@
 [gd_scene format=3 uid="uid://dpw0ap4168r3r"]
 
-[ext_resource type="Script" uid="uid://cpm0mrd4vbsh3" path="res://scripts/player/PlayerController.cs" id="1_l71n6"]
-[ext_resource type="Script" uid="uid://w6m3m4ywmlh1" path="res://scripts/player/CameraController.cs" id="2_ke2ow"]
+[ext_resource type="Script" uid="uid://b643y6a18l4tn" path="res://scripts/PlayerController.cs" id="1_4r5pv"]
+[ext_resource type="Script" uid="uid://bi4sxqkota51g" path="res://scripts/CameraController.cs" id="2_ke2ow"]
 [ext_resource type="PackedScene" uid="uid://djaa8dy6wdkse" path="res://scenes/manual_weapon.tscn" id="3_tuyoq"]
-[ext_resource type="Script" uid="uid://dskbmf0uipk0y" path="res://scripts/player/PlayerCamera.cs" id="3_ujl30"]
-[ext_resource type="Script" uid="uid://ckgodwwt2ue0o" path="res://scripts/player/states/StateMachine.cs" id="4_31cv2"]
+[ext_resource type="Script" uid="uid://dlvhh3e1tjyc4" path="res://scripts/PlayerCamera.cs" id="3_ujl30"]
+[ext_resource type="Script" uid="uid://dvi65ol15oui4" path="res://scripts/StateMachine.cs" id="4_4r5pv"]
+[ext_resource type="Script" uid="uid://c8hgakmtsmlal" path="res://scripts/Grounded.cs" id="5_4r5pv"]
 [ext_resource type="PackedScene" uid="uid://dffqg0px71had" path="res://scenes/automatic_weapon.tscn" id="5_fjrip"]
-[ext_resource type="Script" uid="uid://sbsp4cfgoixy" path="res://scripts/player/states/GroundedState.cs" id="5_pf23h"]
 [ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
-[ext_resource type="Script" uid="uid://os674toly3k1" path="res://scripts/player/states/AirborneState.cs" id="6_dt7fs"]
-[ext_resource type="Script" uid="uid://dstqnce66vp3e" path="res://scripts/player/components/InputHandler.cs" id="7_wqfne"]
+[ext_resource type="Script" uid="uid://b731ag18u4kte" path="res://scripts/Airborne.cs" id="6_60mlk"]
+[ext_resource type="Script" uid="uid://lsv37w7iqm7d" path="res://scripts/InputHandler.cs" id="7_i4ail"]
+[ext_resource type="Script" uid="uid://c2nw7pjh3im3" path="res://scripts/MouseHandler.cs" id="8_a38lo"]
 [ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
-[ext_resource type="Script" uid="uid://0aqmct4dnexl" path="res://scripts/player/components/MouseHandler.cs" id="8_wnwbv"]
-[ext_resource type="Script" uid="uid://12djv5h64kq2" path="res://scripts/components/Health.cs" id="9_gl8cc"]
-[ext_resource type="Script" uid="uid://d2cd2v06n7xli" path="res://scripts/player/weapon/AmmoPresenter.cs" id="10_487ah"]
-[ext_resource type="Script" uid="uid://di4aqdb4b5t1b" path="res://scripts/player/weapon/AmmoManager.cs" id="11_md1ol"]
-[ext_resource type="Script" uid="uid://c0khf5menyk1h" path="res://scripts/player/weapon/EnergyManager.cs" id="12_bj30b"]
-[ext_resource type="Script" uid="uid://b1kw7n8wc1xsw" path="res://scripts/player/weapon/WeaponManager.cs" id="13_jc3p3"]
+[ext_resource type="Script" uid="uid://dnu22aggb1qjs" path="res://scripts/Health.cs" id="9_4ni07"]
+[ext_resource type="Script" uid="uid://owvrymfdi7jy" path="res://scripts/AmmoPresenter.cs" id="10_487ah"]
+[ext_resource type="Script" uid="uid://bv6blnpq6xel7" path="res://scripts/AmmoManager.cs" id="11_md1ol"]
+[ext_resource type="Script" uid="uid://ebaxc0g5y4ud" path="res://scripts/EnergyManager.cs" id="12_bj30b"]
+[ext_resource type="Script" uid="uid://bmy7togi11fdc" path="res://scripts/WeaponManager.cs" id="13_jc3p3"]
 [ext_resource type="PackedScene" uid="uid://c87yhbpiehprm" path="res://scenes/energy_weapon.tscn" id="17_i4ail"]
-[ext_resource type="Script" uid="uid://cjfu52ajtg3i1" path="res://scripts/player/tools/Crosshair.cs" id="23_ke2ow"]
+[ext_resource type="Script" uid="uid://c1egf6fyqc2ul" path="res://scripts/Crosshair.cs" id="17_l71n6"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3v2ag"]
 
@@ -102,7 +102,7 @@ font_size = 64
 
 [node name="PlayerController" type="CharacterBody3D" unique_id=944678354]
 editor_description = "Player controles cameras Yaw"
-script = ExtResource("1_l71n6")
+script = ExtResource("1_4r5pv")
 
 [node name="Model" type="Node3D" parent="." unique_id=1335922153]
 editor_description = "Set to top level for smooth movement and help prevent jittering."
@@ -131,24 +131,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, -0.5)
 
 [node name="StateMachine" type="Node" parent="." unique_id=735036328]
 editor_description = "Testing out a simple state machine for the player"
-script = ExtResource("4_31cv2")
+script = ExtResource("4_4r5pv")
 
 [node name="Grounded" type="Node" parent="StateMachine" unique_id=77062762]
-script = ExtResource("5_pf23h")
+script = ExtResource("5_4r5pv")
 
 [node name="Airborne" type="Node" parent="StateMachine" unique_id=1876274156]
-script = ExtResource("6_dt7fs")
+script = ExtResource("6_60mlk")
 
 [node name="InputHandler" type="Node" parent="." unique_id=1691015048]
-script = ExtResource("7_wqfne")
+script = ExtResource("7_i4ail")
 
-[node name="MouseCapture" type="Node" parent="." unique_id=1492553876]
-script = ExtResource("8_wnwbv")
+[node name="MouseHandler" type="Node" parent="." unique_id=1492553876]
+script = ExtResource("8_a38lo")
 
 [node name="Health" type="Node" parent="." unique_id=189041108]
 unique_name_in_owner = true
 editor_description = "Health component"
-script = ExtResource("9_gl8cc")
+script = ExtResource("9_4ni07")
 
 [node name="AmmoPresenter" type="Node" parent="." unique_id=1224748889]
 script = ExtResource("10_487ah")
@@ -210,7 +210,7 @@ mouse_filter = 2
 
 [node name="Crosshair" type="Control" parent="CrosshairContainer" unique_id=958928721]
 layout_mode = 2
-script = ExtResource("23_ke2ow")
+script = ExtResource("17_l71n6")
 
 [node name="DamageTexture" type="TextureRect" parent="." unique_id=1012273844]
 modulate = Color(1, 1, 1, 0)

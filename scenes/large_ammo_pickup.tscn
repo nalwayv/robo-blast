@@ -16,7 +16,7 @@ shader_parameter/fresnel_intensity = 2.0000000475
 shader_parameter/fresnel_power = 2.000000095
 
 [node name="LargeAmmoPickup" unique_id=2094064908 instance=ExtResource("1_viogc")]
-ammo_amount = 10
+script = null
 
 [node name="Mesh" parent="." index="0" unique_id=1628967609]
 material_override = SubResource("StandardMaterial3D_m1k42")

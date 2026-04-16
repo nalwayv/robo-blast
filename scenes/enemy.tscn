@@ -1,8 +1,8 @@
 [gd_scene format=4 uid="uid://c0fv2li0eheot"]
 
-[ext_resource type="Script" uid="uid://c7ibsji77pqws" path="res://scripts/enemy/Enemy.cs" id="1_4ra3w"]
-[ext_resource type="Script" uid="uid://12djv5h64kq2" path="res://scripts/components/Health.cs" id="2_5uy6h"]
-[ext_resource type="Script" uid="uid://b11bfp70t8dnn" path="res://scripts/enemy/tools/EnemyDebug.cs" id="3_c4w8v"]
+[ext_resource type="Script" uid="uid://bsqcriis4p82y" path="res://scripts/EnemyController.cs" id="1_4ra3w"]
+[ext_resource type="Script" uid="uid://dnu22aggb1qjs" path="res://scripts/Health.cs" id="2_5uy6h"]
+[ext_resource type="Script" uid="uid://cjihsmdxh3fac" path="res://scripts/EnemyDebug.cs" id="3_c4w8v"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8tegq"]
 
@@ -70,5 +70,5 @@ libraries/ = SubResource("AnimationLibrary_md0e3")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1671771318]
 
-[node name="Debug" type="Node3D" parent="." unique_id=1243207024]
+[node name="EnemyDebug" type="Node3D" parent="." unique_id=1243207024]
 script = ExtResource("3_c4w8v")
