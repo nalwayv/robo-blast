@@ -34,3 +34,8 @@ Actively developed as a learning project. Features are being refined and expande
 ## Credits
 
 Built following [GameDev.tv's Godot3D course](https://gamedev.tv/courses/godot-complete-3d) by Bramwell Williams, with custom modifications and expansions.
+
+
+## Notes
+
+There is a **C#** branch of the project that is a one for one conversion but at the momment godot wont render the exports so looking into fixing that.
