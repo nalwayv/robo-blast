@@ -19,8 +19,8 @@ const NAVIGATION_INTERVAL := 0.1
 @export var smooth_direction := 10.0
 
 @export_group("field of view")
-@export var detecion_radius := 5.0
 @export var detection_angle := 90.0
+# @export var detecion_radius := 5.0 # using Area3D to check is within range
 
 @export_group("attack")
 @export var attack_range := 2.0
@@ -31,12 +31,13 @@ const NAVIGATION_INTERVAL := 0.1
 
 var provoked: bool
 var player: PlayerController
+var navigation_delay: float
+var player_within_range: bool
 var current_direction := Vector3.FORWARD
-var navigation_delay := 0.0
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-
+@onready var detection_area: Area3D = $DetectionArea
 
 func _ready() -> void:
 	add_to_group("enemy")
@@ -45,6 +46,9 @@ func _ready() -> void:
 
 	health.died.connect(queue_free)
 	health.damaged.connect(func() -> void: provoked = true)
+
+	detection_area.body_entered.connect(_on_area_entered)
+	detection_area.body_exited.connect(_on_area_exited)
 
 
 func _process(delta: float) -> void:
@@ -101,35 +105,14 @@ func _apply_rotation(direction: Vector3, delta: float) -> void:
 	rotation.y = lerp_angle(rotation.y, target_yaw, turn_speed * delta)
 
 
-# called from within animation player
-func attack() -> void:
-	var player_health := player.get_node_or_null("Health") as Health
-	if player_health:
-		player_health.hitpoints -= attack_damage
-	
-
-
-## Checks if the player is within the enemy's detection radius and field of view angle. 
-## If so, sets provoked to true.
 func _check_player_within_proximity() -> void:
-	if global_position.distance_to(player.global_position) > detecion_radius:
+	if provoked or not player_within_range:
 		return
 
 	if not _is_player_within_fov_angle():
 		return
 
 	provoked = true
-
-## Checks if the player is within attack range. 
-## If so, plays the attack animation.
-func _can_perform_attack() -> void:
-	if not provoked:
-		return 
-		
-	if global_position.distance_to(player.global_position) > attack_range:
-		return
-
-	animation_player.play("attack")
 
 
 func _is_player_within_fov_angle() -> bool:
@@ -138,6 +121,16 @@ func _is_player_within_fov_angle() -> bool:
 	var direction_to := global_position.direction_to(player.global_position)
 	
 	return forward.dot(direction_to) > cos(half_fov)
+
+
+func _can_perform_attack() -> void:
+	if not provoked:
+		return 
+		
+	if global_position.distance_to(player.global_position) > attack_range:
+		return
+
+	animation_player.play("attack")
 
 
 func _update_prediction_target() -> Vector3:
@@ -184,3 +177,32 @@ func _apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float) -> vo
 	
 	var accel_speed := minf(acceleration * delta * wish_speed, add_speed)
 	velocity += wish_dir * accel_speed
+
+
+# region [Animation Func Tracks]
+
+func attack() -> void:
+	# called from within animation player
+	var player_health := player.get_node_or_null("Health") as Health
+	if player_health:
+		player_health.hitpoints -= attack_damage
+
+# endregion
+
+
+# region [Detection Area]
+
+func _on_area_entered(body: Node3D) -> void:
+	if not body.is_in_group("player") or provoked:
+		return
+
+	player_within_range = true
+
+
+func _on_area_exited(body: Node3D) -> void:
+	if not body.is_in_group("player") or provoked:
+		return
+
+	player_within_range = false
+
+# endregion

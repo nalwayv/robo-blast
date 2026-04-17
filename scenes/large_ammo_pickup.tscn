@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://7tk7bgyvshvs"]
 
 [ext_resource type="Script" uid="uid://dsjqjig0l7dov" path="res://scripts/item/ammo.gd" id="1_m1k42"]
-[ext_resource type="Shader" uid="uid://dr2s768xffa15" path="res://assets/fresnel.gdshader" id="2_m1k42"]
+[ext_resource type="Shader" uid="uid://dr2s768xffa15" path="res://assets/shaders/fresnel.gdshader" id="2_m1k42"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m1k42"]
 albedo_color = Color(0.91, 0.182, 0.182, 1)

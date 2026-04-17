@@ -14,7 +14,7 @@
 [ext_resource type="PackedScene" uid="uid://bnd3cdytkfh0n" path="res://scenes/game_over_menu.tscn" id="5_qlg0r"]
 [ext_resource type="Script" uid="uid://d0gwaflnqyk5t" path="res://scripts/player/camera_controller.gd" id="7_f1ej7"]
 [ext_resource type="Script" uid="uid://rkyc8ouda5mh" path="res://scripts/player/components/mouse_capture.gd" id="8_oprun"]
-[ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/kenney_future.ttf" id="8_ur7pv"]
+[ext_resource type="FontFile" uid="uid://bnhferpy13b2s" path="res://assets/fonts/kenney_future.ttf" id="8_ur7pv"]
 [ext_resource type="Script" uid="uid://bnfkklxobhv20" path="res://scripts/player/states/state_machine.gd" id="9_oprun"]
 [ext_resource type="Script" uid="uid://rbj0hif2c7cc" path="res://scripts/player/states/grounded_state.gd" id="11_qfm1y"]
 [ext_resource type="Script" uid="uid://lajw57okowxf" path="res://scripts/player/states/airborn_state.gd" id="12_fulsm"]
