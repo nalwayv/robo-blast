@@ -3,7 +3,7 @@
 A 3D FPS game built with Godot Engine
 
 ![screenshot](.github/screenshots/screenshot.png)
-![screenshot](.github/screenshots/screenshot2.png)
+![screenshot](.github/screenshots/screenshot3.png)
 
 ## Overview
 

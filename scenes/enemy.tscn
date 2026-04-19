@@ -1,27 +1,17 @@
-[gd_scene format=4 uid="uid://c0fv2li0eheot"]
+[gd_scene format=3 uid="uid://c0fv2li0eheot"]
 
 [ext_resource type="Script" uid="uid://ttuvrqc8yxcl" path="res://scripts/enemy/enemy.gd" id="1_7p1mj"]
+[ext_resource type="Material" uid="uid://bs6leoev4bp7q" path="res://assets/materials/enemy_material.tres" id="2_5uy6h"]
 [ext_resource type="Script" uid="uid://bagatc5xotcpp" path="res://scripts/components/health.gd" id="3_4ra3w"]
 [ext_resource type="Script" uid="uid://dg1x0sec8c7v5" path="res://scripts/enemy/tools/enemy_debug.gd" id="3_5uy6h"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8tegq"]
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_c4w8v"]
+radius = 0.135
+height = 0.565
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7p1mj"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_md0e3"]
-albedo_color = Color(0.94227564, 0.28308344, 0.28011715, 1)
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_7p1mj"]
-_surfaces = [{
-"aabb": AABB(-0.25, -0.1, -0.3, 0.5, 0.2, 0.6),
-"attribute_data": PackedByteArray("AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/"),
-"format": 34359738391,
-"material": SubResource("StandardMaterial3D_md0e3"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("AACAvs3MzL2amZk+AACAvs3MzL2amZm+AACAvs3MzD2amZm+AACAPs3MzL2amZm+AACAvs3MzL2amZm+AACAvs3MzL2amZk+AACAvs3MzD2amZm+AACAvs3MzL2amZm+AACAPs3MzL2amZm+AACAvs3MzD2amZm+AACAvs3MzD2amZk+AACAvs3MzL2amZk+AACAvs3MzL2amZk+AACAvs3MzD2amZk+AACAPs3MzD2amZk+AACAPs3MzD2amZk+AACAvs3MzD2amZk+AACAvs3MzD2amZm+AACAvs3MzL2amZk+AACAPs3MzL2amZk+AACAPs3MzL2amZm+AACAPs3MzD2amZk+AACAPs3MzL2amZk+AACAvs3MzL2amZk+AACAPs3MzL2amZm+AACAPs3MzL2amZk+AACAPs3MzD2amZk+AACAPs3MzL2amZm+AACAPs3MzD2amZm+AACAvs3MzD2amZm+AACAvs3MzD2amZm+AACAPs3MzD2amZm+AACAPs3MzD2amZk+AACAPs3MzD2amZk+AACAPs3MzD2amZm+AACAPs3MzL2amZm+AAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
-}]
 
 [sub_resource type="Animation" id="Animation_7p1mj"]
 resource_name = "attack"
@@ -56,15 +46,16 @@ collision_mask = 5
 script = ExtResource("1_7p1mj")
 health = NodePath("Health")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=535933570]
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=535933570]
+material_override = ExtResource("2_5uy6h")
 mesh = SubResource("CapsuleMesh_8tegq")
+
+[node name="Visor" type="MeshInstance3D" parent="Mesh" unique_id=1958570067]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0.34302244, -0.49858308)
+mesh = SubResource("CapsuleMesh_c4w8v")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1171297815]
 shape = SubResource("CapsuleShape3D_7p1mj")
-
-[node name="Visor" type="MeshInstance3D" parent="." unique_id=1364863873]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.367)
-mesh = SubResource("ArrayMesh_7p1mj")
 
 [node name="Health" type="Node" parent="." unique_id=1469167002]
 editor_description = "Health component"

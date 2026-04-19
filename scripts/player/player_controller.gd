@@ -101,7 +101,7 @@ func _process(delta: float) -> void:
 
 	# just a simple way to see current horizontal direction of the player for debugging
 	var horizontal_velocity := Vector3(velocity.x, 0, velocity.z)
-	if not horizontal_velocity.is_zero_approx():
+	if horizontal_velocity.length_squared() > 0.01:
 		var local_dir := (global_basis.inverse() * horizontal_velocity).normalized()
 		direction_pivot.rotation.y = atan2(-local_dir.x, -local_dir.z)
 
@@ -145,8 +145,9 @@ func _is_near_edge() -> bool:
 	if not is_on_floor():
 		return false
 
-	var horizontal_velocity := Vector2(velocity.x, velocity.z)
-	if horizontal_velocity.is_zero_approx():
+	# NOTE:
+	var horizontal_velocity := Vector3(velocity.x, 0, velocity.z)
+	if horizontal_velocity.length_squared() < 0.01:
 		return false
 
 	edge_raycast.force_raycast_update()
@@ -209,11 +210,12 @@ func _on_update_historical_velocities() -> void:
 ## The step currently has a predefined height and distance that it checks for,
 ## to prevent the player from stepping up too high or too far.
 func try_step_up() -> void:
-	var horizontal_direction := Vector3(velocity.x, 0, velocity.z)
-	if horizontal_direction.is_zero_approx():
+	var horizontal_velocity := Vector3(velocity.x, 0, velocity.z)
+	#NOTE: squared < 0.1 | length_squared < (0.1 * 0.1)
+	if horizontal_velocity.length_squared() < 0.01:
 		return
 
-	var direction := horizontal_direction.normalized()
+	var direction := horizontal_velocity.normalized()
 	var params := PhysicsTestMotionParameters3D.new()
 	var result := PhysicsTestMotionResult3D.new()
 

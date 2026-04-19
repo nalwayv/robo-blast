@@ -20,7 +20,6 @@ const NAVIGATION_INTERVAL := 0.1
 
 @export_group("field of view")
 @export var detection_angle := 90.0
-# @export var detecion_radius := 5.0 # using Area3D to check is within range
 
 @export_group("attack")
 @export var attack_range := 2.0
@@ -29,15 +28,21 @@ const NAVIGATION_INTERVAL := 0.1
 @export_group("components")
 @export var health: Health
 
-var provoked: bool
 var player: PlayerController
+
+var provoked: bool
 var navigation_delay: float
 var player_within_range: bool
 var current_direction := Vector3.FORWARD
 
+var hit_tween: Tween
+var base_color: Color
+
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var detection_area: Area3D = $DetectionArea
+@onready var mesh: MeshInstance3D = $Mesh
+
 
 func _ready() -> void:
 	add_to_group("enemy")
@@ -45,10 +50,16 @@ func _ready() -> void:
 	player = get_tree().get_first_node_in_group("player") as PlayerController
 
 	health.died.connect(queue_free)
-	health.damaged.connect(func() -> void: provoked = true)
+	health.damaged.connect(_on_damaged)
 
 	detection_area.body_entered.connect(_on_area_entered)
 	detection_area.body_exited.connect(_on_area_exited)
+
+	# hit flash but the material needs to be duplicated 
+	# to prevent other instances from also flashing
+	if mesh.material_override:
+		mesh.material_override = (mesh.material_override.duplicate() as Material)
+		base_color = mesh.material_override.albedo_color
 
 
 func _process(delta: float) -> void:
@@ -155,7 +166,7 @@ func _update_prediction_target() -> Vector3:
 
 func _apply_friction(delta: float) -> void:
 	var speed := velocity.length()
-	if is_zero_approx(speed):
+	if speed < 0.1:
 		velocity = Vector3.ZERO
 		return
 	
@@ -177,6 +188,23 @@ func _apply_accelerate(wish_dir: Vector3, wish_speed: float, delta: float) -> vo
 	
 	var accel_speed := minf(acceleration * delta * wish_speed, add_speed)
 	velocity += wish_dir * accel_speed
+
+
+func _on_damaged() -> void:
+	if not provoked:
+		provoked = true
+
+	var mat := mesh.material_override
+	if not mat:
+		return
+
+	if hit_tween and hit_tween.is_running():
+		hit_tween.kill()
+	
+	# simple hit flash
+	hit_tween = create_tween()
+	hit_tween.tween_property(mat, "albedo_color", Color.WHITE, 0.05)
+	hit_tween.tween_property(mat, "albedo_color", base_color, 0.1)
 
 
 # region [Animation Func Tracks]

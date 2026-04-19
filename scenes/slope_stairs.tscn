@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://yolajg8snnrb"]
+
+[ext_resource type="Material" uid="uid://cvm3hcgurabov" path="res://assets/materials/box_material.tres" id="1_jmhoc"]
+
+[node name="Node3D" type="Node3D" unique_id=2056610897]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=846762097]
+material_override = ExtResource("1_jmhoc")
+use_collision = true
+collision_mask = 0
+size = Vector3(1, 2, 2)
+
+[node name="Ramp" type="CSGPolygon3D" parent="." unique_id=1710112572]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -1, 1)
+material_override = ExtResource("1_jmhoc")
+use_collision = true
+collision_mask = 0
+polygon = PackedVector2Array(0, 0, 0, 2, 2, 0)
+depth = 2.0
+
+[node name="Steps" type="Node3D" parent="." unique_id=1411802536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0, 0)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Steps" unique_id=2015290561]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0.75, 0)
+material_override = ExtResource("1_jmhoc")
+size = Vector3(0.5, 0.5, 2)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Steps" unique_id=201920312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 0.25, 0)
+material_override = ExtResource("1_jmhoc")
+size = Vector3(0.5, 0.5, 2)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Steps" unique_id=1194329796]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, -0.25, 0)
+material_override = ExtResource("1_jmhoc")
+size = Vector3(0.5, 0.5, 2)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Steps" unique_id=1496782891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.75, -0.75, 0)
+material_override = ExtResource("1_jmhoc")
+size = Vector3(0.5, 0.5, 2)
