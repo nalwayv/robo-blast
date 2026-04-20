@@ -10,7 +10,7 @@ const PREDICTION_THRESHOLD := 0.33
 const NAVIGATION_INTERVAL := 0.1
 
 @export_group("movement")
-@export var max_speed := 2.5
+@export var max_speed := 3.0
 @export var stop_speed := 2.0
 @export var acceleration := 10.0
 @export var friction := 6.0
@@ -25,8 +25,6 @@ const NAVIGATION_INTERVAL := 0.1
 @export var attack_range := 2.0
 @export var attack_damage := 20
 
-@export_group("components")
-@export var health: Health
 
 var player: PlayerController
 
@@ -40,8 +38,9 @@ var base_color: Color
 
 @onready var navigation_agent_3d: NavigationAgent3D = $NavigationAgent3D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var detection_area: Area3D = $DetectionArea
 @onready var mesh: MeshInstance3D = $Mesh
+@onready var detection_area: Area3D = $AreaDetection
+@onready var health: Health = $Health
 
 
 func _ready() -> void:

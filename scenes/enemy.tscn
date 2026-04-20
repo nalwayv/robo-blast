@@ -40,11 +40,10 @@ _data = {
 [sub_resource type="SphereShape3D" id="SphereShape3D_4ra3w"]
 radius = 5.0
 
-[node name="EnemyController" type="CharacterBody3D" unique_id=226968340 node_paths=PackedStringArray("health")]
+[node name="EnemyController" type="CharacterBody3D" unique_id=226968340]
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_7p1mj")
-health = NodePath("Health")
 
 [node name="Mesh" type="MeshInstance3D" parent="." unique_id=535933570]
 material_override = ExtResource("2_5uy6h")
@@ -69,9 +68,9 @@ libraries/ = SubResource("AnimationLibrary_md0e3")
 [node name="Debug" type="Node3D" parent="." unique_id=1243207024]
 script = ExtResource("3_5uy6h")
 
-[node name="DetectionArea" type="Area3D" parent="." unique_id=1296349628]
+[node name="AreaDetection" type="Area3D" parent="." unique_id=1296349628]
 collision_layer = 2
 collision_mask = 4
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1496066519]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AreaDetection" unique_id=1496066519]
 shape = SubResource("SphereShape3D_4ra3w")
